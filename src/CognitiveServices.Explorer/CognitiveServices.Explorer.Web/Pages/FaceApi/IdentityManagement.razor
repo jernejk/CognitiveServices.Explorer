@@ -1,0 +1,66 @@
+﻿@page "/faceapi/identities"
+@using CognitiveServices.Explorer.Domain.Face
+
+<h3>IdentityManagement</h3>
+
+<div>
+    <label>Face API Key:</label>
+    <input type="password" @bind-value="@faceApiKey" />
+</div>
+<div>
+    <label>Base URL:</label>
+    <input type="text" @bind-value="@faceApiBaseUrl" />
+</div>
+
+<button class="btn btn-primary" @onclick="GetGroups">Get groups</button>
+
+<pre>
+@rawJson
+</pre>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Person Group Id</th>
+            <th>Name</th>
+            <th>Recognition Model</th>
+            <th>User Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in personGroups)
+        {
+        <tr>
+            <td>@group.PersonGroupId</td>
+            <td>@group.Name</td>
+            <td>@group.RecogntionModel</td>
+            <td>@group.UserData</td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    string faceApiKey = string.Empty;
+    string faceApiBaseUrl = string.Empty;
+    string rawJson = string.Empty;
+    List<PersonGroupDto> personGroups = new List<PersonGroupDto>();
+
+    public async Task GetGroups()
+    {
+        faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
+
+        HttpClient client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
+        var result = await client.GetAsync(faceApiBaseUrl + "/face/v1.0/persongroups?returnRecognitionModel=true");
+        rawJson = await result.Content.ReadAsStringAsync();
+
+        try
+        {
+            personGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonGroupDto>>(rawJson);
+        }
+        catch
+        {
+        }
+    }
+}
