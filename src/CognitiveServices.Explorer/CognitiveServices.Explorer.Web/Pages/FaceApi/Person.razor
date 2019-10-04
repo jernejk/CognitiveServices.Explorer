@@ -1,8 +1,8 @@
-﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons"
+﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}"
 @using CognitiveServices.Explorer.Domain.Face
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<h3>Person Group @PersonGroupId</h3>
+<h3>Person @PersonId</h3>
 
 <div>
     <label>Face API Key:</label>
@@ -13,7 +13,7 @@
     <input type="text" @bind-value="@faceApiBaseUrl" />
 </div>
 
-<button class="btn btn-primary" @onclick="GetPeople">Get people (1 TR)</button>
+<button class="btn btn-primary" @onclick="GetPerson">Get person (1 TR)</button>
 
 <pre>
 @rawJson
@@ -25,12 +25,12 @@
             <th> &nbsp; </th>
             <th>Person Id</th>
             <th>Name</th>
-            <th>Number of faces</th>
+            <th>Faces IDs</th>
             <th>User Data</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var person in people)
+        @if (person != null)
         {
             var imageUrl = string.Empty;
             if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
@@ -42,15 +42,24 @@
                 <td>
                 @if (!string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    <img src="@imageUrl" width="40" />
+                    <img src="@imageUrl" width="60" />
                 }
                 else
                 {
                     <span>&nbsp;</span>
                 }</td>
-                <td><a href="/face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId">@person.PersonId</a></td>
+                <td>@person.PersonId</td>
                 <td>@person.Name</td>
-                <td>@(person.PersistedFaceIds?.Count ?? 0)</td>
+                <td>
+                    <ul>
+                        @foreach (var face in person.PersistedFaceIds)
+                        {
+                            <li>
+                                <a href="/face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId/persistedFaces/@face">@face</a>
+                            </li>
+                        }
+                    </ul>
+                </td>
                 <td>@person.UserData</td>
             </tr>
         }
@@ -60,21 +69,23 @@
 @code {
     [Parameter]
     public string PersonGroupId { get; set; }
+    [Parameter]
+    public string PersonId { get; set; }
 
     string faceApiKey = string.Empty;
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
-    List<PersonDto> people = new List<PersonDto>();
+    PersonDto person = null;
 
     protected override async Task OnInitializedAsync()
     {
         faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
         faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
 
-        await GetPeople();
+        await GetPerson();
     }
 
-    public async Task GetPeople()
+    public async Task GetPerson()
     {
         faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
 
@@ -83,12 +94,12 @@
 
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-        var result = await client.GetAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/persons");
+        var result = await client.GetAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}");
         rawJson = await result.Content.ReadAsStringAsync();
 
         try
         {
-            people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonDto>>(rawJson);
+            person = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonDto>(rawJson);
         }
         catch
         {

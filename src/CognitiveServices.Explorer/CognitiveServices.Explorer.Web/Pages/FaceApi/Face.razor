@@ -1,8 +1,8 @@
-﻿@page "/face/v1.0/persongroups"
+﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}/persistedFaces/{PersonFaceId}"
 @using CognitiveServices.Explorer.Domain.Face
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<h3>IdentityManagement</h3>
+<h3>Face @PersonId</h3>
 
 <div>
     <label>Face API Key:</label>
@@ -13,43 +13,52 @@
     <input type="text" @bind-value="@faceApiBaseUrl" />
 </div>
 
-<button class="btn btn-primary" @onclick="GetGroups">Get groups (1 TR)</button>
+<button class="btn btn-primary" @onclick="GetFace">Get face (1 TR)</button>
+
+<pre>
+@rawJson
+</pre>
 
 <table border="1">
     <thead>
         <tr>
-            <th>Person Group Id</th>
-            <th>Name</th>
-            <th>Recognition Model</th>
+            <th>Persisted Face Id</th>
             <th>User Data</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var group in personGroups)
+        @if (face != null)
         {
             <tr>
-                <td><a href="/face/v1.0/persongroups/@group.PersonGroupId/persons">@group.PersonGroupId</a></td>
-                <td>@group.Name</td>
-                <td>@group.RecogntionModel</td>
-                <td>@group.UserData</td>
+                <td>@face.PersistedFaceId</td>
+                <td>@face.UserData</td>
             </tr>
         }
     </tbody>
 </table>
 
 @code {
+    [Parameter]
+    public string PersonGroupId { get; set; }
+    [Parameter]
+    public string PersonId { get; set; }
+    [Parameter]
+    public string PersonFaceId { get; set; }
+
     string faceApiKey = string.Empty;
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
-    List<PersonGroupDto> personGroups = new List<PersonGroupDto>();
+    FaceDto face = null;
 
     protected override async Task OnInitializedAsync()
     {
         faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
         faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
+
+        await GetFace();
     }
 
-    public async Task GetGroups()
+    public async Task GetFace()
     {
         faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
 
@@ -58,12 +67,12 @@
 
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-        var result = await client.GetAsync(faceApiBaseUrl + "/face/v1.0/persongroups?returnRecognitionModel=true");
+        var result = await client.GetAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}/persistedFaces/{PersonFaceId}");
         rawJson = await result.Content.ReadAsStringAsync();
 
         try
         {
-            personGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonGroupDto>>(rawJson);
+            face = Newtonsoft.Json.JsonConvert.DeserializeObject<FaceDto>(rawJson);
         }
         catch
         {
