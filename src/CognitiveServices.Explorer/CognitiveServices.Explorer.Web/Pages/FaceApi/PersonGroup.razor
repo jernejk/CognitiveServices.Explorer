@@ -1,4 +1,4 @@
-﻿@page "/faceapi/identities"
+﻿@page "/faceapi/persongroup/{PersonGroupId}"
 @using CognitiveServices.Explorer.Domain.Face
 
 <h3>IdentityManagement</h3>
@@ -21,30 +21,33 @@
 <table border="1">
     <thead>
         <tr>
-            <th>Person Group Id</th>
+            <th>Person Id</th>
             <th>Name</th>
-            <th>Recognition Model</th>
+            <th>Number of faces</th>
             <th>User Data</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var group in personGroups)
+        @foreach (var group in people)
         {
-        <tr>
-            <td>@group.PersonGroupId</td>
-            <td>@group.Name</td>
-            <td>@group.RecogntionModel</td>
-            <td>@group.UserData</td>
-        </tr>
+            <tr>
+                <td><a href="/faceapi/persongroup/@PersonGroupId/person/@group.PersonId">@group.PersonId</a></td>
+                <td>@group.Name</td>
+                <td>@(group.PersistedFaceIds?.Count ?? 0)</td>
+                <td>@group.UserData</td>
+            </tr>
         }
     </tbody>
 </table>
 
 @code {
+    [Parameter]
+    public string PersonGroupId { get; set; }
+
     string faceApiKey = string.Empty;
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
-    List<PersonGroupDto> personGroups = new List<PersonGroupDto>();
+    List<PersonDto> people = new List<PersonDto>();
 
     public async Task GetGroups()
     {
@@ -52,12 +55,12 @@
 
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-        var result = await client.GetAsync(faceApiBaseUrl + "/face/v1.0/persongroups?returnRecognitionModel=true");
+        var result = await client.GetAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/persons");
         rawJson = await result.Content.ReadAsStringAsync();
 
         try
         {
-            personGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonGroupDto>>(rawJson);
+            people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonDto>>(rawJson);
         }
         catch
         {

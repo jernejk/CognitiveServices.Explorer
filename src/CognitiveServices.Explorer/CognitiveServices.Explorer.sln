@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.Web", "CognitiveServices.Explorer.Web\CognitiveServices.Explorer.Web.csproj", "{747E4626-063A-48E5-831B-DC3E8921B2FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CognitiveServices.Explorer.Domain", "CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj", "{CEAF3150-043A-4163-AF6F-667DFC29C80C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.Domain", "CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj", "{CEAF3150-043A-4163-AF6F-667DFC29C80C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
