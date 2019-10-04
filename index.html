@@ -35,15 +35,15 @@
                 });
                 if (q.p !== undefined) {
                     var repoName = l.pathname.slice(0, -1);
-                    console.log(`l.pathname: ${repoName}`);
-                    console.log(`q.p: ${q.p}`);
-                    console.log(`q.q: ${q.q}`);
+                    // console.log(`l.pathname: ${repoName}`);
+                    // console.log(`q.p: ${q.p}`);
+                    // console.log(`q.q: ${q.q}`);
                     if (q.p !== undefined) {
-                        console.log(`/${repoName}/ vs /CognitiveServices.Explorer/`)
-                        q.p = q.p.replace(`/${repoName}/`, '/');
-                        console.log(`new q.p: ${q.p}`);
-                        q.p = q.p.replace(`/CognitiveServices.Explorer/`, '/');
-                        console.log(`new new q.p: ${q.p}`);
+                        // console.log(`/${repoName}/ vs /CognitiveServices.Explorer/`)
+                        q.p = q.p.replace(`${repoName}/`, '/');
+                        // console.log(`new q.p: ${q.p}`);
+                        // q.p = q.p.replace(`/CognitiveServices.Explorer/`, '/');
+                        // console.log(`new new q.p: ${q.p}`);
                     }
 
                     window.history.replaceState(null, null,
