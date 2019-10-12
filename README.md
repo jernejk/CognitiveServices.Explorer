@@ -10,15 +10,16 @@ Currently supported features:
 * Store base URL and subscription key to local storage
 * Explore groups, identities and faces
 * Show cURL requests
+* Train group
+* Check if group has been trained
 
 Coming next:
 
-* Train group
-* Check if group has been trained
-* Add groups
-* Add identities
+* Add/update groups
+* Add/update identities
 * Add faces (URL only)
 * Add faces (file upload)
+* Update face (user data only)
 * Detect faces
   * No facial features
   * Emotions, gender, age, etc.

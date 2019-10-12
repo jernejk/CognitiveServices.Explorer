@@ -9,13 +9,51 @@
     <h3>Person Group @PersonGroupId</h3>
 
     <div class="py-2">
+        <h4>Training details</h4>
+
+        @if (trainingStatus != null)
+        {
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm float-left">
+                <tbody>
+                    <tr>
+                        <th style="width: 120px;">Is trained</th>
+                        <td>@trainingStatus.Status @(trainingStatus.Status == "running" ? "(refresh training in few seconds)" : "")</td>
+                    </tr>
+                    <tr>
+                        <th>Created date</th>
+                        <td>@trainingStatus.CreatedDateTime.ToLocalTime()</td>
+                    </tr>
+                    <tr>
+                        <th>Last action date</th>
+                        <td>@trainingStatus.LastActionDateTime.ToLocalTime()</td>
+                    </tr>
+                    <tr>
+                        <th>Message</th>
+                        <td>@trainingStatus.Message</td>
+                    </tr>
+                    <tr>
+                        <th>Train</th>
+                        <td><button class="btn btn-secondary btn-sm" @onclick="Train">Train</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        }
+
+        <button class="btn btn-secondary btn-sm" @onclick="RefreshTrainingStatus">Check training status</button>
+    </div>
+
+    <div class="py-2">
+        <h4>People</h4>
+
         @if (people != null && people.Any())
         {
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th> &nbsp; </th>
+                            <th style="width: 50px;"> &nbsp; </th>
                             <th>Person Id</th>
                             <th>Name</th>
                             <th>Number of faces</th>
@@ -64,12 +102,28 @@
 
     <div>
         <a href="javascript(void)" @onclick="ToggleRequest"></a>
-        <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
+        <button class="btn btn-secondary btn-sm mb-2" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
+
 
         @if (showRequest)
         {
+        <h4>Requests (cURL)</h4>
+<h5>Get groups</h5>
+
 <pre>
-@request
+@getPeopleRequest
+</pre>
+
+<h5>Check training status</h5>
+
+<pre>
+@getTrainingStatusRequest
+</pre>
+
+<h5>Start training</h5>
+
+<pre>
+@getTrainRequest
 </pre>
         }
     </div>
@@ -84,7 +138,10 @@
     string rawJson = string.Empty;
     List<PersonDto> people = null;
     bool showRequest = false;
-    string request = string.Empty;
+    string getPeopleRequest = string.Empty;
+    string getTrainingStatusRequest = string.Empty;
+    string getTrainRequest = string.Empty;
+    TrainingStatus trainingStatus = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -99,18 +156,47 @@
         faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
         faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
 
+        people = await MakeRequest<List<PersonDto>>($"/face/v1.0/persongroups/{PersonGroupId}/persons");
+    }
+
+    public async Task RefreshTrainingStatus()
+    {
+        trainingStatus = await MakeRequest<TrainingStatus>($"/face/v1.0/persongroups/{PersonGroupId}/training");
+    }
+
+    public async Task Train()
+    {
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-        var result = await client.GetAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/persons");
-        rawJson = await result.Content.ReadAsStringAsync();
 
         try
         {
             UpdateRequestOutput();
-            people = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonDto>>(rawJson));
+            var result = await client.PostAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/train", new StringContent(string.Empty));
+
+            await RefreshTrainingStatus();
         }
         catch
         {
+        }
+    }
+
+    public async Task<T> MakeRequest<T>(string request)
+    {
+        HttpClient client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
+
+        try
+        {
+            UpdateRequestOutput();
+
+            var result = await client.GetAsync(faceApiBaseUrl + request);
+            string rawJson = await result.Content.ReadAsStringAsync();
+            return await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<T>(rawJson));
+        }
+        catch
+        {
+            return default;
         }
     }
 
@@ -122,9 +208,18 @@
 
     public void UpdateRequestOutput()
     {
-        request = $@"curl -X GET \
+        getPeopleRequest = $@"curl -X GET \
   '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/persons' \
   -H 'Content-Type: application/json' \
+  -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'";
+
+        getTrainingStatusRequest = $@"curl -X GET \
+  '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/training' \
+  -H 'Content-Type: application/json' \
+  -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'";
+
+        getTrainRequest = $@"curl -X POST \
+  '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/train' \
   -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'";
     }
 
