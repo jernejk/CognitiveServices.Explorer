@@ -18,5 +18,13 @@ Write-Output "----==== Replace base href in $indexFile to be /$repoName/"
 ((Get-Content -path $indexFile -Raw) -replace $originalBaseUrlText, $targetBaseUrlText) | Set-Content -NoNewline -Path $indexFile
 Write-Output ""
 
+$indexFile = "./serviceworker.js"
+$originalBaseUrlText = "var rootPath = './';";
+$targetBaseUrlText = "var rootPath = './$repoName/';";
+
+Write-Output "----==== Replace root path in $indexFile to be $repoName/"
+((Get-Content -path $indexFile -Raw) -replace $originalBaseUrlText, $targetBaseUrlText) | Set-Content -NoNewline -Path $indexFile
+Write-Output ""
+
 Write-Output "----==== Delete dist folder"
 Remove-Item ./dist/ -Recurse
