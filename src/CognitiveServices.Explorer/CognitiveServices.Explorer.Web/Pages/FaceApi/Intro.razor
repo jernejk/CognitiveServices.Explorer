@@ -1,7 +1,23 @@
 ﻿@page "/faceapi/intro"
 
-<h3>Intro</h3>
+<div class="container">
+    <h2>Azure Face API</h2>
 
-@code {
+    To get started go to <a href="https://portal.azure.com/">Microsoft Azure Portal</a> or try it for free at <a href="https://azure.microsoft.com/en-au/services/cognitive-services/face/">Try it for free</a>, create Face API and copy the URL as well as the subscription key.
 
-}
+    <p>At the moment only browsing the groups (PersonGroup), identities (PersonGroup Person) and faces.</p>
+    <p>Azure Face API does not save images of the faces, so the only way to get an image is not store it in UserData.</p>
+
+    <br />
+    <p>At the moment, is UserData has a JSON data (starts with <b>{</b>), it will look if it has <b>PictureUrl</b> or <b>ImageUrl</b> and it will display it.</p>
+
+    <h3>Postman collections</h3>
+
+    <p>If you need a more complete collection of Face API functionalities, I have created a <a href="https://github.com/jernejk/RealTimeFaceApi/tree/master/Postman">Postman collection</a>.</p>
+
+    <h3>Real-time facial recognition</h3>
+
+    <p>If you're interested in real-time facial recognition you checkout <a href="https://github.com/jernejk/RealTimeFaceApi">my sample app on GitHub</a> and my YouTube video:</p>
+
+    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/KCSyRO0KotA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>

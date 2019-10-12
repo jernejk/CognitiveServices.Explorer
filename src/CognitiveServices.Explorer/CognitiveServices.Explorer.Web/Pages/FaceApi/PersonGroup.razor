@@ -1,61 +1,79 @@
 ﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons"
 @using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<h3>Person Group @PersonGroupId</h3>
+<FaceApiConfiguration />
 
-<div>
-    <label>Face API Key:</label>
-    <input type="password" @bind-value="@faceApiKey" />
-</div>
-<div>
-    <label>Base URL:</label>
-    <input type="text" @bind-value="@faceApiBaseUrl" />
-</div>
+<div class="content">
+    <h3>Person Group @PersonGroupId</h3>
 
-<button class="btn btn-primary" @onclick="GetPeople">Get people (1 TR)</button>
-
-<pre>
-@rawJson
-</pre>
-
-<table border="1">
-    <thead>
-        <tr>
-            <th> &nbsp; </th>
-            <th>Person Id</th>
-            <th>Name</th>
-            <th>Number of faces</th>
-            <th>User Data</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var person in people)
+    <div class="py-2">
+        @if (people != null && people.Any())
         {
-            var imageUrl = string.Empty;
-            if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
-            {
-                var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
-                imageUrl = customUserData.GetImageUrl();
-            }
-            <tr>
-                <td>
-                @if (!string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    <img src="@imageUrl" width="40" />
-                }
-                else
-                {
-                    <span>&nbsp;</span>
-                }</td>
-                <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId">@person.PersonId</a></td>
-                <td>@person.Name</td>
-                <td>@(person.PersistedFaceIds?.Count ?? 0)</td>
-                <td>@person.UserData</td>
-            </tr>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th> &nbsp; </th>
+                            <th>Person Id</th>
+                            <th>Name</th>
+                            <th>Number of faces</th>
+                            <th>User Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var person in people)
+                        {
+                            var imageUrl = string.Empty;
+                            if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
+                            {
+                                var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
+                                imageUrl = customUserData.GetImageUrl();
+                            }
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(imageUrl))
+                                    {
+                                        <img src="@imageUrl" width="40" />
+                                    }
+                                    else
+                                    {
+                                        <span>&nbsp;</span>
+                                    }
+                                </td>
+                                <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId">@person.PersonId</a></td>
+                                <td>@person.Name</td>
+                                <td>@(person.PersistedFaceIds?.Count ?? 0)</td>
+                                <td><code>@CropText(person.UserData)</code></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
-    </tbody>
-</table>
+        else if (people != null)
+        {
+            <div class="alert alert-warning" role="alert">No identities found in the group @PersonGroupId</div>
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">Loading data from face API... (1 transaction cost)</div>
+        }
+    </div>
+
+    <div>
+        <a href="javascript(void)" @onclick="ToggleRequest"></a>
+        <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
+
+        @if (showRequest)
+        {
+<pre>
+@request
+</pre>
+        }
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -64,7 +82,9 @@
     string faceApiKey = string.Empty;
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
-    List<PersonDto> people = new List<PersonDto>();
+    List<PersonDto> people = null;
+    bool showRequest = false;
+    string request = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,10 +96,8 @@
 
     public async Task GetPeople()
     {
-        faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
-
-        await localStorage.SetItemAsync(nameof(faceApiKey), faceApiKey);
-        await localStorage.SetItemAsync(nameof(faceApiBaseUrl), faceApiBaseUrl);
+        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
+        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
 
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
@@ -88,10 +106,35 @@
 
         try
         {
-            people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonDto>>(rawJson);
+            UpdateRequestOutput();
+            people = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonDto>>(rawJson));
         }
         catch
         {
         }
+    }
+
+    public void ToggleRequest()
+    {
+        UpdateRequestOutput();
+        showRequest = !showRequest;
+    }
+
+    public void UpdateRequestOutput()
+    {
+        request = $@"curl -X GET \
+  '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/persons' \
+  -H 'Content-Type: application/json' \
+  -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'";
+    }
+
+    public string CropText(string text, int maxLength = 20)
+    {
+        if (text?.Length > maxLength)
+        {
+            return text.Substring(0, 20) + "...";
+        }
+
+        return text;
     }
 }

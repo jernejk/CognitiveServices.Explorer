@@ -1,0 +1,52 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<div class="top-row px-4 py-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col col-md-auto">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">Base URL</span>
+                    </div>
+                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="https://[resource-name].cognitiveservices.azure.com" @bind-value="@faceApiBaseUrl" />
+                    <div class="input-group-append">
+                        <span class="input-group-text">/face/v1.0/</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-auto">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Subscription key</span>
+                    </div>
+                    <input type="password" class="form-control" placeholder="Subscription key" aria-label="Subscription key" aria-describedby="basic-addon1" @bind-value="@faceApiKey" />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" @onclick="SaveFaceApiConfigurations">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    string faceApiKey = string.Empty;
+    string faceApiBaseUrl = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
+        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
+    }
+
+    public async Task SaveFaceApiConfigurations()
+    {
+        faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
+
+        await localStorage.SetItemAsync(nameof(faceApiKey), faceApiKey);
+        await localStorage.SetItemAsync(nameof(faceApiBaseUrl), faceApiBaseUrl);
+    }
+}

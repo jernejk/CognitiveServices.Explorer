@@ -6,7 +6,7 @@
     <title>Cognitive Services Explorer</title>
     <base href="/">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
+    <link href="css/site.css?1" rel="stylesheet" />
 </head>
 <body>
     <app>Loading...</app>
@@ -34,16 +34,10 @@
                         .replace(/~and~/g, '&');
                 });
                 if (q.p !== undefined) {
+                    // Added support for non-main repos based on https://jkdev.me/publish-client-side-blazor-to-github-pages/?cse
                     var repoName = l.pathname.slice(0, -1);
-                    // console.log(`l.pathname: ${repoName}`);
-                    // console.log(`q.p: ${q.p}`);
-                    // console.log(`q.q: ${q.q}`);
                     if (q.p !== undefined) {
-                        // console.log(`/${repoName}/ vs /CognitiveServices.Explorer/`)
                         q.p = q.p.replace(`${repoName}/`, '/');
-                        // console.log(`new q.p: ${q.p}`);
-                        // q.p = q.p.replace(`/CognitiveServices.Explorer/`, '/');
-                        // console.log(`new new q.p: ${q.p}`);
                     }
 
                     window.history.replaceState(null, null,

@@ -1,70 +1,66 @@
 ﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}"
 @using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<h3>Person @PersonId</h3>
+<FaceApiConfiguration />
 
-<div>
-    <label>Face API Key:</label>
-    <input type="password" @bind-value="@faceApiKey" />
-</div>
-<div>
-    <label>Base URL:</label>
-    <input type="text" @bind-value="@faceApiBaseUrl" />
-</div>
-
-<button class="btn btn-primary" @onclick="GetPerson">Get person (1 TR)</button>
-
-<pre>
-@rawJson
-</pre>
-
-<table border="1">
-    <thead>
-        <tr>
-            <th> &nbsp; </th>
-            <th>Person Id</th>
-            <th>Name</th>
-            <th>Faces IDs</th>
-            <th>User Data</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (person != null)
+<div class="content">
+    @if (person != null)
+    {
+        var imageUrl = string.Empty;
+        if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
         {
-            var imageUrl = string.Empty;
-            if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
-            {
-                var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
-                imageUrl = customUserData.GetImageUrl();
-            }
-            <tr>
-                <td>
+            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
+            imageUrl = customUserData.GetImageUrl();
+        }
+
+        <div class="card">
+            <h5 class="card-header">Person details</h5>
+            <div class="card-body">
                 @if (!string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    <img src="@imageUrl" width="60" />
+                    <img class="card-img-top" src="@imageUrl" alt="@person.Name's image" style="max-width: 200px;">
                 }
-                else
-                {
-                    <span>&nbsp;</span>
-                }</td>
-                <td>@person.PersonId</td>
-                <td>@person.Name</td>
-                <td>
-                    <ul>
-                        @foreach (var face in person.PersistedFaceIds)
-                        {
-                            <li>
-                                <a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId/persistedFaces/@face">@face</a>
-                            </li>
-                        }
-                    </ul>
-                </td>
-                <td>@person.UserData</td>
-            </tr>
+                <h5 class="card-title">@person.Name</h5>
+                <p class="card-text">Person ID: @person.PersonId</p>
+                <p class="card-text">Faces:</p>
+                <ul>
+                    @foreach (var face in person.PersistedFaceIds)
+                    {
+                        <li>
+                            <a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId/persistedFaces/@face">@face</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(person.UserData))
+            {
+                <div class="card-body">
+                    <h5 class="card-title">User Data</h5>
+                    <code>@person.UserData</code>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Loading person Id @PersonId...</div>
+    }
+
+    <div>
+        <a href="javascript(void)" @onclick="ToggleRequest"></a>
+        <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
+
+        @if (showRequest)
+        {
+<pre>
+@request
+</pre>
         }
-    </tbody>
-</table>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -76,6 +72,8 @@
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
     PersonDto person = null;
+    bool showRequest = false;
+    string request = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,10 +85,8 @@
 
     public async Task GetPerson()
     {
-        faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
-
-        await localStorage.SetItemAsync(nameof(faceApiKey), faceApiKey);
-        await localStorage.SetItemAsync(nameof(faceApiBaseUrl), faceApiBaseUrl);
+        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
+        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
 
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
@@ -99,10 +95,26 @@
 
         try
         {
+            UpdateRequestOutput();
             person = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonDto>(rawJson);
         }
         catch
         {
         }
+    }
+
+    public void ToggleRequest()
+    {
+        UpdateRequestOutput();
+        showRequest = !showRequest;
+    }
+
+    public void UpdateRequestOutput()
+    {
+        request = $@"curl -X GET \
+  '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}' \
+  -H 'Content-Type: application/json' \
+  -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'
+";
     }
 }
