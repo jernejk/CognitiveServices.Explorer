@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,7 +6,7 @@
     <title>Cognitive Services Explorer</title>
     <base href="/CognitiveServices.Explorer/">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
+    <link href="css/site.css?1" rel="stylesheet" />
 </head>
 <body>
     <app>Loading...</app>
@@ -34,7 +34,7 @@
                         .replace(/~and~/g, '&');
                 });
                 if (q.p !== undefined) {
-                    // Support for non-main repo GitHub pages
+                    // Added support for non-main repos based on https://jkdev.me/publish-client-side-blazor-to-github-pages/?cse
                     var repoName = l.pathname.slice(0, -1);
                     if (q.p !== undefined) {
                         q.p = q.p.replace(`${repoName}/`, '/');
