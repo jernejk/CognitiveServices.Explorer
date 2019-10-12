@@ -4,16 +4,14 @@ var cacheName = 'blazor-pwa-sample';
 var rootPath = './';
 var filesToCache = [
     rootPath,
-    //Html and css files
-    rootPath + 'index.html',
+    // Html and css files
     rootPath + 'css/site.css',
     rootPath + 'css/bootstrap/bootstrap.min.css',
     rootPath + 'css/open-iconic/font/css/open-iconic-bootstrap.min.css',
     rootPath + 'css/open-iconic/font/fonts/open-iconic.woff',
-    //Blazor framework
     rootPath + '_framework/blazor.webassembly.js',
     rootPath + '_framework/blazor.boot.json',
-    //Our additional files
+    // Our additional files
     rootPath + 'manifest.json',
     rootPath + 'serviceworker.js',
     rootPath + 'android-chrome-192x192.png',
@@ -22,8 +20,7 @@ var filesToCache = [
     rootPath + 'favicon-32x32.png',
     rootPath + 'apple-touch-icon.png',
     rootPath + 'favicon.ico',
-    rootPath + 'site-webmanifest.json',
-    //The web assembly/.net dll's
+    // The web assembly/.net dll's
     rootPath + '_framework/wasm/mono.js',
     rootPath + '_framework/wasm/mono.wasm',
     rootPath + '_framework/_bin/Blazored.LocalStorage.dll',
@@ -63,7 +60,7 @@ var filesToCache = [
     rootPath + '_framework/_bin/System.Threading.Tasks.Extensions.dll',
     rootPath + '_framework/_bin/System.Xml.dll',
     rootPath + '_framework/_bin/System.Xml.Linq.dll',
-    //The compiled project .dll's
+    // The compiled project .dll's
     rootPath + '_framework/_bin/CognitiveServices.Explorer.Domain.dll',
     rootPath + '_framework/_bin/CognitiveServices.Explorer.Web.dll',
     rootPath + '_framework/_bin/CognitiveServices.Explorer.Domain.pdb',
@@ -74,7 +71,7 @@ self.addEventListener('install', function (e) {
     console.log('[ServiceWorker] Install');
     e.waitUntil(
         caches.open(cacheName).then(function (cache) {
-            console.log('[ServiceWorker] Caching app shell');
+            console.log('[ServiceWorker] Caching app shell..');
             return cache.addAll(filesToCache);
         })
     );
@@ -87,6 +84,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request, { ignoreSearch: true }).then(response => {
+            console.log('[ServiceWorker] Fetch or cache: ' + event.request);
             return response || fetch(event.request);
         })
     );

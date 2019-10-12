@@ -1,7 +1,7 @@
 ﻿{
   "name": "Cognitive Services Explorer",
   "short_name": "CS Explorer",
-  "start_url": "/",
+  "start_url": "/CognitiveServices.Explorer/",
   "display": "standalone",
   "theme_color": "#8AD",
   "background_color": "#ffffff",

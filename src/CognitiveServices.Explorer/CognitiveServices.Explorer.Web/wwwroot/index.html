@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Cognitive Services Explorer</title>
-    <base href="/">
+    <base href="/CognitiveServices.Explorer/">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css?1" rel="stylesheet" />
 
@@ -34,7 +34,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             console.log('Registering service worker now');
-            navigator.serviceWorker.register('/serviceworker.js')
+            navigator.serviceWorker.register('serviceworker.js')
                 .then(function () {
                     console.log('Service Worker Registered');
                 });
