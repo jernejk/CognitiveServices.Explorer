@@ -1,6 +1,6 @@
 ﻿{
   "name": "Cognitive Services Explorer",
-  "short_name": "PWA mini",
+  "short_name": "CS Explorer",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#8AD",

@@ -15,8 +15,13 @@ var filesToCache = [
     //Our additional files
     './manifest.json',
     './serviceworker.js',
-    './icons/icon-192x192.png',
-    './icons/icon-512x512.png',
+    './android-chrome-192x192.png',
+    './android-chrome-512x512.png',
+    './favicon-16x16.png',
+    './favicon-32x32.png',
+    './apple-touch-icon.png',
+    './favicon.ico',
+    './site-webmanifest.json',
     //The web assembly/.net dll's
     './_framework/wasm/mono.js',
     './_framework/wasm/mono.wasm',
@@ -59,7 +64,9 @@ var filesToCache = [
     './_framework/_bin/System.Xml.Linq.dll',
     //The compiled project .dll's
     './_framework/_bin/CognitiveServices.Explorer.Domain.dll',
-    './_framework/_bin/CognitiveServices.Explorer.Web.dll'
+    './_framework/_bin/CognitiveServices.Explorer.Web.dll',
+    './_framework/_bin/CognitiveServices.Explorer.Domain.pdb',
+    './_framework/_bin/CognitiveServices.Explorer.Web.pdb'
 ];
 
 self.addEventListener('install', function (e) {
