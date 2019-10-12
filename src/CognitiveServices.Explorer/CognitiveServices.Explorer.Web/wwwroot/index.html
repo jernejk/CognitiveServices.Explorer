@@ -13,18 +13,34 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="script" href="serviceworker.js">
+    <meta name="theme-color" content="#8AD" />
 </head>
 <body>
     <app>
         <div class="main">
             <h1>App is being downloaded... ⏳</h1>
 
-            <p>This app has been built with Blazor 🚀 for browsers. <br/>This means that everything runs on your browser and there is no need for a server after the download has been completed. 😎</p>
+            <p>This app has been built with Blazor 🚀 for browsers. <br />This means that everything runs on your browser and there is no need for a server after the download has been completed. 😎</p>
             <p>This feature is experiment and is currently large in size. (few MB) 😫</p>
 
             <p>Thank you for your patience. 😉</p>
         </div>
     </app>
+
+    <!-- PWA script -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            console.log('Registering service worker now');
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
