@@ -1,6 +1,6 @@
 ﻿// Based on https://medium.com/@k.l.mueller/create-progressive-web-apps-with-net-using-blazor-6aa719e38000
 console.log("This is service worker talking!");
-var cacheName = 'blazor-pwa-sample';
+var cacheName = 'cse-pwa';
 var rootPath = './';
 var filesToCache = [
     rootPath,
@@ -62,16 +62,20 @@ var filesToCache = [
     rootPath + '_framework/_bin/System.Xml.Linq.dll',
     // The compiled project .dll's
     rootPath + '_framework/_bin/CognitiveServices.Explorer.Domain.dll',
-    rootPath + '_framework/_bin/CognitiveServices.Explorer.Web.dll',
-    rootPath + '_framework/_bin/CognitiveServices.Explorer.Domain.pdb',
-    rootPath + '_framework/_bin/CognitiveServices.Explorer.Web.pdb'
+    rootPath + '_framework/_bin/CognitiveServices.Explorer.Web.dll'
 ];
+
+if (self.location.hostname === 'localhost') {
+    filesToCache.push(rootPath + '_framework/_bin/CognitiveServices.Explorer.Domain.pdb');
+    filesToCache.push(rootPath + '_framework/_bin/CognitiveServices.Explorer.Web.pdb');
+    console.log('Added local pdb for debugging. (won\'t work in prod)');
+}
 
 self.addEventListener('install', function (e) {
     console.log('[ServiceWorker] Install');
     e.waitUntil(
         caches.open(cacheName).then(function (cache) {
-            console.log('[ServiceWorker] Caching app shell..');
+            console.log('[ServiceWorker] Caching app shell...');
             return cache.addAll(filesToCache);
         })
     );
@@ -84,7 +88,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request, { ignoreSearch: true }).then(response => {
-            console.log('[ServiceWorker] Fetch or cache: ' + event.request);
             return response || fetch(event.request);
         })
     );
