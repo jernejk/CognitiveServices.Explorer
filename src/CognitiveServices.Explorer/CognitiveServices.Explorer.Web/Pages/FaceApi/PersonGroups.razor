@@ -49,17 +49,7 @@
         }
     </div>
 
-    <div>
-        <a href="javascript(void)" @onclick="ToggleRequest"></a>
-        <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
-
-        @if (showRequest)
-        {
-<pre><code>
-@request
-</code></pre>
-        }
-    </div>
+    <CurlRequest Request="requestData" />
 </div>
 
 @code {
@@ -67,8 +57,10 @@
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
     List<PersonGroupDto> personGroups = null;
-    bool showRequest = false;
-    string request = "";
+    CurlRequestData requestData = new CurlRequestData
+        {
+            RequestName = "GET PersonGroup list"
+        };
     string error = "";
 
     protected override async Task OnInitializedAsync()
@@ -102,17 +94,12 @@
         }
     }
 
-    public void ToggleRequest()
-    {
-        UpdateRequestOutput();
-        showRequest = !showRequest;
-    }
-
     public void UpdateRequestOutput()
     {
-        request = $@"curl -X GET \
+        requestData.SubscriptionKey = faceApiKey;
+        requestData.Curl = $@"curl -X GET \
   '{faceApiBaseUrl}/face/v1.0/persongroups?returnRecognitionModel=true' \
   -H 'Content-Type: application/json' \
-  -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'";
+  -H 'Ocp-Apim-Subscription-Key: [token]'";
     }
 }

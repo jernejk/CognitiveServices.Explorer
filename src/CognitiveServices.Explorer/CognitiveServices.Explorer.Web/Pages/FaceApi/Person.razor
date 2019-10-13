@@ -49,17 +49,7 @@
         <div class="alert alert-info">Loading person Id @PersonId...</div>
     }
 
-    <div>
-        <a href="javascript(void)" @onclick="ToggleRequest"></a>
-        <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
-
-        @if (showRequest)
-        {
-<pre>
-@request
-</pre>
-        }
-    </div>
+    <CurlRequest Request="requestData" />
 </div>
 
 @code {
@@ -72,8 +62,10 @@
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
     PersonDto person = null;
-    bool showRequest = false;
-    string request = string.Empty;
+    CurlRequestData requestData = new CurlRequestData
+    {
+        RequestName = "GET PersonGroup Person"
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,18 +95,13 @@
         }
     }
 
-    public void ToggleRequest()
-    {
-        UpdateRequestOutput();
-        showRequest = !showRequest;
-    }
-
     public void UpdateRequestOutput()
     {
-        request = $@"curl -X GET \
+        requestData.SubscriptionKey = faceApiBaseUrl;
+        requestData.Curl = $@"curl -X GET \
   '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}' \
   -H 'Content-Type: application/json' \
-  -H 'Ocp-Apim-Subscription-Key: {faceApiKey}'
+  -H 'Ocp-Apim-Subscription-Key: [token]'
 ";
     }
 }
