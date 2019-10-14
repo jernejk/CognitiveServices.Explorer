@@ -1,6 +1,10 @@
 ﻿// Based on https://medium.com/@k.l.mueller/create-progressive-web-apps-with-net-using-blazor-6aa719e38000
 console.log("This is service worker talking!");
-var cacheName = 'cse-pwa';
+
+// Changing service worker (or just cacheName) does following based on https://www.oreilly.com/library/view/building-progressive-web/9781491961643/ch04.html
+// 1. Reinstalls service worker
+// 2. Redownloads cached files
+var cacheName = 'cse-pwa-2';
 var rootPath = './';
 var filesToCache = [
     rootPath,
