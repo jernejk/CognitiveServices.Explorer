@@ -7,13 +7,15 @@ Currently supported features:
 
 ## Face API
 
+### Feature implemented
+
 * Store base URL and subscription key to local storage
 * Explore groups, identities and faces
 * Show cURL requests
 * Train group
 * Check if group has been trained
 
-Coming next:
+### Features planned in the coming weeks
 
 * Add/update groups
 * Add/update identities
@@ -27,7 +29,7 @@ Coming next:
 * Find similar faces
 * Verify face
 
-## Other Cognitive Services in planning
+## Other Cognitive Services in planning (coming months)
 
 * Text Analyzer
 * Translation
