@@ -3,11 +3,11 @@ This project is mean to be used as a show case what Cognitive Services can do, b
 
 You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explorer/)
 
-Currently supported features:
+## Supported features
 
-## Face API
+### Face API
 
-### Feature implemented
+#### Feature implemented
 
 * Store base URL and subscription key to local storage
 * Explore groups, identities and faces
@@ -15,7 +15,7 @@ Currently supported features:
 * Train group
 * Check if group has been trained
 
-### Features planned in the coming weeks
+#### Features planned in the coming weeks
 
 * Add/update groups
 * Add/update identities
@@ -29,7 +29,7 @@ Currently supported features:
 * Find similar faces
 * Verify face
 
-## Other Cognitive Services in planning (coming months)
+### Other Cognitive Services in planning (coming months)
 
 * Text Analyzer
 * Translation
