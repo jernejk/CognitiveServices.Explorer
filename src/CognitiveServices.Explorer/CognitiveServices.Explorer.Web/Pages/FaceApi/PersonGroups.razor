@@ -67,6 +67,7 @@
     {
         faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
         faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
+        UpdateRequestOutput();
     }
 
     public async Task GetGroups()
