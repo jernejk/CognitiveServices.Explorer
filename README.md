@@ -3,9 +3,14 @@ This project is mean to be used as a show case what Cognitive Services can do, b
 
 You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explorer/)
 
-Currently supported features:
+**NOTE:** Currently not working on iOS. (https://github.com/mono/mono/issues/16986)
+**NOTE 2:** PWA doesn't have an update logic and might require wiping data for jernejk.github.io website in your browser.
 
-## Face API
+## Supported features
+
+### Face API
+
+#### Feature implemented
 
 * Store base URL and subscription key to local storage
 * Explore groups, identities and faces
@@ -13,7 +18,7 @@ Currently supported features:
 * Train group
 * Check if group has been trained
 
-Coming next:
+#### Features planned in the coming weeks
 
 * Add/update groups
 * Add/update identities
@@ -27,7 +32,7 @@ Coming next:
 * Find similar faces
 * Verify face
 
-## Other Cognitive Services in planning
+### Other Cognitive Services in planning (coming months)
 
 * Text Analyzer
 * Translation
