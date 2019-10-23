@@ -1,6 +1,9 @@
 ﻿{
   "Headers": {},
-  "RelativePath": "face/v1.0/persongroups?returnRecognitionModel=true",
+  "RelativePath": "face/v1.0/persongroups",
+  "Queries": {
+    "returnRecognitionModel": "true"
+  },
   "HttpMethod": "GET",
   "Body": null,
   "BinaryContent": null,

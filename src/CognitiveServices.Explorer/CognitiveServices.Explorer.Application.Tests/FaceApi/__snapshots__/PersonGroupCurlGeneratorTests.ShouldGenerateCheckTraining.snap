@@ -1,6 +1,7 @@
 ﻿{
   "Headers": {},
   "RelativePath": "face/v1.0/persongroups/default/training",
+  "Queries": null,
   "HttpMethod": "GET",
   "Body": null,
   "BinaryContent": null,

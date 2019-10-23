@@ -1,6 +1,7 @@
 ﻿{
   "Headers": {},
   "RelativePath": "face/v1.0/persongroups/default/train",
+  "Queries": null,
   "HttpMethod": "POST",
   "Body": null,
   "BinaryContent": null,

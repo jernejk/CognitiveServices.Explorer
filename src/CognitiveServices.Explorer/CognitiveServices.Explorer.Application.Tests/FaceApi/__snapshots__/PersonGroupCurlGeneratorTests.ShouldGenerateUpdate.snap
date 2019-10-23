@@ -1,6 +1,7 @@
 ﻿{
   "Headers": {},
   "RelativePath": "face/v1.0/persongroups/default",
+  "Queries": null,
   "HttpMethod": "PATCH",
   "Body": "{\"name\":\"Test group 2\",\"userData\":\"imageUrl: image\"}",
   "BinaryContent": null,

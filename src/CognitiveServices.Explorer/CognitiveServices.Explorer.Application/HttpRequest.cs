@@ -6,6 +6,7 @@ namespace CognitiveServices.Explorer.Application
     {
         public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
         public string RelativePath { get; set; } = string.Empty;
+        public Dictionary<string, string>? Queries { get; set; }
         public string HttpMethod { get; set; } = "GET";
         public string? Body { get; set; }
         public byte[]? BinaryContent { get; set; }

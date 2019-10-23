@@ -1,6 +1,7 @@
 ﻿{
   "Headers": {},
   "RelativePath": "face/v1.0/identify",
+  "Queries": null,
   "HttpMethod": "POST",
   "Body": "{\"personGroupId\":\"default\",\"faceIds\":[\"12234324\",\"34534253425\"],\"maxNumOfCandidatesReturned\":1,\"confidenceThreshold\":0.5}",
   "BinaryContent": null,

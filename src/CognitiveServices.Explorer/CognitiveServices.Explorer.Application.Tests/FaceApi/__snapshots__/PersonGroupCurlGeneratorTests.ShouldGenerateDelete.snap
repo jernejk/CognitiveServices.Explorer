@@ -1,6 +1,7 @@
 ﻿{
   "Headers": {},
   "RelativePath": "face/v1.0/persongroups/default",
+  "Queries": null,
   "HttpMethod": "DELETE",
   "Body": null,
   "BinaryContent": null,

@@ -1,6 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -8,33 +9,53 @@ using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application
 {
-    public class CurlRequestService
+    public class HttpRequestService
     {
-        public async Task RunCurl(HttpRequest request, CognitiveServiceConfig cognitiveServiceConfig, CancellationToken token = default)
+        public async Task Send(HttpRequest request, CognitiveServiceConfig cognitiveServiceConfig, CancellationToken token = default)
         {
             var url = new Url(cognitiveServiceConfig.BaseUrl)
                 .AppendPathSegment(request.RelativePath)
                 .WithHeader(request.TokenHeaderName, cognitiveServiceConfig.Token);
 
-            Task<HttpResponseMessage> responseTask = null!;
-            if (string.Equals(request.HttpMethod, "GET", StringComparison.OrdinalIgnoreCase))
+            if (request.Queries?.Any() == true)
             {
-                responseTask = url.GetAsync(token);
+                url = url.SetQueryParams(request.Queries);
             }
-            else if (string.Equals(request.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
+
+            Task<HttpResponseMessage> responseTask = null!;
+            string httpMethod = request.HttpMethod.ToUpperInvariant();
+            switch (httpMethod)
             {
-                if (request.BinaryContent != null)
-                {
-                    var content = new ByteArrayContent(request.BinaryContent);
-                    content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
-                    responseTask = url.PostAsync(content, token);
-                }
-                else
-                {
-                    var content = new StringContent(request.Body ?? string.Empty);
-                    content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
-                    responseTask = url.PostAsync(content, token);
-                }
+                case "GET":
+                    responseTask = url.GetAsync(token);
+                    break;
+                case "POST":
+                    {
+                        if (request.BinaryContent != null)
+                        {
+                            var content = new ByteArrayContent(request.BinaryContent);
+                            content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
+                            responseTask = url.PostAsync(content, token);
+                        }
+                        else
+                        {
+                            var content = new StringContent(request.Body ?? string.Empty);
+                            content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
+                            responseTask = url.PostAsync(content, token);
+                        }
+
+                        break;
+                    }
+                case "DELETE":
+                    responseTask = url.DeleteAsync(token);
+                    break;
+                case "PATCH":
+                    {
+                        var content = new StringContent(request.Body ?? string.Empty);
+                        content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
+                        responseTask = url.PatchAsync(content, token);
+                    }
+                    break;
             }
 
             try

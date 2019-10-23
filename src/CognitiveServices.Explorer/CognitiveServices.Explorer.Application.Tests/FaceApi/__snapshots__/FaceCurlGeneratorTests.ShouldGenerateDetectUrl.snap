@@ -1,6 +1,7 @@
 ﻿{
   "Headers": {},
   "RelativePath": "face/v1.0/detect",
+  "Queries": null,
   "HttpMethod": "POST",
   "Body": "{\"url\":\"http://test.url\"}",
   "BinaryContent": null,

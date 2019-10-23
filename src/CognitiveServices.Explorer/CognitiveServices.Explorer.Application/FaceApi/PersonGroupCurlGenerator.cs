@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
 {
@@ -21,7 +22,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest Update(string groupId, string name, string? userData)
+        public HttpRequest Update(string groupId, string name, string? userData = null)
         {
             return new HttpRequest
             {
@@ -42,7 +43,11 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             return new HttpRequest
             {
                 HttpMethod = "GET",
-                RelativePath = $"face/v1.0/persongroups?returnRecognitionModel=true",
+                RelativePath = $"face/v1.0/persongroups",
+                Queries = new Dictionary<string, string>
+                {
+                    { "returnRecognitionModel", "true" }
+                },
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395248"
             };
         }
