@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj" />
     <ProjectReference Include="..\CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj" />
   </ItemGroup>
 

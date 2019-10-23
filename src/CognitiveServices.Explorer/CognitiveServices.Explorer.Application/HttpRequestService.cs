@@ -11,7 +11,7 @@ namespace CognitiveServices.Explorer.Application
 {
     public class HttpRequestService
     {
-        public async Task Send(HttpRequest request, CognitiveServiceConfig cognitiveServiceConfig, CancellationToken token = default)
+        public async Task<string?> Send(HttpRequest request, CognitiveServiceConfig cognitiveServiceConfig, CancellationToken token = default)
         {
             var url = new Url(cognitiveServiceConfig.BaseUrl)
                 .AppendPathSegment(request.RelativePath)
@@ -61,11 +61,12 @@ namespace CognitiveServices.Explorer.Application
             try
             {
                 using var response = await responseTask;
-                string json = await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync();
             }
-            catch
+            catch (Exception e)
             {
-
+                Console.WriteLine("Exception: " + e.ToString());
+                return null;
             }
         }
     }

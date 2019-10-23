@@ -1,6 +1,9 @@
 ﻿@page "/face/v1.0/persongroups"
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using CognitiveServices.Explorer.Application
+@using CognitiveServices.Explorer.Application.Curl
+@using CognitiveServices.Explorer.Application.FaceApi
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <FaceApiConfiguration />
@@ -56,12 +59,15 @@
     string faceApiKey = string.Empty;
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
-    List<PersonGroupDto> personGroups = null;
+    List<PersonGroupDto>? personGroups = null;
     CurlRequestData requestData = new CurlRequestData
-        {
-            RequestName = "GET PersonGroup list"
-        };
+    {
+        RequestName = "GET PersonGroup list"
+    };
     string error = "";
+    PersonGroupCurlGenerator generator = new PersonGroupCurlGenerator();
+    HttpRequestService2 _httpRequestService = new HttpRequestService2();
+    CurlGenerator curlGenerator = new CurlGenerator();
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,15 +84,13 @@
         faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
         faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
 
-        HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
+        var config = new CognitiveServiceConfig(faceApiBaseUrl, faceApiKey);
+        var request = generator.List();
+        requestData.Curl = curlGenerator.Generate(request, config, false);
 
         try
         {
-            var result = await client.GetAsync(faceApiBaseUrl + "/face/v1.0/persongroups?returnRecognitionModel=true");
-            rawJson = await result.Content.ReadAsStringAsync();
-
-            UpdateRequestOutput();
+            rawJson = await _httpRequestService.Send(request, config);
             personGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonGroupDto>>(rawJson);
         }
         catch (Exception e)
@@ -97,10 +101,11 @@
 
     public void UpdateRequestOutput()
     {
+        return;
         requestData.SubscriptionKey = faceApiKey;
         requestData.Curl = $@"curl -X GET \
-  '{faceApiBaseUrl}/face/v1.0/persongroups?returnRecognitionModel=true' \
-  -H 'Content-Type: application/json' \
-  -H 'Ocp-Apim-Subscription-Key: [token]'";
+'{faceApiBaseUrl}/face/v1.0/persongroups?returnRecognitionModel=true' \
+-H 'Content-Type: application/json' \
+-H 'Ocp-Apim-Subscription-Key: [token]'";
     }
 }
