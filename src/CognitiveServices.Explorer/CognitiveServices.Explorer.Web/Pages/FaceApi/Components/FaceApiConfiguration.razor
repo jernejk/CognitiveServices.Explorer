@@ -1,4 +1,6 @@
-﻿@inject Blazored.LocalStorage.ILocalStorageService localStorage
+﻿@using CognitiveServices.Explorer.Application
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject ICognitiveServicesConfigService csConfigService
 
 <div class="top-row px-4 py-2">
     <div class="container-fluid">
@@ -40,6 +42,9 @@
     {
         faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
         faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
+
+        var config = new CognitiveServiceConfig("FaceApi", faceApiBaseUrl, faceApiKey);
+        await csConfigService.SetConfig(config);
     }
 
     public async Task SaveFaceApiConfigurations()
@@ -48,5 +53,8 @@
 
         await localStorage.SetItemAsync(nameof(faceApiKey), faceApiKey);
         await localStorage.SetItemAsync(nameof(faceApiBaseUrl), faceApiBaseUrl);
+
+        var config = new CognitiveServiceConfig("FaceApi", faceApiBaseUrl, faceApiKey);
+        await csConfigService.SetConfig(config);
     }
 }

@@ -1,20 +1,17 @@
 ﻿@page "/face/v1.0/persongroups"
-@using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
-@using CognitiveServices.Explorer.Application
-@using CognitiveServices.Explorer.Application.Curl
-@using CognitiveServices.Explorer.Application.FaceApi
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using CognitiveServices.Explorer.Web.ViewModels.FaceApi
+@inject PersonGroupsViewModel viewModel
 
 <FaceApiConfiguration />
 
 <div class="content">
     <h3>Person Groups</h3>
 
-    <button class="btn btn-primary" @onclick="GetGroups">Get groups (1 TR)</button>
+    <button class="btn btn-primary" @onclick="viewModel.GetGroups">Get groups (1 TR)</button>
 
     <div class="py-2">
-        @if (personGroups != null && personGroups.Any())
+        @if (viewModel.PersonGroups?.Any() == true)
         {
             <table class="table table-striped table-responsive">
                 <thead>
@@ -26,7 +23,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var group in personGroups)
+                    @foreach (var group in viewModel.PersonGroups)
                     {
                         <tr>
                             <td><a href="face/v1.0/persongroups/@group.PersonGroupId/persons">@group.PersonGroupId</a></td>
@@ -38,13 +35,13 @@
                 </tbody>
             </table>
         }
-        else if (personGroups != null)
+        else if (viewModel.PersonGroups != null)
         {
             <div class="alert alert-warning" role="alert">No groups found</div>
         }
-        else if (!string.IsNullOrWhiteSpace(error))
+        else if (!string.IsNullOrWhiteSpace(viewModel.Error))
         {
-            <div class="alert alert-danger" role="alert">@error</div>
+            <div class="alert alert-danger" role="alert">@viewModel.Error</div>
         }
         else
         {
@@ -52,60 +49,12 @@
         }
     </div>
 
-    <CurlRequest Request="requestData" />
+    <CurlRequest Request="viewModel.RequestData" />
 </div>
 
 @code {
-    string faceApiKey = string.Empty;
-    string faceApiBaseUrl = string.Empty;
-    string rawJson = string.Empty;
-    List<PersonGroupDto>? personGroups = null;
-    CurlRequestData requestData = new CurlRequestData
-    {
-        RequestName = "GET PersonGroup list"
-    };
-    string error = "";
-    PersonGroupCurlGenerator generator = new PersonGroupCurlGenerator();
-    HttpRequestService2 _httpRequestService = new HttpRequestService2();
-    CurlGenerator curlGenerator = new CurlGenerator();
-
     protected override async Task OnInitializedAsync()
     {
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-        UpdateRequestOutput();
-    }
-
-    public async Task GetGroups()
-    {
-        error = string.Empty;
-
-        // Get the keys again just in case.
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-
-        var config = new CognitiveServiceConfig(faceApiBaseUrl, faceApiKey);
-        var request = generator.List();
-        requestData.Curl = curlGenerator.Generate(request, config, false);
-
-        try
-        {
-            rawJson = await _httpRequestService.Send(request, config);
-            personGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PersonGroupDto>>(rawJson);
-        }
-        catch (Exception e)
-        {
-            error = e.ToString();
-        }
-    }
-
-    public void UpdateRequestOutput()
-    {
-        return;
-        requestData.SubscriptionKey = faceApiKey;
-        requestData.Curl = $@"curl -X GET \
-'{faceApiBaseUrl}/face/v1.0/persongroups?returnRecognitionModel=true' \
--H 'Content-Type: application/json' \
--H 'Ocp-Apim-Subscription-Key: [token]'";
+        await viewModel.OnInitializedAsync();
     }
 }
