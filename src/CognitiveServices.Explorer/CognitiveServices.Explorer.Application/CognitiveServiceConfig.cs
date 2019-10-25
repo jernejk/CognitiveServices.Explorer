@@ -2,14 +2,17 @@
 {
     public class CognitiveServiceConfig
     {
-        public CognitiveServiceConfig(string baseUrl, string token)
+        public CognitiveServiceConfig() { }
+
+        public CognitiveServiceConfig(string serviceName, string baseUrl, string token)
         {
+            ServiceName = serviceName;
             BaseUrl = baseUrl;
             Token = token;
         }
 
-        public string BaseUrl { get; set; }
-
-        public string Token { get; set; }
+        public string ServiceName { get; set; } = string.Empty;
+        public string BaseUrl { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
     }
 }
