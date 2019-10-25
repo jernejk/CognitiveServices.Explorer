@@ -20,5 +20,10 @@
 
             return curl;
         }
+
+        public string GetName(HttpRequest request)
+        {
+            return $"{request.HttpMethod.ToUpperInvariant()} {request.RelativePath}";
+        }
     }
 }

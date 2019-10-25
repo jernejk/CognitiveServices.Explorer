@@ -4,6 +4,7 @@ namespace CognitiveServices.Explorer.Application
 {
     public class HttpRequest
     {
+        public string? RequestName { get; set; }
         public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
         public string RelativePath { get; set; } = string.Empty;
         public Dictionary<string, string>? Queries { get; set; }
