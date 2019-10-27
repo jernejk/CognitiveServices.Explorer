@@ -1,6 +1,5 @@
 ﻿using CognitiveServices.Explorer.Application;
 using CognitiveServices.Explorer.Application.Curl;
-using CognitiveServices.Explorer.Domain.Face;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;

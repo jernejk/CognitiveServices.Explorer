@@ -20,6 +20,7 @@ namespace CognitiveServices.Explorer.Web
             services.AddTransient<ICognitiveServicesConfigService, CognitiveServicesConfigService>();
             services.AddTransient<PersonGroupsViewModel>();
             services.AddTransient<PersonGroupsPersonViewModel>();
+            services.AddTransient<PersonViewModel>();
 
             FlurlHttp.Configure(settings =>
             {

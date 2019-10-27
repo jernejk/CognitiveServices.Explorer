@@ -3,33 +3,35 @@
 @using CognitiveServices.Explorer.Application.Curl
 
 <div class="mt-2 mb-4">
-    @if (HttpRequest != null)
+    @if (Request != null)
     {
         <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
 
         if (showRequest)
         {
+            if (ServiceConfig != null)
+            {
         <div class="form-check my-2">
             <input class="form-check-input" type="checkbox" @bind-value="ShowSubscriptionKey" />
             <label class="form-check-label" for="defaultCheck1">
                 Show Subscription Key 🔑
             </label>
         </div>
+            }
 
-        <h5>@(HttpRequest.RequestName ?? _curlGenerator.GetName(HttpRequest))</h5>
-<pre><code>@_curlGenerator.Generate(HttpRequest, ServiceConfig, ShowSubscriptionKey)</code></pre>
+        <h5>@(Request.RequestName ?? _curlGenerator.GetName(Request))</h5>
+<pre><code>@_curlGenerator.Generate(Request, ServiceConfig, ShowSubscriptionKey)</code></pre>
         }
     }
 </div>
 
 @code {
+    [Parameter] public bool ShowSubscriptionKey { get; set; }
+    [Parameter] public HttpRequest? Request { get; set; }
+    [Parameter] public CognitiveServiceConfig? ServiceConfig { get; set; }
+    
     private bool showRequest = false;
     private CurlGenerator _curlGenerator = new CurlGenerator();
-
-    [Parameter] public bool ShowSubscriptionKey { get; set; }
-    [Parameter] public CurlRequestData? Request { get; set; }
-    [Parameter] public HttpRequest? HttpRequest { get; set; }
-    [Parameter] public CognitiveServiceConfig? ServiceConfig { get; set; }
 
     public void ToggleRequest()
     {

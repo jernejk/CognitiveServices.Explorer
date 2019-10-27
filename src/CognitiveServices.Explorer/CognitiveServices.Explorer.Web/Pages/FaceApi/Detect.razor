@@ -89,7 +89,7 @@
         }
     </div>
 
-    <CurlRequest Request="requestData" />
+    @*<CurlRequest Request="requestData" />*@
 </div>
 
 @code {
@@ -97,8 +97,8 @@
     string faceApiBaseUrl = string.Empty;
     string rawJson = string.Empty;
     string groupId = string.Empty;
-    List<DetectedFaceDto> faces = null;
-    List<IdentityCandidate> candidates = null;
+    List<DetectedFaceDto>? faces = null;
+    List<IdentityCandidate>? candidates = null;
     CurlRequestData requestData = new CurlRequestData
     {
         RequestName = "GET PersonGroup list"
