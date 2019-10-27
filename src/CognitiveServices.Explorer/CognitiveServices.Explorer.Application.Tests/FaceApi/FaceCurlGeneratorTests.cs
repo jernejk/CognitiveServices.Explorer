@@ -10,7 +10,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateDetectBinary()
         {
-            new FaceCurlGenerator()
+            FaceRequestGenerator
                 .Detect(new byte[1] { 5 })
                 .Should()
                 .MatchSnapshot();
@@ -19,7 +19,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateDetectUrl()
         {
-            new FaceCurlGenerator()
+            FaceRequestGenerator
                 .Detect("http://test.url")
                 .Should()
                 .MatchSnapshot();
@@ -29,7 +29,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         public void ShouldGenerateIdentify()
         {
             string[] faces = { "12234324", "34534253425" };
-            new FaceCurlGenerator()
+            FaceRequestGenerator
                 .Identify("default", faces)
                 .Should()
                 .MatchSnapshot();

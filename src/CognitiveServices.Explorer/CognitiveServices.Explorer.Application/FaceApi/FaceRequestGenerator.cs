@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
 {
-    public class FaceCurlGenerator
+    public static class FaceRequestGenerator
     {
-        public HttpRequest Detect(byte[] data)
+        public static HttpRequest Detect(byte[] data)
         {
             return new HttpRequest
             {
@@ -17,7 +17,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest Detect(string url)
+        public static HttpRequest Detect(string url)
         {
             return new HttpRequest
             {
@@ -29,7 +29,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest Identify(string personGroupId, IEnumerable<string> faceIds, int maxNumOfCandidatesReturned = 1, float? confidenceThreshold = 0.5f)
+        public static HttpRequest Identify(string personGroupId, IEnumerable<string> faceIds, int maxNumOfCandidatesReturned = 1, float? confidenceThreshold = 0.5f)
         {
             return new HttpRequest
             {

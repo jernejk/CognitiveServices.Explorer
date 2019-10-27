@@ -10,7 +10,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateCreate()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .Create("default", "Test group")
                 .Should()
                 .MatchSnapshot();
@@ -19,7 +19,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateCreateWithUserData()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .Create("default", "Test group 2", "imageUrl: image")
                 .Should()
                 .MatchSnapshot();
@@ -28,7 +28,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateUpdate()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .Update("default", "Test group 2", "imageUrl: image")
                 .Should()
                 .MatchSnapshot();
@@ -37,7 +37,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateList()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .List()
                 .Should()
                 .MatchSnapshot();
@@ -46,7 +46,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateDelete()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .Delete("default")
                 .Should()
                 .MatchSnapshot();
@@ -55,7 +55,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateTrain()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .Train("default")
                 .Should()
                 .MatchSnapshot();
@@ -64,7 +64,7 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         [Fact]
         public void ShouldGenerateCheckTraining()
         {
-            new PersonGroupCurlGenerator()
+            new PersonGroupRequestGenerator()
                 .CheckTraining("default")
                 .Should()
                 .MatchSnapshot();

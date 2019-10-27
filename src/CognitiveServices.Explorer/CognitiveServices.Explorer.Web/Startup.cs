@@ -19,7 +19,8 @@ namespace CognitiveServices.Explorer.Web
             services.AddBlazoredLocalStorage();
             services.AddTransient<ICognitiveServicesConfigService, CognitiveServicesConfigService>();
             services.AddTransient<PersonGroupsViewModel>();
-            
+            services.AddTransient<PersonGroupsPersonViewModel>();
+
             FlurlHttp.Configure(settings =>
             {
                 settings.HttpClientFactory = new HttpClientFactoryForBlazor();

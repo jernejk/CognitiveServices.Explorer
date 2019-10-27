@@ -28,15 +28,26 @@ namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
             await LoadLatestConfig().ConfigureAwait(false);
         }
 
-        public async Task LoadLatestConfig()
+        protected async Task LoadLatestConfig()
         {
             _faceApiConfig = await _csConfigService.GetConfig("FaceApi").ConfigureAwait(false);
         }
 
-        public async Task<T> MakeRequest<T>(HttpRequest request)
+        protected async Task<T> MakeRequest<T>(HttpRequest? request)
             where T : class
         {
             Error = string.Empty;
+            if (request == null)
+            {
+                Error = "Request is not set!";
+                return default!;
+            }
+
+            if (_faceApiConfig == null)
+            {
+                Error = "Face API configuration is not set\n";
+                return default!;
+            }
 
             try
             {

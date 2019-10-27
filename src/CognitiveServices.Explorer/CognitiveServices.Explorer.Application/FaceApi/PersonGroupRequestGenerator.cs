@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
 {
-    public class PersonGroupCurlGenerator
+    public static class PersonGroupRequestGenerator
     {
-        public HttpRequest Create(string groupId, string name, string? userData = null, string? recognitionModel = null)
+        public static HttpRequest Create(string groupId, string name, string? userData = null, string? recognitionModel = null)
         {
             return new HttpRequest
             {
@@ -22,7 +22,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest Update(string groupId, string name, string? userData = null)
+        public static HttpRequest Update(string groupId, string name, string? userData = null)
         {
             return new HttpRequest
             {
@@ -38,7 +38,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest List()
+        public static HttpRequest List()
         {
             return new HttpRequest
             {
@@ -52,7 +52,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest Delete(string groupId)
+        public static HttpRequest Delete(string groupId)
         {
             return new HttpRequest
             {
@@ -62,7 +62,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest Train(string groupId)
+        public static HttpRequest Train(string groupId)
         {
             return new HttpRequest
             {
@@ -72,7 +72,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public HttpRequest CheckTraining(string groupId)
+        public static HttpRequest CheckTraining(string groupId)
         {
             return new HttpRequest
             {
