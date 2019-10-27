@@ -1,6 +1,7 @@
 ﻿{
+  "RequestName": null,
   "Headers": {},
-  "RelativePath": "face/v1.0/detect",
+  "RelativePath": "face/v1.0/detect?recognitionModel=recognition_01&detectionModel=detection_01",
   "Queries": null,
   "HttpMethod": "POST",
   "Body": null,
@@ -8,5 +9,10 @@
   "ContentType": "application/octet-stream",
   "ExpectedHtppCode": 200,
   "TokenHeaderName": "Ocp-Apim-Subscription-Key",
+  "Cost": {
+    "ServiceName": "FaceApi",
+    "Cost": 1.0,
+    "Unit": "tr"
+  },
   "CognitiveServiceDoc": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236"
 }

@@ -26,6 +26,17 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
         }
 
         [Fact]
+        public void ShouldGenerateDetectUrlWithExtraCost()
+        {
+            var request = FaceRequestGenerator
+                .Detect("http://test.url", returnFaceAttributes: "age,gender");
+
+            request.Cost.Should().NotBeNull();
+            request.Cost!.Cost.Should();
+            request.Should().MatchSnapshot();
+        }
+
+        [Fact]
         public void ShouldGenerateIdentify()
         {
             string[] faces = { "12234324", "34534253425" };
