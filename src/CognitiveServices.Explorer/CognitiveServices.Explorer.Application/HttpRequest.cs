@@ -14,6 +14,7 @@ namespace CognitiveServices.Explorer.Application
         public string ContentType { get; set; } = "application/json";
         public int ExpectedHtppCode { get; set; } = 200;
         public string TokenHeaderName { get; set; } = "Ocp-Apim-Subscription-Key";
+        public ServiceCost? Cost { get; set; }
         public string? CognitiveServiceDoc { get; set; }
     }
 }

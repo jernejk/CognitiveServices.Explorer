@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CognitiveServices.Explorer.Application.FaceApi
+﻿namespace CognitiveServices.Explorer.Application.FaceApi
 {
     public class PersonGroupPersonRequestGenerator
     {
@@ -10,7 +8,19 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             {
                 HttpMethod = "GET",
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons",
+                Cost = ServiceCost.FaceApiTransation(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395241"
+            };
+        }
+
+        public static HttpRequest Get(string groupId, string personId)
+        {
+            return new HttpRequest
+            {
+                HttpMethod = "GET",
+                RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{personId}",
+                Cost = ServiceCost.FaceApiTransation(1),
+                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523f"
             };
         }
     }
