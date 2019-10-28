@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
@@ -9,7 +10,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "POST",
+                HttpMethod = HttpMethods.Post,
                 ContentType = "application/json",
                 RelativePath = $"face/v1.0/persongroups/{groupId}",
                 Body = JsonConvert.SerializeObject(new
@@ -27,7 +28,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "PATCH",
+                HttpMethod = HttpMethods.Patch,
                 ContentType = "application/json",
                 RelativePath = $"face/v1.0/persongroups/{groupId}",
                 Body = JsonConvert.SerializeObject(new
@@ -44,7 +45,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "GET",
+                HttpMethod = HttpMethods.Get,
                 RelativePath = $"face/v1.0/persongroups",
                 Queries = new Dictionary<string, string>
                 {
@@ -59,7 +60,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "DELETE",
+                HttpMethod = HttpMethods.Delete,
                 RelativePath = $"face/v1.0/persongroups/{groupId}",
                 Cost = ServiceCost.FaceApiTransation(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395245"
@@ -70,7 +71,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "POST",
+                HttpMethod = HttpMethods.Post,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/train",
                 Cost = ServiceCost.FaceApiTransation(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395249"
@@ -81,7 +82,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "GET",
+                HttpMethod = HttpMethods.Get,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/training",
                 Cost = ServiceCost.FaceApiTransation(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395247"

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
@@ -19,7 +20,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
 
             return new HttpRequest
             {
-                HttpMethod = "POST",
+                HttpMethod = HttpMethods.Post,
                 BinaryContent = data,
                 ContentType = "application/octet-stream",
                 RelativePath = $"face/v1.0/detect{additionalArguments}",
@@ -38,7 +39,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
 
             return new HttpRequest
             {
-                HttpMethod = "POST",
+                HttpMethod = HttpMethods.Post,
                 ContentType = "application/json",
                 RelativePath = $"face/v1.0/detect{additionalArguments}",
                 Body = JsonConvert.SerializeObject(new { url }),
@@ -51,7 +52,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = "POST",
+                HttpMethod = HttpMethods.Post,
                 ContentType = "application/json",
                 RelativePath = "face/v1.0/identify",
                 Body = JsonConvert.SerializeObject(new
