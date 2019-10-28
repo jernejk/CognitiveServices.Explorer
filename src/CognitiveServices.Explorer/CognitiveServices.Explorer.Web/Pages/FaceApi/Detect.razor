@@ -90,7 +90,7 @@
         }
     </div>
 
-    <CurlRequestList Requests="viewModel.Requests" />
+    <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
 
 @code {
@@ -117,5 +117,7 @@
     public async Task SendIdentifyRequest()
     {
         await viewModel.Identify(groupId);
+
+        base.StateHasChanged();
     }
 }
