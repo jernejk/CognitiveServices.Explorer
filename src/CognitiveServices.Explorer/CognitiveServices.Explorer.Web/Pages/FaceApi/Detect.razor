@@ -1,7 +1,8 @@
 ﻿@page "/face/v1.0/detect"
 @using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Web.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject DetectViewModel viewModel
 @inject IJSRuntime JSRuntime
 
 <FaceApiConfiguration />
@@ -18,7 +19,7 @@
     <button class="btn btn-primary" @onclick="SendFrameToDetect">Detect (1 TR)</button>
 
     <div class="py-2">
-        @if (faces != null && faces.Any())
+        @if (viewModel.Faces?.Any() == true)
         {
             <table class="table table-striped table-responsive">
                 <thead>
@@ -29,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var face in faces)
+                    @foreach (var face in viewModel.Faces)
                     {
                         <tr>
                             <td>@face.faceId</td>
@@ -49,39 +50,39 @@
 
             <button class="btn btn-primary" @onclick="SendIdentifyRequest">Identify (1 TR)</button>
 
-            if (candidates?.Any() == true)
+            if (viewModel.Candidates?.Any() == true)
             {
-            <table class="table table-striped table-responsive">
-                <thead>
-                    <tr>
-                        <th scope="col">Face Id</th>
-                        <th scope="col">Person Id</th>
-                        <th scope="col">Confidence</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var potentialIdentity in candidates)
-                    {
-                        foreach (var candidate in potentialIdentity.Candidates)
-                        {
+                <table class="table table-striped table-responsive">
+                    <thead>
                         <tr>
-                            <td>@potentialIdentity.FaceId</td>
-                            <td><a href="face/v1.0/persongroups/@groupId/persons/@candidate.PersonId">@candidate.PersonId</a></td>
-                            <td>@(Math.Round(candidate.Confidence * 100, 2))%</td>
+                            <th scope="col">Face Id</th>
+                            <th scope="col">Person Id</th>
+                            <th scope="col">Confidence</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var potentialIdentity in viewModel.Candidates)
+                        {
+                            foreach (var candidate in potentialIdentity.Candidates)
+                            {
+                                <tr>
+                                    <td>@potentialIdentity.FaceId</td>
+                                    <td><a href="face/v1.0/persongroups/@groupId/persons/@candidate.PersonId">@candidate.PersonId</a></td>
+                                    <td>@(Math.Round(candidate.Confidence * 100, 2))%</td>
+                                </tr>
+                            }
                         }
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             }
         }
-        else if (faces != null)
+        else if (viewModel.Faces != null)
         {
             <div class="alert alert-warning" role="alert">No faces found</div>
         }
-        else if (!string.IsNullOrWhiteSpace(error))
+        else if (!string.IsNullOrWhiteSpace(viewModel.Error))
         {
-            <div class="alert alert-danger" role="alert">@error</div>
+            <div class="alert alert-danger" role="alert">@viewModel.Error</div>
         }
         else
         {
@@ -89,28 +90,15 @@
         }
     </div>
 
-    @*<CurlRequest Request="requestData" />*@
+    <CurlRequestList Requests="viewModel.Requests" />
 </div>
 
 @code {
-    string faceApiKey = string.Empty;
-    string faceApiBaseUrl = string.Empty;
-    string rawJson = string.Empty;
     string groupId = string.Empty;
-    List<DetectedFaceDto>? faces = null;
-    List<IdentityCandidate>? candidates = null;
-    CurlRequestData requestData = new CurlRequestData
-    {
-        RequestName = "GET PersonGroup list"
-    };
-    string error = "";
 
     protected override async Task OnInitializedAsync()
     {
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-        UpdateRequestOutput();
-
+        await viewModel.OnInitializedAsync().ConfigureAwait(false);
         await JSRuntime.InvokeVoidAsync("startVideoOnloaded");
     }
 
@@ -121,106 +109,13 @@
         {
             base64 = base64.Split(',')[1];
             byte[] data = Convert.FromBase64String(base64);
-            error = data.Length.ToString();
 
-            await SendDetectRequest(data);
-        }
-    }
-
-    public async Task SendDetectRequest(byte[] imageByteData)
-    {
-        error = string.Empty;
-
-        // Get the keys again just in case.
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-
-        try
-        {
-            UpdateRequestOutput();
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(faceApiBaseUrl);
-                using (var content = new ByteArrayContent(imageByteData))
-                {
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-                    content.Headers.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-
-                    var requestUrl = $"/face/v1.0/detect";
-                    using (var response = await client.PostAsync(requestUrl, content))
-                    {
-                        Console.WriteLine(rawJson);
-                        rawJson = await response.Content.ReadAsStringAsync();
-                        faces = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DetectedFaceDto>>(rawJson);
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            error = e.ToString();
+            await viewModel.Detect(data);
         }
     }
 
     public async Task SendIdentifyRequest()
     {
-        error = string.Empty;
-
-        // Get the keys again just in case.
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-
-        try
-        {
-            UpdateRequestOutput();
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(faceApiBaseUrl);
-                var requestData = new
-                {
-                    personGroupId = groupId,
-                    faceIds = faces.Select(f => f.faceId),
-                    maxNumOfCandidatesReturned = 1,
-                    confidenceThreshold = 0.3
-                };
-
-                rawJson = Newtonsoft.Json.JsonConvert.SerializeObject(requestData);
-                using (var content = new StringContent(rawJson))
-                {
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                    content.Headers.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-
-                    var requestUrl = $"/face/v1.0/identify";
-                    using (var response = await client.PostAsync(requestUrl, content))
-                    {
-                        rawJson = await response.Content.ReadAsStringAsync();
-                        candidates = Newtonsoft.Json.JsonConvert.DeserializeObject<List<IdentityCandidate>>(rawJson);
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            error = e.ToString();
-        }
-    }
-
-    public void UpdateRequestOutput()
-    {
-        requestData.SubscriptionKey = faceApiKey;
-        requestData.Curl = $@"curl -X POST \
-  {faceApiBaseUrl}/face/v1.0/identify \
-  -H 'Content-Type: application/json' \
-  -H 'Ocp-Apim-Subscription-Key: [token]' \
-  -d '{{
-    ""personGroupId"": ""{groupId}"",
-    ""faceIds"": [
-        ""986c3440-e0cc-48bb-af4e-bcf9685e81d3""
-    ],
-    ""maxNumOfCandidatesReturned"": 1,
-    ""confidenceThreshold"": 0.3
-}}'";
+        await viewModel.Identify(groupId);
     }
 }

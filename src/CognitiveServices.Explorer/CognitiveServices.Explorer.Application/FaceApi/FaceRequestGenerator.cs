@@ -13,17 +13,18 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             byte[] data,
             string? returnFaceAttributes = null,
             bool? returnFaceLandmarks = null,
-            string? recognitionModel = DefaultRecognitionModel,
-            string? detectionModel = DefaultDetectionModel)
+            string recognitionModel = DefaultRecognitionModel,
+            string detectionModel = DefaultDetectionModel)
         {
-            string additionalArguments = GenerateDetectRequestArguments(returnFaceAttributes, returnFaceLandmarks, recognitionModel, detectionModel);
+            var queries = GenerateQueries(returnFaceAttributes, returnFaceLandmarks, recognitionModel, detectionModel);
 
             return new HttpRequest
             {
                 HttpMethod = HttpMethods.Post,
                 BinaryContent = data,
                 ContentType = "application/octet-stream",
-                RelativePath = $"face/v1.0/detect{additionalArguments}",
+                RelativePath = $"face/v1.0/detect",
+                Queries = queries,
                 Cost = ServiceCost.FaceApiTransation(returnFaceAttributes == null ? 1 : 2),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236"
             };
@@ -32,16 +33,17 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         public static HttpRequest Detect(string url,
             string? returnFaceAttributes = null,
             bool? returnFaceLandmarks = null,
-            string? recognitionModel = DefaultRecognitionModel,
-            string? detectionModel = DefaultDetectionModel)
+            string recognitionModel = DefaultRecognitionModel,
+            string detectionModel = DefaultDetectionModel)
         {
-            string additionalArguments = GenerateDetectRequestArguments(returnFaceAttributes, returnFaceLandmarks, recognitionModel, detectionModel);
+            var queries = GenerateQueries(returnFaceAttributes, returnFaceLandmarks, recognitionModel, detectionModel);
 
             return new HttpRequest
             {
                 HttpMethod = HttpMethods.Post,
                 ContentType = "application/json",
-                RelativePath = $"face/v1.0/detect{additionalArguments}",
+                RelativePath = $"face/v1.0/detect",
+                Queries = queries,
                 Body = JsonConvert.SerializeObject(new { url }),
                 Cost = ServiceCost.FaceApiTransation(returnFaceAttributes == null ? 1 : 2),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236"
@@ -67,20 +69,25 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        private static string GenerateDetectRequestArguments(string? returnFaceAttributes, bool? returnFaceLandmarks, string? recognitionModel, string? detectionModel)
+        private static Dictionary<string, string> GenerateQueries(string? returnFaceAttributes, bool? returnFaceLandmarks, string recognitionModel, string detectionModel)
         {
-            string additionalArguments = $"?recognitionModel={recognitionModel}&detectionModel={detectionModel}";
+            var queries = new Dictionary<string, string>
+            {
+                { "recognitionModel", recognitionModel },
+                { "detectionModel", detectionModel }
+            };
+
             if (returnFaceAttributes != null)
             {
-                additionalArguments += $"&returnFaceAttributes={returnFaceAttributes}";
+                queries.Add("returnFaceAttributes", returnFaceAttributes);
             }
 
             if (returnFaceLandmarks != null)
             {
-                additionalArguments += $"&returnFaceLandmarks={returnFaceLandmarks}";
+                queries.Add("returnFaceLandmarks", returnFaceLandmarks.ToString());
             }
 
-            return additionalArguments;
+            return queries;
         }
     }
 }

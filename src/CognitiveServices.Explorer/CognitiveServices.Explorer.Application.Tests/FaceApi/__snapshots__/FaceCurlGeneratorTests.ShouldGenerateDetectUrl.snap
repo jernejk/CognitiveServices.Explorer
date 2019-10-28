@@ -1,8 +1,11 @@
 ﻿{
   "RequestName": null,
   "Headers": {},
-  "RelativePath": "face/v1.0/detect?recognitionModel=recognition_01&detectionModel=detection_01",
-  "Queries": null,
+  "RelativePath": "face/v1.0/detect",
+  "Queries": {
+    "recognitionModel": "recognition_01",
+    "detectionModel": "detection_01"
+  },
   "HttpMethod": "POST",
   "Body": "{\"url\":\"http://test.url\"}",
   "BinaryContent": null,

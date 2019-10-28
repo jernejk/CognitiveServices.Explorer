@@ -1,8 +1,12 @@
 ﻿{
   "RequestName": null,
   "Headers": {},
-  "RelativePath": "face/v1.0/detect?recognitionModel=recognition_01&detectionModel=detection_01&returnFaceAttributes=age,gender",
-  "Queries": null,
+  "RelativePath": "face/v1.0/detect",
+  "Queries": {
+    "recognitionModel": "recognition_01",
+    "detectionModel": "detection_01",
+    "returnFaceAttributes": "age,gender"
+  },
   "HttpMethod": "POST",
   "Body": "{\"url\":\"http://test.url\"}",
   "BinaryContent": null,
