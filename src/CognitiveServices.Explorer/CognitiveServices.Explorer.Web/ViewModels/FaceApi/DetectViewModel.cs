@@ -28,20 +28,31 @@ namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
             _detectRequest = FaceRequestGenerator.Detect(Array.Empty<byte>());
             _identifyRequest = FaceRequestGenerator.Identify(string.Empty, Array.Empty<string>());
 
-            Requests.Add(_detectRequest);
-            Requests.Add(_identifyRequest);
+            UpdateRequestList();
         }
 
         public async Task Detect(byte[] data)
         {
             _detectRequest = FaceRequestGenerator.Detect(data);
+            UpdateRequestList();
+
             Faces = await MakeRequest<List<DetectedFaceDto>>(_detectRequest).ConfigureAwait(false);
         }
 
         public async Task Identify(string personGroupId)
         {
             _identifyRequest = FaceRequestGenerator.Identify(personGroupId, Faces.Select(f => f.faceId));
+            UpdateRequestList();
+
             Candidates = await MakeRequest<List<IdentityCandidate>>(_identifyRequest).ConfigureAwait(false);
+        }
+
+        private void UpdateRequestList()
+        {
+            // Both requests are changing every time we do a request and because the reference is changing, we need to rebuild the list.
+            Requests.Clear();
+            Requests.Add(_detectRequest!);
+            Requests.Add(_identifyRequest!);
         }
     }
 }
