@@ -1,0 +1,127 @@
+﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons"
+@using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using CognitiveServices.Explorer.Web.ViewModels.FaceApi
+@inject PersonGroupsPersonViewModel viewModel
+
+<FaceApiConfiguration />
+
+<div class="content">
+    <h3>Person Group @PersonGroupId</h3>
+
+    <div class="py-2">
+        <h4>Training details</h4>
+
+        @if (viewModel.TrainingStatus != null)
+        {
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm float-left">
+                <tbody>
+                    <tr>
+                        <th style="width: 120px;">Is trained</th>
+                        <td>@viewModel.TrainingStatus.Status @(viewModel.TrainingStatus.Status == "running" ? "(refresh training in few seconds)" : "")</td>
+                    </tr>
+                    <tr>
+                        <th>Created date</th>
+                        <td>@viewModel.TrainingStatus.CreatedDateTime.ToLocalTime()</td>
+                    </tr>
+                    <tr>
+                        <th>Last action date</th>
+                        <td>@viewModel.TrainingStatus.LastActionDateTime.ToLocalTime()</td>
+                    </tr>
+                    <tr>
+                        <th>Message</th>
+                        <td>@viewModel.TrainingStatus.Message</td>
+                    </tr>
+                    <tr>
+                        <th>Train</th>
+                        <td><button class="btn btn-secondary btn-sm" @onclick="viewModel.Train">Train</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        }
+
+        <button class="btn btn-secondary btn-sm" @onclick="viewModel.RefreshTrainingStatus">Check training status</button>
+    </div>
+
+    <div class="py-2">
+        <h4>People</h4>
+
+        @if (viewModel.People != null && viewModel.People.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;"> &nbsp; </th>
+                            <th>Person Id</th>
+                            <th>Name</th>
+                            <th>Number of faces</th>
+                            <th>User Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var person in viewModel.People)
+                        {
+                            var imageUrl = string.Empty;
+                            if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
+                            {
+                                var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
+                                imageUrl = customUserData.GetImageUrl();
+                            }
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(imageUrl))
+                                    {
+                                        <img src="@imageUrl" width="40" />
+                                    }
+                                    else
+                                    {
+                                        <span>&nbsp;</span>
+                                    }
+                                </td>
+                                <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId">@person.PersonId</a></td>
+                                <td>@person.Name</td>
+                                <td>@(person.PersistedFaceIds?.Count ?? 0)</td>
+                                <td><code>@CropText(person.UserData)</code></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (viewModel.People != null)
+        {
+            <div class="alert alert-warning" role="alert">No identities found in the group @PersonGroupId</div>
+        }
+        else
+        {
+            <div class="alert alert-info" role="alert">Loading data from face API... (1 transaction cost)</div>
+        }
+    </div>
+
+    <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
+</div>
+
+@code {
+    [Parameter] public string? PersonGroupId { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        viewModel.PersonGroupId = PersonGroupId;
+        await viewModel.OnInitializedAsync();
+        await viewModel.GetPeople();
+    }
+
+    public string? CropText(string? text, int maxLength = 20)
+    {
+        if (text?.Length > maxLength)
+        {
+            return text.Substring(0, 20) + "...";
+        }
+
+        return text;
+    }
+}

@@ -1,17 +1,18 @@
 ﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}"
 @using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Web.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject PersonViewModel viewModel
 
 <FaceApiConfiguration />
 
 <div class="content">
-    @if (person != null)
+    @if (viewModel.Person != null)
     {
         var imageUrl = string.Empty;
-        if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
+        if (!string.IsNullOrWhiteSpace(viewModel.Person.UserData) && viewModel.Person.UserData.StartsWith("{"))
         {
-            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
+            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(viewModel.Person.UserData);
             imageUrl = customUserData.GetImageUrl();
         }
 
@@ -20,26 +21,26 @@
             <div class="card-body">
                 @if (!string.IsNullOrWhiteSpace(imageUrl))
                 {
-                    <img class="card-img-top" src="@imageUrl" alt="@person.Name's image" style="max-width: 200px;">
+                    <img class="card-img-top" src="@imageUrl" alt="@viewModel.Person.Name's image" style="max-width: 200px;">
                 }
-                <h5 class="card-title">@person.Name</h5>
-                <p class="card-text">Person ID: @person.PersonId</p>
+                <h5 class="card-title">@viewModel.Person.Name</h5>
+                <p class="card-text">Person ID: @viewModel.Person.PersonId</p>
                 <p class="card-text">Faces:</p>
                 <ul>
-                    @foreach (var face in person.PersistedFaceIds)
+                    @foreach (var face in viewModel.Person.PersistedFaceIds)
                     {
                         <li>
-                            <a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId/persistedFaces/@face">@face</a>
+                            <a href="face/v1.0/persongroups/@PersonGroupId/persons/@viewModel.Person.PersonId/persistedFaces/@face">@face</a>
                         </li>
                     }
                 </ul>
             </div>
 
-            @if (!string.IsNullOrWhiteSpace(person.UserData))
+            @if (!string.IsNullOrWhiteSpace(viewModel.Person.UserData))
             {
                 <div class="card-body">
                     <h5 class="card-title">User Data</h5>
-                    <code>@person.UserData</code>
+                    <code>@viewModel.Person.UserData</code>
                 </div>
             }
         </div>
@@ -49,60 +50,17 @@
         <div class="alert alert-info">Loading person Id @PersonId...</div>
     }
 
-    <CurlRequest Request="requestData" />
+    <CurlRequest Request="viewModel.PersonRequest" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
 
 @code {
-    [Parameter]
-    public string PersonGroupId { get; set; }
-    [Parameter]
-    public string PersonId { get; set; }
-
-    string faceApiKey = string.Empty;
-    string faceApiBaseUrl = string.Empty;
-    string rawJson = string.Empty;
-    PersonDto person = null;
-    CurlRequestData requestData = new CurlRequestData
-    {
-        RequestName = "GET PersonGroup Person"
-    };
+    [Parameter] public string? PersonGroupId { get; set; }
+    [Parameter] public string? PersonId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-        UpdateRequestOutput();
-
-        await GetPerson();
-    }
-
-    public async Task GetPerson()
-    {
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
-
-        HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", faceApiKey);
-        var result = await client.GetAsync(faceApiBaseUrl + $"/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}");
-        rawJson = await result.Content.ReadAsStringAsync();
-
-        try
-        {
-            UpdateRequestOutput();
-            person = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonDto>(rawJson);
-        }
-        catch
-        {
-        }
-    }
-
-    public void UpdateRequestOutput()
-    {
-        requestData.SubscriptionKey = faceApiBaseUrl;
-        requestData.Curl = $@"curl -X GET \
-  '{faceApiBaseUrl}/face/v1.0/persongroups/{PersonGroupId}/persons/{PersonId}' \
-  -H 'Content-Type: application/json' \
-  -H 'Ocp-Apim-Subscription-Key: [token]'
-";
+        viewModel.PersonGroupId = PersonGroupId;
+        viewModel.PersonId = PersonId;
+        await viewModel.OnInitializedAsync();
     }
 }

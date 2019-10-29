@@ -1,4 +1,6 @@
 ﻿@using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Application
+@using CognitiveServices.Explorer.Application.Curl
 
 <div class="mt-2 mb-4">
 @if (Requests?.Any() == true)
@@ -16,21 +18,20 @@
 
         foreach (var request in Requests)
         {
-        <h5>@request.RequestName</h5>
-        <pre><code>@request.DisplayCurl(ShowSubscriptionKey)</code></pre>
+        <h5>@(request.RequestName ?? _curlGenerator.GetName(request))</h5>
+        <pre><code>@_curlGenerator.Generate(request, ServiceConfig, ShowSubscriptionKey)</code></pre>
         }
     }
 }
 </div>
 
 @code {
-    [Parameter]
-    public List<CurlRequestData> Requests { get; set; }
+    [Parameter] public List<HttpRequest>? Requests { get; set; }
+    [Parameter] public CognitiveServiceConfig? ServiceConfig { get; set; }
+    [Parameter] public bool ShowSubscriptionKey { get; set; }
 
-    [Parameter]
-    public bool ShowSubscriptionKey { get; set; }
-
-    bool showRequest = false;
+    private CurlGenerator _curlGenerator = new CurlGenerator();
+    private bool showRequest = false;
 
     public void ToggleRequest()
     {

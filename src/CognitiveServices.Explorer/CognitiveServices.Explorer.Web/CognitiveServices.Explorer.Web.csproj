@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,12 +12,16 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.1.0-preview1.19508.20" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0" />
-    <PackageReference Include="Blazored.LocalStorage" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj" />
     <ProjectReference Include="..\CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj" />
   </ItemGroup>
 
