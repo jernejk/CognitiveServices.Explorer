@@ -4,7 +4,7 @@ using CognitiveServices.Explorer.Domain.Face;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
+namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public class PersonGroupsPersonViewModel : BaseFaceApiViewModel
     {
@@ -26,20 +26,18 @@ namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
         {
             await base.OnInitializedAsync().ConfigureAwait(false);
 
-            if (!string.IsNullOrWhiteSpace(PersonGroupId))
-            {
-                _getPersonsRequest = PersonGroupPersonRequestGenerator.List(PersonGroupId!);
-                _getGroupTrainStatusRequest = PersonGroupRequestGenerator.CheckTraining(PersonGroupId!);
-                _trainRequest = PersonGroupRequestGenerator.Train(PersonGroupId!);
-
-                Requests.Add(_getPersonsRequest);
-                Requests.Add(_getGroupTrainStatusRequest);
-                Requests.Add(_trainRequest);
-            }
-            else
+            if (string.IsNullOrWhiteSpace(PersonGroupId))
             {
                 Error = "Person group ID not set!";
             }
+            
+            _getPersonsRequest = PersonGroupPersonRequestGenerator.List(PersonGroupId!);
+            _getGroupTrainStatusRequest = PersonGroupRequestGenerator.CheckTraining(PersonGroupId!);
+            _trainRequest = PersonGroupRequestGenerator.Train(PersonGroupId!);
+
+            Requests.Add(_getPersonsRequest);
+            Requests.Add(_getGroupTrainStatusRequest);
+            Requests.Add(_trainRequest);
         }
 
         public async Task GetPeople()

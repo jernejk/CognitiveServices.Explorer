@@ -1,7 +1,7 @@
 using Blazored.LocalStorage;
 using CognitiveServices.Explorer.Application;
+using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
 using CognitiveServices.Explorer.Web.Infrastructure;
-using CognitiveServices.Explorer.Web.ViewModels.FaceApi;
 using Flurl.Http;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;

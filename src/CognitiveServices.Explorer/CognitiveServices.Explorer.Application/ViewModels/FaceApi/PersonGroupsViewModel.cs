@@ -4,7 +4,7 @@ using CognitiveServices.Explorer.Domain.Face;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
+namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public class PersonGroupsViewModel : BaseFaceApiViewModel
     {
