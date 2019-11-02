@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.Domain", "CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj", "{CEAF3150-043A-4163-AF6F-667DFC29C80C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CognitiveServices.Explorer.Application", "CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj", "{B67A648C-53F9-469D-B122-0F675B6745F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.Application", "CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj", "{B67A648C-53F9-469D-B122-0F675B6745F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CognitiveServices.Explorer.Application.Tests", "CognitiveServices.Explorer.Application.Tests\CognitiveServices.Explorer.Application.Tests.csproj", "{F78F1C73-AFC1-42EA-BA6C-DCC4D6A9C4A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.Application.Tests", "CognitiveServices.Explorer.Application.Tests\CognitiveServices.Explorer.Application.Tests.csproj", "{F78F1C73-AFC1-42EA-BA6C-DCC4D6A9C4A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
