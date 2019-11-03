@@ -1,5 +1,4 @@
-﻿using CognitiveServices.Explorer.Application;
-using CognitiveServices.Explorer.Application.FaceApi;
+﻿using CognitiveServices.Explorer.Application.FaceApi;
 using CognitiveServices.Explorer.Domain.Face;
 using System.Collections.Generic;
 using System.Threading.Tasks;

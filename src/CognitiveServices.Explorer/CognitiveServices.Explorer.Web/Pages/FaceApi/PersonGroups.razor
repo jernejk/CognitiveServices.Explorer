@@ -8,32 +8,23 @@
 <div class="content">
     <h3>Person Groups</h3>
 
-    <button class="btn btn-primary" @onclick="viewModel.GetGroups">Get groups (1 TR)</button>
-
     <div class="py-2">
         @if (viewModel.PersonGroups?.Any() == true)
         {
-            <table class="table table-striped table-responsive">
-                <thead>
-                    <tr>
-                        <th scope="col">Person Group Id</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Recognition Model</th>
-                        <th scope="col">User Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var group in viewModel.PersonGroups)
-                    {
-                        <tr>
-                            <td><a href="face/v1.0/persongroups/@group.PersonGroupId/persons">@group.PersonGroupId</a></td>
-                            <td>@group.Name</td>
-                            <td>@group.RecogntionModel</td>
-                            <td>@group.UserData</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <MatTable Items="viewModel.PersonGroups" FilterByColumnName="Name" SortBy="Name" Striped="true">
+                <MatTableHeader>
+                    <th>Id</th>
+                    <th><div style="width:150px;">Name</div></th>
+                    <th>Recognition Model</th>
+                    <th>User Data</th>
+                </MatTableHeader>
+                <MatTableRow>
+                    <td><a href="face/v1.0/persongroups/@context.PersonGroupId/persons">@context.PersonGroupId</a></td>
+                    <td>@context.Name</td>
+                    <td>@context.RecogntionModel</td>
+                    <td>@context.UserData</td>
+                </MatTableRow>
+            </MatTable>
         }
         else if (viewModel.PersonGroups != null)
         {
@@ -49,6 +40,7 @@
         }
     </div>
 
+    <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetGroups">Refresh</MatButton>
     <CurlRequest Request="viewModel.PersonGroupListRequest" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
 

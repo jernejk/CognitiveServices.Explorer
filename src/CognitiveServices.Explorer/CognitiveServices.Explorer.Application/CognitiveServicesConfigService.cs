@@ -71,7 +71,6 @@ namespace CognitiveServices.Explorer.Application
                 profileName = await GetSelectedProfileName(serviceName);
             }
 
-            Console.WriteLine(profileName);
             var profiles = await GetAllProfiles(serviceName);
             profiles.TryGetValue(profileName!, out var profile);
 

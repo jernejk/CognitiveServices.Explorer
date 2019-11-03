@@ -1,39 +1,39 @@
 ﻿@using CognitiveServices.Explorer.Application
 @using CognitiveServices.Explorer.Application.Curl
 
-<div class="mt-2 mb-4">
-    @if (Request != null)
-    {
-        <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
+@if (Request != null)
+{
+    <MatButton Outlined="true" Icon="search" OnClick="@(e => { _showRequest = true; })">Show cURL request</MatButton>
+}
 
-        if (showRequest)
+<MatDialog @bind-IsOpen="@_showRequest">
+    <MatDialogTitle>Add new Azure Face API</MatDialogTitle>
+    <MatDialogContent>
+        @*Content is actually being rendered when not visible*@
+        @if (Request != null)
         {
-            if (ServiceConfig != null)
-            {
+        <h5>@(Request!.RequestName ?? _curlGenerator.GetName(Request))</h5>
+        <pre><code>@_curlGenerator.Generate(Request, ServiceConfig, ShowSubscriptionKey)</code></pre>
+
         <div class="form-check my-2">
-            <input class="form-check-input" type="checkbox" @bind-value="ShowSubscriptionKey" />
+
+            <input class="form-check-input" type="checkbox" @bind-value="ShowSubscriptionKey" id="defaultCheck1" />
             <label class="form-check-label" for="defaultCheck1">
                 Show Subscription Key 🔑
             </label>
         </div>
-            }
-
-        <h5>@(Request.RequestName ?? _curlGenerator.GetName(Request))</h5>
-<pre><code>@_curlGenerator.Generate(Request, ServiceConfig, ShowSubscriptionKey)</code></pre>
         }
-    }
-</div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _showRequest = false; })">Close</MatButton>
+    </MatDialogActions>
+</MatDialog>
 
 @code {
     [Parameter] public bool ShowSubscriptionKey { get; set; }
     [Parameter] public HttpRequest? Request { get; set; }
     [Parameter] public CognitiveServiceConfig? ServiceConfig { get; set; }
     
-    private bool showRequest = false;
+    private bool _showRequest = false;
     private CurlGenerator _curlGenerator = new CurlGenerator();
-
-    public void ToggleRequest()
-    {
-        showRequest = !showRequest;
-    }
 }

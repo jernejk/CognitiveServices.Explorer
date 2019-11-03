@@ -20,6 +20,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         public override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync().ConfigureAwait(false);
+
+            await GetGroups();
         }
 
         public async Task GetGroups()

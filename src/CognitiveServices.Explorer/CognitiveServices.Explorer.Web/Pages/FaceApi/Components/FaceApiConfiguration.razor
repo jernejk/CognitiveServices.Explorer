@@ -3,7 +3,7 @@
 @inject ICognitiveServicesConfigService csConfigService
 
 <div class="pull-right row align-items-center">
-    @if (SelectedProfile != null)
+    @if (!string.IsNullOrWhiteSpace(SelectedProfile))
     {
         <div>
             <EditForm Model="@SelectedProfile">
@@ -116,7 +116,5 @@
         _selectedProfile = await csConfigService.GetSelectedProfileName("FaceApi");
         var dictionaryOfProfiles = await csConfigService.GetAllProfiles("FaceApi");
         _profiles = dictionaryOfProfiles.Select(d => d.Value).ToList();
-
-        Console.WriteLine(_profiles.Count);
     }
 }
