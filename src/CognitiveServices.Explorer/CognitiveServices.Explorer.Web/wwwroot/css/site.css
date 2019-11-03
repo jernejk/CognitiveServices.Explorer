@@ -717,13 +717,13 @@ ul.breadcrumb {
 
 /* ****** Custom CSS ****** */
 canvas {
-    background-color: blue;
+    background-color: black;
     width: 100%;
     height: auto;
 }
 
 video {
-    background-color: blue;
+    background-color: black;
     width: 50%;
     min-width: 200px;
     height: auto;

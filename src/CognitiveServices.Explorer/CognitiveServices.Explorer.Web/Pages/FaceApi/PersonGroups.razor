@@ -52,7 +52,6 @@
 
     public async Task UpdatedProfile()
     {
-        Console.WriteLine("Updated profile");
         await viewModel.LoadLatestConfig();
         await viewModel.GetGroups();
         base.StateHasChanged();
