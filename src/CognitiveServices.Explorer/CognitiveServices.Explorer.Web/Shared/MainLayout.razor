@@ -5,17 +5,17 @@
     <MatDrawer @bind-Opened="@_navMenuOpened">
         <header class="drawer-header">
             <div class="drawer-logo">
-                <img alt="Blazor Boilerplate" class="logo-img" src="images/blazorboilerplate-dark.svg" title="Blazor Boilerplate">
-                <a class="miniHover" href="/">Blazor Boilerplate</a>
+                <img alt="Cognitive Services Explorer" class="logo-img" src="android-chrome-192x192.png" title="Cognitive Services Explorer">
+                <a class="miniHover ml-2" href="/CognitiveServices.Explorer/" title="Cognitive Service Explorer">CS Explorer</a>
             </div>
             @*<UserProfile />*@
         </header>
         <NavMenu />
-        <footer class="drawer-footer">
+        @*<footer class="drawer-footer">
             <MatTooltip Tooltip="Help">
                 <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
             </MatTooltip>
-        </footer>
+        </footer>*@
     </MatDrawer>
     <MatDrawerContent>
         <MatAppBarContainer>
@@ -26,33 +26,34 @@
 
                         </MatAppBarTitle>
                         <div class="hidden-mdc-down">
-                            @*<nav>
+                            <nav>
                                 <ul>
-                                    <li>*@
+                                    <li>
                             <MatTooltip Tooltip="Toggle Navigation">
                                 <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
                             </MatTooltip>
-                            @*</li>
-                                <li>*@
+                            </li>
+                                <li>
                             <MatTooltip Tooltip="Minify Navigation">
                                 <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
                             </MatTooltip>
-                            @*</li>
+                            </li>
                                 <li>
                                     <MatTooltip Tooltip="Lock Navigation" >
                                         <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
                                     </MatTooltip>
-                                    </li>*@
-                            @*</ul>
-                                </nav>*@
+                                    </li>
+                            </ul>
+                                </nav>
                         </div>
                     </MatAppBarSection>
                     <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                        <MatTooltip Tooltip="Donate to Support">
-                            <MatIconButton Link="https://www.paypal.me/enkodellc" RefBack="@context"><i class="fa fa-cc-paypal"></i></MatIconButton>
+                        <MatTooltip Tooltip="Follow me on Twitter">
+                            <!-- TODO: Should open in a new tab. -->
+                            <MatIconButton Link="https://twitter.com/jernej_kavka" RefBack="@context" target="_blank"><i class="fa fa-twitter"></i></MatIconButton>
                         </MatTooltip>
                         <MatTooltip Tooltip="Github Repository">
-                            <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
+                            <MatIconButton Link="https://github.com/jernejk/CognitiveServices.Explorer" RefBack="@context" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
                         </MatTooltip>
                         @*<Login></Login>*@
                     </MatAppBarSection>
@@ -65,7 +66,7 @@
                 </section>
                 <footer class="page-footer">
                     <div class="flex-1">
-                        © 2019 <a href="//blazorboilerplate.com">Blazor Boilerplate</a> Version 0.3.2 - Developed by <a href="https://keithfimreite.com" target="_blank">Enkode LLC</a>
+                        © 2019 <a href="https://jkdev.me" target="_blank">JK</a>, template by <a href="//blazorboilerplate.com" target="_blank">Blazor Boilerplate</a>
                     </div>
                 </footer>
             </MatAppBarContent>

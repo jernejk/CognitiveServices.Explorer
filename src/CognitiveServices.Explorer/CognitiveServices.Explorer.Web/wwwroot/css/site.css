@@ -1,4 +1,13 @@
-﻿html, body {
+﻿/*
+    Primary color: #88aadd
+    Other colors:
+    - #738290
+    - #fffcf7
+    - #e4f0d0
+    - #c2d8b9
+*/
+
+html, body {
     font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
@@ -26,7 +35,7 @@ app {
 
 /* material theme */
 :root {
-    --mdc-theme-primary: #5D2E8F;
+    --mdc-theme-primary: #88aadd;
     --mdc-theme-secondary: #fbaf41;
     /*--mdc-theme-on-primary: #495f90;
     --mdc-theme-on-secondary: #ffe172;*/
@@ -149,7 +158,7 @@ app {
 }
 
 .mdc-top-app-bar__section .mdc-icon-button i {
-    color: #5D2E8F;
+    color: #88aadd;
 }
 
 .logo-img {
@@ -310,7 +319,8 @@ app {
 }
 
 .mdc-drawer__content {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    /*background-image: linear-gradient(180deg, rgb(136, 170, 221) 0%, #3a0647 100%);*/
+    background-color: #5888cf;
     color: #FFF;
 }
 
@@ -325,11 +335,7 @@ app {
 }
 
 .mdc-drawer .mdc-list-item--disabled {
-    color: #775e91 !important;
-}
-
-.mdc-drawer a.mdc-list-item {
-    padding: 0 14px !important;
+    color: #ccc !important;
 }
 
 .mdc-drawer .mdc-list-item--selected {
@@ -356,7 +362,7 @@ app {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #5D2E8F;
+    background-color: #88aadd;
     height: 64px;
     color: #fff;
 }
@@ -503,7 +509,7 @@ ul.breadcrumb {
 
 .mdc-dialog__title {
     color: #fff !important;
-    background: #5D2E8F;
+    background: #88aadd;
 }
 
 .mdc-dialog__actions {

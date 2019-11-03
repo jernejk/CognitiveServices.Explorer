@@ -29,7 +29,7 @@
         </MatNavSubMenuList>
     </MatNavSubMenu>
 
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+    @*<MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
         <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
     </MatNavItem>
 
@@ -60,7 +60,7 @@
 
     <MatNavItem Href="@navigationManager.ToAbsoluteUri("sponsors").AbsoluteUri">
         <MatIcon>attach_money</MatIcon> <span class="miniHover">Sponsors</span>
-    </MatNavItem>
+    </MatNavItem>*@
 </MatNavMenu>
 
 @code {

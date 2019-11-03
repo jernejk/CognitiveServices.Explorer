@@ -1,26 +1,93 @@
 ﻿@page "/face/intro"
 
-<div class="content">
-    <h2>Azure Face API</h2>
+    <div class="content">
+        <h2>Azure Face API</h2>
 
-    To get started go to <a href="https://portal.azure.com/">Microsoft Azure Portal</a> or try it for free at <a href="https://azure.microsoft.com/en-au/services/cognitive-services/face/">Try it for free</a>, create Face API and copy the URL as well as the subscription key.
+        <p>
+            <img src="images/Face/face.detection.jpg" class="img-responsive" width="420" alt="Face Detection example by Microsoft" />
+        </p>
 
-    <p>At the moment only browsing the groups (PersonGroup), identities (PersonGroup Person) and faces.</p>
-    <p>Azure Face API does not save images of the faces, so the only way to get an image is not store it in UserData.</p>
+        <p>
+            Azure Face API is used to detect, recognize and analyze human faces in images.<br />
+            All interaction with API is done via REST APIs.<br />
 
-    <h3 class="mb-5"><a href="face/v1.0/persongroups" class="badge badge-success">Start exploring!</a></h3>
+            If you already have Azure Face API setup, <a href="face/v1.0/persongroups">start exploring</a>!
+        </p>
 
-    <h3>Support for displaying images</h3>
+        <h3>Get started</h3>
 
-    <p>At the moment, is UserData has a JSON data (starts with <b>{</b>), it will look if it has <b>PictureUrl</b> or <b>ImageUrl</b> and it will display it.</p>
+        <p>
+            To get started go to <a href="https://portal.azure.com/">Microsoft Azure Portal</a> or try it for free at <a href="https://azure.microsoft.com/en-au/services/cognitive-services/face/">Try it for free</a>, create Face API and copy the URL as well as the subscription key.<br />
+            Alternatively, you can also use Azure CLI to create the resource in PowerShell:
+        </p>
 
-    <h3>Postman collections</h3>
+        <p>
+            <pre><code>az cognitiveservices account create --kind Face --location EastUS --name face-api-name --resource-group PoC --sku F0 --yes
+az cognitiveservices account keys list --name face-api-name --resource-group resource-group-name
+</code></pre>
+        </p>
 
-    <p>If you need a more complete collection of Face API functionalities, I have created a <a href="https://github.com/jernejk/RealTimeFaceApi/tree/master/Postman">Postman collection</a>.</p>
+        <p>
+            <ol>
+                <li>Copy <b>"endpoint"</b> value from first command (e.g. <i>https://eastus.api.cognitive.microsoft.com</i> or <i>https://sswsophieface-dev.cognitiveservices.azure.com</i>).</li>
+                <li>Copy <b>"key1"</b> from second command.</li>
+                <li>That's all! <a href="face/v1.0/persongroups">Start exploring</a>!</li>
+            </ol>
 
-    <h3>Real-time facial recognition</h3>
+            <a href="images/Face/create-face-api-azure-cli.png" target="_blank"><img src="images/Face/create-face-api-azure-cli.png" alt="Azure CLI creating Azure Face API" style="max-width: 600px;" /></a>
+        </p>
 
-    <p>If you're interested in real-time facial recognition you checkout <a href="https://github.com/jernejk/RealTimeFaceApi">my sample app on GitHub</a> and my YouTube video:</p>
+        <h3>Currently supported functionalities</h3>
 
-    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/KCSyRO0KotA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
+        <p>
+            This app is a work in-progress, done on my own free time.<br /><br />
+            Here is a list of functionalities already completed:
+        </p>
+
+        <p>
+            <ul class="list-unstyled">
+                <li><i class="fa fa-check"></i> Explore face groups and persons</li>
+                <li><i class="fa fa-check"></i> Detect and identify faces via web cam</li>
+            </ul>
+        </p>
+
+        <h4>Functionalities in development</h4>
+
+        <p>
+            <ul class="list-unstyled">
+                <li><i class="fa fa-clock-o"></i> Add/update/remove groups and people</li>
+                <li><i class="fa fa-clock-o"></i> Upload/remove person faces</li>
+                <li><i class="fa fa-clock-o"></i> Detect and identify faces via URL</li>
+            </ul>
+        </p>
+
+        <h4>Not planned at the moment</h4>
+
+        <p>
+            I might add them sometimes in the future but at the moment they are not my focus.<br />
+            You are welcome to contribute. :)
+        </p>
+
+        <p>
+            <ul class="list-unstyled">
+                <li><i class="fa fa-times"></i> Similar faces</li>
+                <li><i class="fa fa-times"></i> Verify face</li>
+                <li><i class="fa fa-times"></i> Group face</li>
+                <li><i class="fa fa-times"></i> Support for large groups</li>
+                <li><i class="fa fa-times"></i> Face list</li>
+                <li><i class="fa fa-times"></i> Snapshots</li>
+            </ul>
+        </p>
+
+        <h3>Postman collections</h3>
+
+        <p>If you need a more complete collection of Face API functionalities, I have created a <a href="https://github.com/jernejk/RealTimeFaceApi/tree/master/Postman"><i class="fa fa-github" aria-hidden="true"></i> Postman collection</a>.</p>
+
+        <h3>Real-time facial recognition</h3>
+
+        <p>If you're interested in real-time facial recognition you checkout my sample app <a href="https://github.com/jernejk/RealTimeFaceApi"><i class="fa fa-github" aria-hidden="true"></i> Real-time facial recognition with OpenCV and Azure Face API</a> and my <i class="fa fa-youtube-play" aria-hidden="true"></i>  YouTube video:</p>
+
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="https://www.youtube-nocookie.com/embed/KCSyRO0KotA" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
