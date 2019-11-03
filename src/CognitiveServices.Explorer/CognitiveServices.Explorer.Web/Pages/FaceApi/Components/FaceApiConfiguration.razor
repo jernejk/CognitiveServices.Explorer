@@ -79,18 +79,24 @@
         // Backward compatibility
         if (!string.IsNullOrWhiteSpace(faceApiBaseUrl) && !string.IsNullOrWhiteSpace(faceApiKey))
         {
-            var faceApiConfig = new CognitiveServiceConfig("FaceApi", "default2", faceApiBaseUrl, faceApiKey);
+            var faceApiConfig = new CognitiveServiceConfig("FaceApi", "default", faceApiBaseUrl, faceApiKey);
             await csConfigService.SetConfig(faceApiConfig);
-        }
 
-        await Refresh();
+            // Remove backward compatibility.
+            await localStorage.RemoveItemAsync("faceApiKey");
+            await localStorage.RemoveItemAsync("faceApiBaseUrl");
+
+            await Refresh();
+            await SetSelectedProfile();
+        }
+        else
+        {
+            await Refresh();
+        }
     }
 
     public async Task SaveFaceApiConfigurations()
     {
-        // Remove backward compatibility.
-        await localStorage.RemoveItemAsync("faceApiKey");
-        await localStorage.RemoveItemAsync("faceApiBaseUrl");
 
         try
         {
