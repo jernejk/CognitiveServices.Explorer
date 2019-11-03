@@ -28,23 +28,23 @@
                         <div class="hidden-mdc-down">
                             <nav>
                                 <ul>
+                                    @*<li>
+                                        <MatTooltip Tooltip="Toggle Navigation">
+                                            <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                                        </MatTooltip>
+                                    </li>*@
                                     <li>
-                            <MatTooltip Tooltip="Toggle Navigation">
-                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
-                            </MatTooltip>
-                            </li>
-                                <li>
-                            <MatTooltip Tooltip="Minify Navigation">
-                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
-                            </MatTooltip>
-                            </li>
-                                <li>
-                                    <MatTooltip Tooltip="Lock Navigation" >
-                                        <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
-                                    </MatTooltip>
+                                        <MatTooltip Tooltip="Minify Navigation">
+                                            <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                                        </MatTooltip>
                                     </li>
-                            </ul>
-                                </nav>
+                                    @*<li>
+                                        <MatTooltip Tooltip="Lock Navigation" >
+                                            <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+                                        </MatTooltip>
+                                    </li>*@
+                                </ul>
+                            </nav>
                         </div>
                     </MatAppBarSection>
                     <MatAppBarSection Align="@MatAppBarSectionAlign.End">

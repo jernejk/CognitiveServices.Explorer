@@ -2,29 +2,26 @@
 @inject NavigationManager navigationManager
 
 <MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri(" ").AbsoluteUri">
+    <MatNavItem Href="/CognitiveServices.Explorer/">
         <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
     </MatNavItem>
 
-    <MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
+    @*<MatNavItem Href="@navigationManager.ToAbsoluteUri("todo_list").AbsoluteUri">
         <MatIcon>list_alt</MatIcon> <span class="miniHover">Todo List</span>
-    </MatNavItem>
+    </MatNavItem>*@
 
-    <MatNavSubMenu>
+    <MatNavSubMenu Expanded="true">
         <MatNavSubMenuHeader>
             <MatNavItem AllowSelection="false">
-                <MatIcon>stars</MatIcon><span class="miniHover"> Features</span>
+                <MatIcon>face</MatIcon><span class="miniHover"> Face API</span>
             </MatNavItem>
         </MatNavSubMenuHeader>
         <MatNavSubMenuList>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("drag_and_drop").AbsoluteUri">
-                <MatIcon>touch_app</MatIcon> <span class="miniHover">Drag and Drop</span>
+            <MatNavItem Href="face/v1.0/persongroups">
+                <MatIcon>code</MatIcon> <span class="miniHover">Explore</span>
             </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("blazor_middlware_audit").AbsoluteUri">
-                <MatIcon>change_history</MatIcon> <span class="miniHover">Api Audit Log</span>
-            </MatNavItem>
-            <MatNavItem Href="@navigationManager.ToAbsoluteUri("screenshots").AbsoluteUri">
-                <MatIcon>screen_share</MatIcon> <span class="miniHover">Screenshots</span>
+            <MatNavItem Href="face/v1.0/detect">
+                <MatIcon>camera_alt</MatIcon> <span class="miniHover">Detect/Identify</span>
             </MatNavItem>
         </MatNavSubMenuList>
     </MatNavSubMenu>
