@@ -4,7 +4,7 @@ using CognitiveServices.Explorer.Domain.Face;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
+namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public class PersonGroupsViewModel : BaseFaceApiViewModel
     {
@@ -20,6 +20,8 @@ namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
         public override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync().ConfigureAwait(false);
+
+            await GetGroups();
         }
 
         public async Task GetGroups()

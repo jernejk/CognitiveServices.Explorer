@@ -1,95 +1,45 @@
 ﻿@page "/face/v1.0/persongroups/{PersonGroupId}/persons"
 @using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
-@using CognitiveServices.Explorer.Web.ViewModels.FaceApi
 @inject PersonGroupsPersonViewModel viewModel
 
-<FaceApiConfiguration />
+<FaceApiConfiguration OnUpdated="viewModel.LoadLatestConfig" />
 
 <div class="content">
     <h3>Person Group @PersonGroupId</h3>
 
     <div class="py-2">
-        <h4>Training details</h4>
-
-        @if (viewModel.TrainingStatus != null)
-        {
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm float-left">
-                <tbody>
-                    <tr>
-                        <th style="width: 120px;">Is trained</th>
-                        <td>@viewModel.TrainingStatus.Status @(viewModel.TrainingStatus.Status == "running" ? "(refresh training in few seconds)" : "")</td>
-                    </tr>
-                    <tr>
-                        <th>Created date</th>
-                        <td>@viewModel.TrainingStatus.CreatedDateTime.ToLocalTime()</td>
-                    </tr>
-                    <tr>
-                        <th>Last action date</th>
-                        <td>@viewModel.TrainingStatus.LastActionDateTime.ToLocalTime()</td>
-                    </tr>
-                    <tr>
-                        <th>Message</th>
-                        <td>@viewModel.TrainingStatus.Message</td>
-                    </tr>
-                    <tr>
-                        <th>Train</th>
-                        <td><button class="btn btn-secondary btn-sm" @onclick="viewModel.Train">Train</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        }
-
-        <button class="btn btn-secondary btn-sm" @onclick="viewModel.RefreshTrainingStatus">Check training status</button>
-    </div>
-
-    <div class="py-2">
-        <h4>People</h4>
-
         @if (viewModel.People != null && viewModel.People.Any())
         {
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;"> &nbsp; </th>
-                            <th>Person Id</th>
-                            <th>Name</th>
-                            <th>Number of faces</th>
-                            <th>User Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var person in viewModel.People)
-                        {
-                            var imageUrl = string.Empty;
-                            if (!string.IsNullOrWhiteSpace(person.UserData) && person.UserData.StartsWith("{"))
+            <MatTable Items="viewModel.People" FilterByColumnName="Name" SortBy="Name" Striped="true">
+                <MatTableHeader>
+                    <th style="width: 50px;"> &nbsp; </th>
+                    <th>Person Id</th>
+                    <th>Name</th>
+                    <th>Number of faces</th>
+                    <th>User Data</th>
+                </MatTableHeader>
+                <MatTableRow>
+                    <td>
+                        @{
+                            string? imageUrl = GetImageUrl(context.UserData);
+                            if (!string.IsNullOrWhiteSpace(imageUrl))
                             {
-                                var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(person.UserData);
-                                imageUrl = customUserData.GetImageUrl();
+                            <img src="@imageUrl" width="40" />
                             }
-                            <tr>
-                                <td>
-                                    @if (!string.IsNullOrWhiteSpace(imageUrl))
-                                    {
-                                        <img src="@imageUrl" width="40" />
-                                    }
-                                    else
-                                    {
-                                        <span>&nbsp;</span>
-                                    }
-                                </td>
-                                <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@person.PersonId">@person.PersonId</a></td>
-                                <td>@person.Name</td>
-                                <td>@(person.PersistedFaceIds?.Count ?? 0)</td>
-                                <td><code>@CropText(person.UserData)</code></td>
-                            </tr>
+                            else
+                            {
+                            <span>&nbsp;</span>
+                            }
                         }
-                    </tbody>
-                </table>
-            </div>
+                    </td>
+                    <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@context.PersonId">@context.PersonId</a></td>
+                    <td>@context.Name</td>
+                    <td>@(context.PersistedFaceIds?.Count ?? 0)</td>
+                    <td><code>@CropText(context.UserData)</code></td>
+                </MatTableRow>
+            </MatTable>
         }
         else if (viewModel.People != null)
         {
@@ -101,12 +51,22 @@
         }
     </div>
 
+    <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetPeople">Refresh</MatButton>
+    <MatButton Raised="true" Icon="memory" OnClick="@ShowTrainingPopup">Training</MatButton>
     <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
+
+<TrainingPopup
+    ShowPopup="@IsTrainingPopupVisible"
+    Train="@viewModel.Train"
+    RefreshTrainingStatus="@viewModel.RefreshTrainingStatus"
+    TrainingStatus="@viewModel.TrainingStatus"
+    Close="@(() => { IsTrainingPopupVisible = false; })"/>
 
 @code {
     [Parameter] public string? PersonGroupId { get; set; }
 
+    bool IsTrainingPopupVisible { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,5 +83,22 @@
         }
 
         return text;
+    }
+
+    public string? GetImageUrl(string userData)
+    {
+        var imageUrl = string.Empty;
+        if (userData?.StartsWith("{") == true)
+        {
+            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(userData);
+            imageUrl = customUserData.GetImageUrl();
+        }
+
+        return imageUrl;
+    }
+
+    public void ShowTrainingPopup()
+    {
+        IsTrainingPopupVisible = true;
     }
 }

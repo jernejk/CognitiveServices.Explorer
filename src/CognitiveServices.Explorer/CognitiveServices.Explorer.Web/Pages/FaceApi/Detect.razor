@@ -1,11 +1,11 @@
 ﻿@page "/face/v1.0/detect"
-@using CognitiveServices.Explorer.Domain.Face
-@using CognitiveServices.Explorer.Web.ViewModels.FaceApi
+@using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject DetectViewModel viewModel
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
-<FaceApiConfiguration />
+<FaceApiConfiguration OnUpdated="UpdatedProfile" />
 
 <div class="content">
     <h3>Detect</h3>
@@ -16,7 +16,14 @@
 
     <canvas id="canvas" class="canvas" style="display: none;"></canvas>
 
-    <button class="btn btn-primary" @onclick="SendFrameToDetect">Detect (1 TR)</button>
+    @if (viewModel.FaceApiConfig != null)
+    {
+        <button class="btn btn-primary" @onclick="SendFrameToDetect">Detect (1 TR)</button>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">Start by adding a new Face API account.</div>
+    }
 
     <div class="py-2">
         @if (viewModel.Faces?.Any() == true)
@@ -84,9 +91,9 @@
         {
             <div class="alert alert-danger" role="alert">@viewModel.Error</div>
         }
-        else
+        else if (isRunning)
         {
-            <div class="alert alert-info" role="alert">Press "Get groups" to get started. (1 transaction cost)</div>
+            <div class="alert alert-info" role="alert">Press "Detect" to get started. (1 transaction cost)</div>
         }
     </div>
 
@@ -95,11 +102,38 @@
 
 @code {
     string groupId = string.Empty;
+    bool isRunning = false;
 
     protected override async Task OnInitializedAsync()
     {
         await viewModel.OnInitializedAsync().ConfigureAwait(false);
-        await JSRuntime.InvokeVoidAsync("startVideoOnloaded");
+        await StartWebCam();
+
+        NavigationManager.LocationChanged += LocationChanged;
+    }
+
+    public void LocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        NavigationManager.LocationChanged -= LocationChanged;
+        Stop();
+    }
+
+    public async Task StartWebCam()
+    {
+        if (viewModel.FaceApiConfig != null && !isRunning)
+        {
+            await JSRuntime.InvokeVoidAsync("startVideoOnloaded");
+            isRunning = true;
+        }
+    }
+
+    public async Task Stop()
+    {
+        if (isRunning)
+        {
+            isRunning = false;
+            await JSRuntime.InvokeVoidAsync("stopVideo");
+        }
     }
 
     public async Task SendFrameToDetect()
@@ -118,6 +152,13 @@
     {
         await viewModel.Identify(groupId);
 
+        base.StateHasChanged();
+    }
+
+    public async Task UpdatedProfile()
+    {
+        await viewModel.LoadLatestConfig();
+        await StartWebCam();
         base.StateHasChanged();
     }
 }

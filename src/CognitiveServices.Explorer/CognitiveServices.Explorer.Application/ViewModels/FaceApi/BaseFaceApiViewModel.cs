@@ -1,10 +1,9 @@
-﻿using CognitiveServices.Explorer.Application;
-using CognitiveServices.Explorer.Application.Curl;
+﻿using CognitiveServices.Explorer.Application.Curl;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
+namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public abstract class BaseFaceApiViewModel
     {
@@ -27,7 +26,7 @@ namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
             await LoadLatestConfig().ConfigureAwait(false);
         }
 
-        protected async Task LoadLatestConfig()
+        public async Task LoadLatestConfig()
         {
             _faceApiConfig = await _csConfigService.GetConfig("FaceApi").ConfigureAwait(false);
         }

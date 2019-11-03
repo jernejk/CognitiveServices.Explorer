@@ -19,7 +19,7 @@ namespace CognitiveServices.Explorer.Application
             Unit = unit;
         }
 
-        public static ServiceCost FaceApiTransation(float cost = 1)
+        public static ServiceCost FaceApiTransaction(float cost = 1)
         {
             return new ServiceCost
             {

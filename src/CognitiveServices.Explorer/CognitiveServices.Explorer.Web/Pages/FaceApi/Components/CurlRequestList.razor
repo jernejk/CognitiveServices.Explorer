@@ -1,29 +1,32 @@
-﻿@using CognitiveServices.Explorer.Domain.Face
-@using CognitiveServices.Explorer.Application
+﻿@using CognitiveServices.Explorer.Application
 @using CognitiveServices.Explorer.Application.Curl
 
-<div class="mt-2 mb-4">
 @if (Requests?.Any() == true)
 {
-    <button class="btn btn-secondary btn-sm" @onclick="ToggleRequest">> @(showRequest ? "Hide" : "Show") request</button>
-
-    if (showRequest)
-    { 
-    <div class="form-check my-2">
-        <input class="form-check-input" type="checkbox" @bind-value="ShowSubscriptionKey" id="defaultCheck1" />
-        <label class="form-check-label" for="defaultCheck1">
-            Show Subscription Key 🔑
-        </label>
-    </div>
-
-        foreach (var request in Requests)
-        {
-        <h5>@(request.RequestName ?? _curlGenerator.GetName(request))</h5>
-        <pre><code>@_curlGenerator.Generate(request, ServiceConfig, ShowSubscriptionKey)</code></pre>
-        }
-    }
+    <MatButton Outlined="true" Icon="search" OnClick="@(e => { _showRequest = true; })">Show cURL requests</MatButton>
 }
-</div>
+
+<MatDialog @bind-IsOpen="@_showRequest">
+    <MatDialogTitle>cURL requests</MatDialogTitle>
+    <MatDialogContent>
+        @foreach (var request in Requests!)
+        {
+            <h5>@(request.RequestName ?? _curlGenerator.GetName(request))</h5>
+            <pre><code>@_curlGenerator.Generate(request, ServiceConfig, ShowSubscriptionKey)</code></pre>
+        }
+
+        <div class="form-check my-2">
+
+            <input class="form-check-input" type="checkbox" @bind-value="ShowSubscriptionKey" id="defaultCheck1" />
+            <label class="form-check-label" for="defaultCheck1">
+                Show Subscription Key 🔑
+            </label>
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _showRequest = false; })">Close</MatButton>
+    </MatDialogActions>
+</MatDialog>
 
 @code {
     [Parameter] public List<HttpRequest>? Requests { get; set; }
@@ -31,10 +34,5 @@
     [Parameter] public bool ShowSubscriptionKey { get; set; }
 
     private CurlGenerator _curlGenerator = new CurlGenerator();
-    private bool showRequest = false;
-
-    public void ToggleRequest()
-    {
-        showRequest = !showRequest;
-    }
+    private bool _showRequest = false;
 }

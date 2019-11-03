@@ -2,59 +2,135 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject ICognitiveServicesConfigService csConfigService
 
-<div class="top-row px-4 py-2">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col col-md-auto">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon3">Base URL</span>
-                    </div>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="https://[resource-name].cognitiveservices.azure.com" @bind-value="@faceApiBaseUrl" />
-                    <div class="input-group-append">
-                        <span class="input-group-text">/face/v1.0/</span>
-                    </div>
-                </div>
-            </div>
+<div class="pull-right row align-items-center">
+    @if (!string.IsNullOrWhiteSpace(SelectedProfile))
+    {
+        <div>
+            <EditForm Model="@SelectedProfile">
+                <MatSelect id="face-api-selected-profile" Label="Face API Profile" @bind-Value="SelectedProfile">
+                    @foreach (var profile in _profiles)
+                    {
+                        <MatOption Value="@profile.ProfileName">@profile.ProfileName</MatOption>
+                    }
+                </MatSelect>
+            </EditForm>
         </div>
 
-        <div class="row">
-            <div class="col col-md-auto">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Subscription key</span>
-                    </div>
-                    <input type="password" class="form-control" placeholder="Subscription key" aria-label="Subscription key" aria-describedby="basic-addon1" @bind-value="@faceApiKey" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" @onclick="SaveFaceApiConfigurations">Save</button>
-                    </div>
-                </div>
-            </div>
+        <div>
+            <MatButton Icon="add" Label="" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton>
         </div>
-    </div>
+    }
+    else
+    {
+        <MatButton Icon="add" Label="New Account" OnClick="@((e) => OpenDialog())" Raised="true"></MatButton>
+    }
 </div>
 
+<MatDialog @bind-IsOpen="@_dialogIsOpen">
+    <MatDialogTitle>Add new Azure Face API</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@_newFaceApiConfig" OnValidSubmit="@SaveFaceApiConfigurations">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_newFaceApiConfig.ProfileName" Label="Profile name (optional)" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_newFaceApiConfig.BaseUrl" Label="Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_newFaceApiConfig.Token" Label="Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _dialogIsOpen = false; })">Cancel</MatButton>
+        <MatButton OnClick="@SaveFaceApiConfigurations">Add Face API</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
 @code {
-    string faceApiKey = string.Empty;
-    string faceApiBaseUrl = string.Empty;
+    [Parameter] public Func<Task>? OnUpdated { get; set; }
+    string? SelectedProfile
+    {
+        get { return _selectedProfile; }
+        set
+        {
+            if (_selectedProfile != value)
+            {
+                _selectedProfile = value;
+                SetSelectedProfile();
+            }
+        }
+    }
+
+    CognitiveServiceConfig _newFaceApiConfig = new CognitiveServiceConfig("FaceApi");
+    List<CognitiveServiceConfig> _profiles = new List<CognitiveServiceConfig>();
+    string? _selectedProfile;
+    bool _dialogIsOpen;
 
     protected override async Task OnInitializedAsync()
     {
-        faceApiKey = await localStorage.GetItemAsync<string>(nameof(faceApiKey));
-        faceApiBaseUrl = await localStorage.GetItemAsync<string>(nameof(faceApiBaseUrl));
+        string faceApiKey = await localStorage.GetItemAsync<string>("faceApiKey");
+        string faceApiBaseUrl = await localStorage.GetItemAsync<string>("faceApiBaseUrl");
 
-        var config = new CognitiveServiceConfig("FaceApi", faceApiBaseUrl, faceApiKey);
-        await csConfigService.SetConfig(config);
+        // Backward compatibility
+        if (!string.IsNullOrWhiteSpace(faceApiBaseUrl) && !string.IsNullOrWhiteSpace(faceApiKey))
+        {
+            var faceApiConfig = new CognitiveServiceConfig("FaceApi", "default2", faceApiBaseUrl, faceApiKey);
+            await csConfigService.SetConfig(faceApiConfig);
+        }
+
+        await Refresh();
     }
 
     public async Task SaveFaceApiConfigurations()
     {
-        faceApiBaseUrl = faceApiBaseUrl.TrimEnd('/');
+        // Remove backward compatibility.
+        await localStorage.RemoveItemAsync("faceApiKey");
+        await localStorage.RemoveItemAsync("faceApiBaseUrl");
 
-        await localStorage.SetItemAsync(nameof(faceApiKey), faceApiKey);
-        await localStorage.SetItemAsync(nameof(faceApiBaseUrl), faceApiBaseUrl);
+        try
+        {
+            await csConfigService.SetConfig(_newFaceApiConfig);
 
-        var config = new CognitiveServiceConfig("FaceApi", faceApiBaseUrl, faceApiKey);
-        await csConfigService.SetConfig(config);
+            await Refresh();
+        }
+        catch
+        {
+            // TODO: Handle exceptions.
+        }
+
+        if (OnUpdated != null)
+        {
+            await OnUpdated();
+        }
+
+        _dialogIsOpen = false;
+    }
+
+    public async Task SetSelectedProfile()
+    {
+        await csConfigService.SetSelectedProfile("FaceApi", _selectedProfile);
+
+        if (OnUpdated != null)
+        {
+            await OnUpdated();
+        }
+    }
+
+    public void OpenDialog()
+    {
+        _newFaceApiConfig = new CognitiveServiceConfig("FaceApi");
+        _dialogIsOpen = true;
+    }
+
+    public async Task Refresh()
+    {
+        _selectedProfile = await csConfigService.GetSelectedProfileName("FaceApi");
+        var dictionaryOfProfiles = await csConfigService.GetAllProfiles("FaceApi");
+        _profiles = dictionaryOfProfiles.Select(d => d.Value).ToList();
     }
 }

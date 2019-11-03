@@ -1,9 +1,133 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject AppState appState
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="Cognitive Services Explorer" class="logo-img" src="android-chrome-192x192.png" title="Cognitive Services Explorer">
+                <a class="miniHover ml-2" href="/CognitiveServices.Explorer/" title="Cognitive Service Explorer">CS Explorer</a>
+            </div>
+            @*<UserProfile />*@
+        </header>
+        <NavMenu />
+        @*<footer class="drawer-footer">
+            <MatTooltip Tooltip="Help">
+                <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
+            </MatTooltip>
+        </footer>*@
+    </MatDrawer>
+    <MatDrawerContent>
+        <MatAppBarContainer>
+            <MatAppBar Fixed="true">
+                <MatAppBarRow>
+                    <MatAppBarSection>
+                        <MatAppBarTitle>
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+                        </MatAppBarTitle>
+                        <div class="hidden-mdc-down">
+                            <nav>
+                                <ul>
+                                    @*<li>
+                                        <MatTooltip Tooltip="Toggle Navigation">
+                                            <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                                        </MatTooltip>
+                                    </li>*@
+                                    <li>
+                                        <MatTooltip Tooltip="Minify Navigation">
+                                            <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                                        </MatTooltip>
+                                    </li>
+                                    @*<li>
+                                        <MatTooltip Tooltip="Lock Navigation" >
+                                            <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+                                        </MatTooltip>
+                                    </li>*@
+                                </ul>
+                            </nav>
+                        </div>
+                    </MatAppBarSection>
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                        <MatTooltip Tooltip="Follow me on Twitter">
+                            <!-- TODO: Should open in a new tab. -->
+                            <MatIconButton Link="https://twitter.com/jernej_kavka" RefBack="@context" target="_blank"><i class="fa fa-twitter"></i></MatIconButton>
+                        </MatTooltip>
+                        <MatTooltip Tooltip="Github Repository">
+                            <MatIconButton Link="https://github.com/jernejk/CognitiveServices.Explorer" RefBack="@context" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
+                        </MatTooltip>
+                        @*<Login></Login>*@
+                    </MatAppBarSection>
+                </MatAppBarRow>
+            </MatAppBar>
+            <MatAppBarContent>
+                <Breadcrumbs RootLinkTitle="Home"></Breadcrumbs>
+                <section class="container-fluid">
+                    @Body
+                </section>
+                <footer class="page-footer">
+                    <div class="flex-1">
+                        © 2019 <a href="https://jkdev.me" target="_blank">JK</a>, template by <a href="//blazorboilerplate.com" target="_blank">Blazor Boilerplate</a>
+                    </div>
+                </footer>
+            </MatAppBarContent>
+        </MatAppBarContainer>
+    </MatDrawerContent>
+</MatDrawerContainer>
 
-<div class="main">
-    @Body
-</div>
+@code {
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    public string bbDrawerClass = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Uncomment to secure entire app
+        //navigationManager.NavigateTo("/account/login");
+
+        // Set Default landing page if you want
+        //navigationManager.NavigateTo("/");
+    }
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+        if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+        else
+        {
+            bbDrawerClass = "closed";
+        }
+
+        this.StateHasChanged();
+    }
+
+    void NavLock()
+    {
+        //Todo Lock Nav
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+        this.StateHasChanged();
+    }
+}

@@ -1,0 +1,81 @@
+﻿@using CognitiveServices.Explorer.Domain.Face
+
+<MatDialog @bind-IsOpen="@ShowPopup">
+    <MatDialogTitle>Training</MatDialogTitle>
+    <MatDialogContent>
+        <div class="py-2">
+            <h4>Training details</h4>
+
+            @if (TrainingStatus != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm float-left">
+                        <tbody>
+                            <tr>
+                                <th style="width: 120px;">Is trained</th>
+                                <td>@TrainingStatus.Status @(TrainingStatus.Status == "running" ? "(refresh training in few seconds)" : "")</td>
+                            </tr>
+                            <tr>
+                                <th>Created date</th>
+                                <td>@TrainingStatus.CreatedDateTime.ToLocalTime()</td>
+                            </tr>
+                            <tr>
+                                <th>Last action date</th>
+                                <td>@TrainingStatus.LastActionDateTime.ToLocalTime()</td>
+                            </tr>
+                            <tr>
+                                <th>Message</th>
+                                <td>@TrainingStatus.Message</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>Fetching data...</p>
+            }
+
+            <MatButton Outlined="true" Icon="refresh" OnClick="OnRefreshTrainingStatus">Refresh</MatButton>
+            <MatButton Raised="true" Icon="memory" OnClick="@OnTrain">Train</MatButton>
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@Close">Close</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    bool _showPopup;
+
+    [Parameter] public bool ShowPopup
+    {
+        get { return _showPopup; }
+        set
+        {
+            _showPopup = value;
+            if (TrainingStatus == null)
+            {
+                OnRefreshTrainingStatus();
+            }
+        }
+    }
+    [Parameter] public Action? Close { get; set; }
+    [Parameter] public Func<Task>? Train { get; set; }
+    [Parameter] public Func<Task>? RefreshTrainingStatus { get; set; }
+    [Parameter] public TrainingStatus? TrainingStatus { get; set; }
+
+    public async Task OnRefreshTrainingStatus()
+    {
+        // For some reason this will not update unless we await in the component and trigger "StateHasChanged".
+        // Parent pages seems to handle this scenarios just fine.
+        await RefreshTrainingStatus!.Invoke();
+        base.StateHasChanged();
+    }
+
+    public async Task OnTrain()
+    {
+        await Train!.Invoke();
+        base.StateHasChanged();
+    }
+}

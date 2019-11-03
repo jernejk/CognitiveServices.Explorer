@@ -1,9 +1,8 @@
-﻿using CognitiveServices.Explorer.Application;
-using CognitiveServices.Explorer.Application.FaceApi;
+﻿using CognitiveServices.Explorer.Application.FaceApi;
 using CognitiveServices.Explorer.Domain.Face;
 using System.Threading.Tasks;
 
-namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
+namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public class PersonViewModel : BaseFaceApiViewModel
     {
@@ -15,13 +14,24 @@ namespace CognitiveServices.Explorer.Web.ViewModels.FaceApi
         public string? PersonId { get; set; }
         public string? PersonGroupId { get; set; }
         public PersonDto? Person { get; private set; }
-        public HttpRequest PersonRequest { get; set; }
+        public HttpRequest? PersonRequest { get; set; }
 
         public override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync().ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(PersonGroupId))
+            {
+                Error = "Person group ID not set!";
+                return;
+            }
 
-            PersonRequest = PersonGroupPersonRequestGenerator.Get(PersonGroupId, PersonId);
+            if (string.IsNullOrWhiteSpace(PersonId))
+            {
+                Error = "Person ID not set!";
+                return;
+            }
+
+            PersonRequest = PersonGroupPersonRequestGenerator.Get(PersonGroupId!, PersonId!);
 
             await GetPerson().ConfigureAwait(false);
         }

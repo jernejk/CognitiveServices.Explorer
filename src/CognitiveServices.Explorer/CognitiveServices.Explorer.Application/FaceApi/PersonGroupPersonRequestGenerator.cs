@@ -10,7 +10,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             {
                 HttpMethod = HttpMethods.Get,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons",
-                Cost = ServiceCost.FaceApiTransation(1),
+                Cost = ServiceCost.FaceApiTransaction(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395241"
             };
         }
@@ -21,7 +21,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             {
                 HttpMethod = HttpMethods.Get,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{personId}",
-                Cost = ServiceCost.FaceApiTransation(1),
+                Cost = ServiceCost.FaceApiTransaction(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523f"
             };
         }

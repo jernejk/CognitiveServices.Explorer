@@ -6,7 +6,15 @@
     <title>Cognitive Services Explorer</title>
     <base href="/CognitiveServices.Explorer/">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/site.css?1" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+    <!-- Metadata -->
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" name="viewport">
+    <meta name="author" content="JK (Jernej Kavka)">
+    <meta name="description" content="App to explore and experiment Azure Cognitive Services">
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -17,18 +25,21 @@
     <link rel="manifest" href="manifest.json">
     <link rel="script" href="serviceworker.js">
     <meta name="theme-color" content="#8AD" />
+
+    <!-- Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
 </head>
 <body>
     <app>
-        <div class="main">
-            <h1>App is being downloaded... ⏳</h1>
-
-            <p>This app has been built with Blazor 🚀 for browsers. <br />This means that everything runs on your browser and there is no need for a server after the download has been completed. 😎</p>
-            <p>This feature is experiment and is currently large in size. (few MB) 😫</p>
-
-            <p>Thank you for your patience. 😉</p>
-
-            <h2>At the moment iOS 13 is broken for WASM! (Thanks Apple)</h2>
+        <div class="triangle-container">
+            <div class="triangles">
+            </div>
+        </div>
+        <div class="loading-container">
+            <img src="android-chrome-192x192.png" alt="Loading" title="Loading Cognitive Service Explorer app" /><br />
+            Loading Cognitive Services Explorer App...<br />
+            <span><small>May take a while and it might not work on older browser or iOS.</small></span>
         </div>
     </app>
 
