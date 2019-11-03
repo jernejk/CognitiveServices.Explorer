@@ -23,7 +23,7 @@ namespace CognitiveServices.Explorer.Application.Tests
         {
             var configService = new CognitiveServicesConfigService(GetMemoryCache(), new Mock<ILocalStorageService>().Object);
 
-            var selectedProfile = await configService.GetSelectedProfile("FaceApi");
+            var selectedProfile = await configService.GetSelectedProfileName("FaceApi");
 
             selectedProfile.Should().Be("default");
         }
@@ -37,7 +37,7 @@ namespace CognitiveServices.Explorer.Application.Tests
                 .ReturnsAsync("PoC");
 
             var configService = new CognitiveServicesConfigService(GetMemoryCache(), mockLocalStorage.Object);
-            var selectedProfile = await configService.GetSelectedProfile("FaceApi");
+            var selectedProfile = await configService.GetSelectedProfileName("FaceApi");
 
             selectedProfile.Should().Be("PoC");
         }
@@ -114,6 +114,68 @@ namespace CognitiveServices.Explorer.Application.Tests
                 .Should()
                 .ThrowExactlyAsync<ArgumentException>()
                 .WithMessage("Subscription key/token can't be empty. (Parameter 'Token')");
+        }
+
+        [Fact]
+        public async Task ShouldSaveFromScratch()
+        {
+            var mockLocalStorage = new Mock<ILocalStorageService>();
+            mockLocalStorage
+                .Setup(x => x.SetItemAsync("cs-config-profile-FaceApi-selected", "PoC"))
+                .Verifiable("Should change selected profile!");
+            mockLocalStorage
+                .Setup(x =>
+                    x.SetItemAsync(
+                        "cs-config-profile-FaceApi",
+                        It.Is<Dictionary<string, CognitiveServiceConfig>>(
+                            d => d.Values.Count == 1 && d.ContainsKey("PoC") )))
+                .Verifiable("Should store a dictionary of profiles");
+
+            var configService = new CognitiveServicesConfigService(GetMemoryCache(), mockLocalStorage.Object);
+            await configService.SetConfig(new CognitiveServiceConfig
+            {
+                ServiceName = "FaceApi",
+                ProfileName = "PoC",
+                BaseUrl = "https://test.cognitiveservices.azure.com",
+                Token = "test-token"
+            });
+
+            mockLocalStorage.Verify();
+        }
+
+        [Fact]
+        public async Task ShouldFailValidationOnSelectingProfile()
+        {
+            var mockLocalStorage = new Mock<ILocalStorageService>();
+            mockLocalStorage
+                .Setup(x => x.GetItemAsync<string>("cs-config-profile-FaceApi-selected"))
+                .ReturnsAsync("PoC");
+            mockLocalStorage
+                .Setup(x => x.GetItemAsync<Dictionary<string, CognitiveServiceConfig>>("cs-config-profile-FaceApi"))
+                .ReturnsAsync(new Dictionary<string, CognitiveServiceConfig>
+                {
+                    { "default", new CognitiveServiceConfig("FaceApi", "default", "def-url", "def-sub-key") },
+                    { "PoC", new CognitiveServiceConfig("FaceApi", "PoC", "poc-url", "poc-sub-key") }
+                });
+            var configService = new CognitiveServicesConfigService(GetMemoryCache(), mockLocalStorage.Object);
+
+            await FluentActions.Awaiting(() =>
+                configService.SetSelectedProfile("FaceApi", ""))
+                .Should()
+                .ThrowExactlyAsync<ArgumentException>()
+                .WithMessage("Profile name can't be empty. (Parameter 'profileName')");
+
+            await FluentActions.Awaiting(() =>
+                configService.SetSelectedProfile("FaceApi", "DoesNotExists"))
+                .Should()
+                .ThrowExactlyAsync<ArgumentException>()
+                .WithMessage("Profile DoesNotExists doesn't exists. (Parameter 'profileName')");
+
+            await FluentActions.Awaiting(() =>
+                configService.SetSelectedProfile("", "PoC"))
+                .Should()
+                .ThrowExactlyAsync<ArgumentException>()
+                .WithMessage("Service can't be empty. (Parameter 'serviceName')");
         }
 
         private IMemoryCache GetMemoryCache()

@@ -10,6 +10,9 @@ namespace CognitiveServices.Explorer.Application
     {
         Task SetConfig(CognitiveServiceConfig config);
         Task<CognitiveServiceConfig?> GetConfig(string serviceName, string? profileName = null);
+        Task<Dictionary<string, CognitiveServiceConfig>> GetAllProfiles(string serviceName);
+        Task<string> GetSelectedProfileName(string serviceName);
+        Task SetSelectedProfile(string serviceName, string? profileName);
     }
 
     public class CognitiveServicesConfigService : ICognitiveServicesConfigService
@@ -58,16 +61,14 @@ namespace CognitiveServices.Explorer.Application
             await _localStorageService.SetItemAsync(cacheKey, profiles);
             _memoryCache.Set(cacheKey, profiles);
 
-            cacheKey = GetSelectedProfileCacheKey(config.ServiceName);
-            await _localStorageService.SetItemAsync(cacheKey, config.ProfileName);
-            _memoryCache.Set(cacheKey, config.ProfileName);
+            await SetSelectedProfile(config.ServiceName, config.ProfileName!);
         }
 
         public async Task<CognitiveServiceConfig?> GetConfig(string serviceName, string? profileName = null)
         {
             if (string.IsNullOrWhiteSpace(profileName))
             {
-                profileName = await GetSelectedProfile(serviceName);
+                profileName = await GetSelectedProfileName(serviceName);
             }
 
             Console.WriteLine(profileName);
@@ -79,6 +80,11 @@ namespace CognitiveServices.Explorer.Application
 
         public async Task<Dictionary<string, CognitiveServiceConfig>> GetAllProfiles(string serviceName)
         {
+            if (string.IsNullOrWhiteSpace(serviceName))
+            {
+                throw new ArgumentException($"Service can't be empty.", nameof(serviceName));
+            }
+
             string cacheKey = GetProfilesCacheKey(serviceName);
             if (!_memoryCache.TryGetValue(cacheKey, out Dictionary<string, CognitiveServiceConfig> profiles))
             {
@@ -88,20 +94,33 @@ namespace CognitiveServices.Explorer.Application
             return profiles ?? new Dictionary<string, CognitiveServiceConfig>();
         }
 
-        public async Task<string> GetSelectedProfile(string serviceName)
+        public async Task<string> GetSelectedProfileName(string serviceName)
         {
             string cacheKey = GetSelectedProfileCacheKey(serviceName);
             if (!_memoryCache.TryGetValue(cacheKey, out string profileName))
             {
                 profileName = await _localStorageService.GetItemAsync<string>(cacheKey);
-                Console.WriteLine("Profile name: " + profileName);
-            }
-            else
-            {
-                Console.WriteLine("Memory cache - profile name: " + profileName);
             }
 
             return !string.IsNullOrWhiteSpace(profileName) ? profileName : _defaultProfileName;
+        }
+
+        public async Task SetSelectedProfile(string serviceName, string? profileName)
+        {
+            if (string.IsNullOrWhiteSpace(profileName))
+            {
+                throw new ArgumentException("Profile name can't be empty.", nameof(profileName));
+            }
+
+            var profiles = await GetAllProfiles(serviceName);
+            if (!profiles.ContainsKey(profileName!))
+            {
+                throw new ArgumentException($"Profile {profileName} doesn't exists.", nameof(profileName));
+            }
+
+            string cacheKey = GetSelectedProfileCacheKey(serviceName);
+            await _localStorageService.SetItemAsync(cacheKey, profileName);
+            _memoryCache.Set(cacheKey, profileName);
         }
 
         private static string GetProfilesCacheKey(string serviceName)
