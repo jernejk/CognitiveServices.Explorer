@@ -34,6 +34,15 @@ function startVideo() {
     getVideo();
 }
 
+function stopVideo() {
+    if (!!video && !!video.srcObject) {
+        video.srcObject.getTracks().forEach(function (track) {
+            track.stop();
+        });
+        video.srcObject = null;
+    }
+}
+
 const getFrameBase64 = () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
