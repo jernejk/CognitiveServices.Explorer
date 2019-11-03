@@ -714,3 +714,17 @@ ul.breadcrumb {
 .mat-toast-close-button .material-icons {
     color: white;
 }
+
+/* ****** Custom CSS ****** */
+canvas {
+    background-color: blue;
+    width: 100%;
+    height: auto;
+}
+
+video {
+    background-color: blue;
+    width: 50%;
+    min-width: 200px;
+    height: auto;
+}
