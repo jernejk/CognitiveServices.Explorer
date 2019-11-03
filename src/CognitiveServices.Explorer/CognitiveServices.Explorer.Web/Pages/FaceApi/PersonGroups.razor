@@ -3,7 +3,7 @@
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject PersonGroupsViewModel viewModel
 
-<FaceApiConfiguration />
+<FaceApiConfiguration OnUpdated="UpdatedProfile" />
 
 <div class="content">
     <h3>Person Groups</h3>
@@ -48,5 +48,13 @@
     protected override async Task OnInitializedAsync()
     {
         await viewModel.OnInitializedAsync();
+    }
+
+    public async Task UpdatedProfile()
+    {
+        Console.WriteLine("Updated profile");
+        await viewModel.LoadLatestConfig();
+        await viewModel.GetGroups();
+        base.StateHasChanged();
     }
 }

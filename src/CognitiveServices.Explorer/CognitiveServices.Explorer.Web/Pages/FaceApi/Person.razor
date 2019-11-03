@@ -4,7 +4,7 @@
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject PersonViewModel viewModel
 
-<FaceApiConfiguration />
+<FaceApiConfiguration OnUpdated="viewModel.LoadLatestConfig" />
 
 <div class="content">
     @if (viewModel.Person != null)
@@ -30,7 +30,8 @@
                     @foreach (var face in viewModel.Person.PersistedFaceIds)
                     {
                         <li>
-                            <a href="face/v1.0/persongroups/@PersonGroupId/persons/@viewModel.Person.PersonId/persistedFaces/@face">@face</a>
+                            @*<a href="face/v1.0/persongroups/@PersonGroupId/persons/@viewModel.Person.PersonId/persistedFaces/@face">@face</a>*@
+                            @face
                         </li>
                     }
                 </ul>

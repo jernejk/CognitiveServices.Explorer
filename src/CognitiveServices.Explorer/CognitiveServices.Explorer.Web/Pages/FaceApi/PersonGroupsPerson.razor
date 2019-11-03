@@ -4,7 +4,7 @@
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject PersonGroupsPersonViewModel viewModel
 
-<FaceApiConfiguration />
+<FaceApiConfiguration OnUpdated="viewModel.LoadLatestConfig" />
 
 <div class="content">
     <h3>Person Group @PersonGroupId</h3>

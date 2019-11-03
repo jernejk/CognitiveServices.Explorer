@@ -26,7 +26,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             await LoadLatestConfig().ConfigureAwait(false);
         }
 
-        protected async Task LoadLatestConfig()
+        public async Task LoadLatestConfig()
         {
             _faceApiConfig = await _csConfigService.GetConfig("FaceApi").ConfigureAwait(false);
         }

@@ -52,6 +52,7 @@
 </MatDialog>
 
 @code {
+    [Parameter] public Func<Task>? OnUpdated { get; set; }
     string? SelectedProfile
     {
         get { return _selectedProfile; }
@@ -60,7 +61,7 @@
             if (_selectedProfile != value)
             {
                 _selectedProfile = value;
-                csConfigService.SetSelectedProfile("FaceApi", value);
+                SetSelectedProfile();
             }
         }
     }
@@ -102,7 +103,22 @@
             // TODO: Handle exceptions.
         }
 
+        if (OnUpdated != null)
+        {
+            await OnUpdated();
+        }
+
         _dialogIsOpen = false;
+    }
+
+    public async Task SetSelectedProfile()
+    {
+        await csConfigService.SetSelectedProfile("FaceApi", _selectedProfile);
+
+        if (OnUpdated != null)
+        {
+            await OnUpdated();
+        }
     }
 
     public void OpenDialog()
