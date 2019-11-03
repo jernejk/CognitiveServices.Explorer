@@ -17,7 +17,7 @@ namespace CognitiveServices.Explorer.Application.Tests
             var request = PersonGroupRequestGenerator.List();
             var httpRequestService = new HttpRequestService();
 
-            var config = new CognitiveServiceConfig("FaceApi", "http://cs-explorer.com", "test-token");
+            var config = new CognitiveServiceConfig("FaceApi", "default", "http://cs-explorer.com", "test-token");
             await httpRequestService.Send(request, config);
 
             httpTest
@@ -36,7 +36,7 @@ namespace CognitiveServices.Explorer.Application.Tests
             var request = PersonGroupRequestGenerator.Delete("default-group");
             var httpRequestService = new HttpRequestService();
 
-            var config = new CognitiveServiceConfig("FaceApi", "http://cs-explorer.com", "test-token");
+            var config = new CognitiveServiceConfig("FaceApi", "default", "http://cs-explorer.com", "test-token");
             await httpRequestService.Send(request, config);
 
             httpTest
@@ -55,7 +55,7 @@ namespace CognitiveServices.Explorer.Application.Tests
             var request = PersonGroupRequestGenerator.Update("default-group", "test name");
             var httpRequestService = new HttpRequestService();
 
-            var config = new CognitiveServiceConfig("FaceApi", "http://cs-explorer.com", "test-token");
+            var config = new CognitiveServiceConfig("FaceApi", "default", "http://cs-explorer.com", "test-token");
             await httpRequestService.Send(request, config);
 
             httpTest
