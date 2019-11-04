@@ -12,8 +12,15 @@
         @*Content is actually being rendered when not visible*@
         @if (Request != null)
         {
-        <h5>@(Request!.RequestName ?? _curlGenerator.GetName(Request))</h5>
-        <pre><code>@_curlGenerator.Generate(Request, ServiceConfig, ShowSubscriptionKey)</code></pre>
+        <div class="mb-4">
+            <h5>@(Request!.RequestName ?? _curlGenerator.GetName(Request))</h5>
+            <pre class="mb-1"><code>@_curlGenerator.Generate(Request, ServiceConfig, ShowSubscriptionKey)</code></pre>
+
+            @if (!string.IsNullOrWhiteSpace(Request.CognitiveServiceDoc))
+            {
+                <a href="@Request.CognitiveServiceDoc" target="_blank">Official documentation</a>
+            }
+        </div>
 
         <div class="form-check my-2">
 

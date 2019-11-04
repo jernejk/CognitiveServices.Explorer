@@ -11,8 +11,15 @@
     <MatDialogContent>
         @foreach (var request in Requests!)
         {
+        <div class="mb-4">
             <h5>@(request.RequestName ?? _curlGenerator.GetName(request))</h5>
-            <pre><code>@_curlGenerator.Generate(request, ServiceConfig, ShowSubscriptionKey)</code></pre>
+            <pre class="mb-1"><code>@_curlGenerator.Generate(request, ServiceConfig, ShowSubscriptionKey)</code></pre>
+
+            @if (!string.IsNullOrWhiteSpace(request.CognitiveServiceDoc))
+            {
+                <a href="@request.CognitiveServiceDoc" target="_blank">Official documentation</a>
+            }
+        </div>
         }
 
         <div class="form-check my-2">
