@@ -10,7 +10,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
         {
             return new HttpRequest
             {
-                HttpMethod = HttpMethods.Post,
+                HttpMethod = HttpMethods.Put,
                 ContentType = "application/json",
                 RelativePath = $"face/v1.0/persongroups/{groupId}",
                 Body = JsonConvert.SerializeObject(new

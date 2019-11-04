@@ -30,19 +30,25 @@ namespace CognitiveServices.Explorer.Application
                     responseTask = url.GetAsync(token);
                     break;
                 case "POST":
+                case "PUT":
                     {
+                        HttpContent content;
                         if (request.BinaryContent != null)
                         {
-                            var content = new ByteArrayContent(request.BinaryContent);
-                            content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
-                            responseTask = url.PostAsync(content, token);
+                            var byteArrayContent = new ByteArrayContent(request.BinaryContent);
+                            byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
+                            content = byteArrayContent;
                         }
                         else
                         {
-                            var content = new StringContent(request.Body ?? string.Empty);
-                            content.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
-                            responseTask = url.PostAsync(content, token);
+                            var stringContent = new StringContent(request.Body ?? string.Empty);
+                            stringContent.Headers.ContentType = new MediaTypeHeaderValue(request.ContentType);
+                            content = stringContent;
                         }
+
+                        responseTask = httpMethod == "POST" ?
+                            url.PostAsync(content, token) :
+                            url.PutAsync(content, token);
 
                         break;
                     }

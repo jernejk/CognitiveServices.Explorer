@@ -1,5 +1,6 @@
 ﻿@page "/face/v1.0/persongroups"
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
+@using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
 @inject PersonGroupsViewModel viewModel
 
@@ -13,12 +14,17 @@
         {
             <MatTable Items="viewModel.PersonGroups" FilterByColumnName="Name" SortBy="Name" Striped="true">
                 <MatTableHeader>
+                    <th style="padding: 0"></th>
                     <th>Id</th>
                     <th><div style="width:150px;">Name</div></th>
                     <th>Recognition Model</th>
                     <th>User Data</th>
                 </MatTableHeader>
                 <MatTableRow>
+                    <td style="padding: 0">
+                        <MatIconButton Icon="edit" OnClick="@(() => ShowUpdateGroupDialog(context))"></MatIconButton>
+                        <MatIconButton Icon="delete" OnClick="@(() => ShowDeleteGroupDialog(context))"></MatIconButton>
+                    </td>
                     <td><a href="face/v1.0/persongroups/@context.PersonGroupId/persons">@context.PersonGroupId</a></td>
                     <td>@context.Name</td>
                     <td>@context.RecogntionModel</td>
@@ -40,11 +46,53 @@
         }
     </div>
 
+    <MatButton Raised="true" Icon="add" OnClick="@ShowCreateGroupDialog">Create group</MatButton>
     <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetGroups">Refresh</MatButton>
-    <CurlRequest Request="viewModel.PersonGroupListRequest" ServiceConfig="viewModel.FaceApiConfig" />
+    <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
 
+<MatDialog @bind-IsOpen="@_createOrEditGroupDialogOpen">
+    <MatDialogTitle>@(_isCreatingGroup ? "Add new" : "Edit") person group</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@viewModel.EditGroup" OnValidSubmit="@CreateOrUpdatePersonGroup">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@viewModel.EditGroup.PersonGroupId" ReadOnly="!_isCreatingGroup" Label="Id" Icon="supervisor_account" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@viewModel.EditGroup.Name" Label="Name" Icon="translate" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@viewModel.EditGroup.UserData" Label="User data (optional)" Icon="view_list" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _createOrEditGroupDialogOpen = false; })">Cancel</MatButton>
+        <MatButton Raised="true" OnClick="@CreateOrUpdatePersonGroup">@(_isCreatingGroup ? "Create" : "Edit") Group</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@_deleteDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete group "@_groupToRemove?.Name"?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _deleteDialogOpen = false; })">Cancel</MatButton>
+        <MatButton Raised="true" OnClick="@DeleteGroup">Delete</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
 @code {
+    private bool _createOrEditGroupDialogOpen;
+    private bool _isCreatingGroup;
+    private bool _deleteDialogOpen;
+    private PersonGroupDto? _groupToRemove;
+
     protected override async Task OnInitializedAsync()
     {
         await viewModel.OnInitializedAsync();
@@ -55,5 +103,51 @@
         await viewModel.LoadLatestConfig();
         await viewModel.GetGroups();
         base.StateHasChanged();
+    }
+
+    public async Task CreateOrUpdatePersonGroup()
+    {
+        if (_isCreatingGroup)
+        {
+            await viewModel.CreateGroup();
+        }
+        else
+        {
+            await viewModel.UpdateGroup();
+        }
+        _createOrEditGroupDialogOpen = false;
+    }
+
+    public void ShowCreateGroupDialog()
+    {
+        _isCreatingGroup = true;
+        _createOrEditGroupDialogOpen = true;
+    }
+
+    public void ShowUpdateGroupDialog(PersonGroupDto personGroup)
+    {
+        viewModel.EditGroup = new PersonGroupDto
+        {
+            PersonGroupId = personGroup.PersonGroupId,
+            Name = personGroup.Name,
+            UserData = personGroup.UserData,
+            RecogntionModel = personGroup.RecogntionModel
+        };
+
+        _isCreatingGroup = false;
+        _createOrEditGroupDialogOpen = true;
+    }
+
+    public void ShowDeleteGroupDialog(PersonGroupDto personGroup)
+    {
+        _groupToRemove = personGroup;
+        _deleteDialogOpen = true;
+    }
+
+    public async Task DeleteGroup()
+    {
+        await viewModel.DeleteGroup(_groupToRemove!.PersonGroupId);
+        _groupToRemove = null;
+        _deleteDialogOpen = false;
     }
 }

@@ -3,7 +3,7 @@
   "Headers": {},
   "RelativePath": "face/v1.0/persongroups/default",
   "Queries": null,
-  "HttpMethod": "POST",
+  "HttpMethod": "PUT",
   "Body": "{\"name\":\"Test group\",\"recognitionModel\":null,\"userData\":null}",
   "BinaryContent": null,
   "ContentType": "application/json",
