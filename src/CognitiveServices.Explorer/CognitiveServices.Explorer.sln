@@ -11,6 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CognitiveServices.Explorer.Application.Tests", "CognitiveServices.Explorer.Application.Tests\CognitiveServices.Explorer.Application.Tests.csproj", "{F78F1C73-AFC1-42EA-BA6C-DCC4D6A9C4A4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubContent", "GitHubContent", "{D203B4F6-3805-48C2-BB18-17A825EAD7A8}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\publish-github-pages.ps1 = ..\..\publish-github-pages.ps1
+		..\..\README.md = ..\..\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

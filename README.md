@@ -17,18 +17,25 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 * Show cURL requests
 * Train group
 * Check if group has been trained
+* Detect
+  * No facial features
+  * From web cam
+* Identify from detected faces
+* Add/update/delete groups
+* Add/update/delete people
 
 #### Features planned in the coming weeks
 
-* Add/update groups
-* Add/update identities
-* Add faces (URL only)
-* Add faces (file upload)
+* Add faces to person
+  * From web cam
+  * From URL
+  * From file upload
 * Update face (user data only)
 * Detect faces
-  * No facial features
   * Emotions, gender, age, etc.
-* Identify faces
+  * ~~From web cam~~
+  * From file upload
+  * From URL
 * Find similar faces
 * Verify face
 
