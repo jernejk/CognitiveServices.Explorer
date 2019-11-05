@@ -34,7 +34,7 @@ az cognitiveservices account keys list --name face-api-name --resource-group res
                 <li>That's all! <a href="face/v1.0/persongroups">Start exploring</a>!</li>
             </ol>
 
-            <a href="images/Face/create-face-api-azure-cli.png" target="_blank"><img src="images/Face/create-face-api-azure-cli.png" alt="Azure CLI creating Azure Face API" style="max-width: 600px;" /></a>
+            <a href="images/Face/azure-cli-create-face-api.png" target="_blank"><img src="images/Face/azure-cli-create-face-api.png" alt="Azure CLI creating Azure Face API" style="max-width: 600px;" /></a>
         </p>
 
         <h3>Currently supported functionalities</h3>
@@ -81,7 +81,49 @@ az cognitiveservices account keys list --name face-api-name --resource-group res
             </ul>
         </p>
 
-        <h3>Postman collections</h3>
+        <h3>Check for usage</h3>
+
+        <p>When using Azure Face API, it's a goo idea to check consumption of your APIs, especially if the usage can't be directly controlled.<br/></p>
+
+        <h4 class="pt-2">Free tier (F0)</h4>
+        <div>
+            <p>You have 2 options for free tier.</p>
+
+            <h5>Azure Portal</h5>
+
+            <ol>
+                <li>Go to Azure Portal</li>
+                <li>Find your Azure Face API</li>
+                <li>Go to overview</li>
+            </ol>
+
+            <a href="images/Face/azure-portal-face-api-usage-free-tier.png" target="_blank"><img src="images/Face/azure-portal-face-api-usage-free-tier.png" alt="Azure CLI - get usage for Face API free tier" style="max-width: 600px;" /></a>
+
+            <h5>Azure CLI</h5>
+
+            <p>In PowerShell use the following command:</p>
+
+            <pre><code>az cognitiveservices account list-usage --name face-api-name --resource-group resource-group-name</code></pre>
+
+            <a href="images/Face/azure-cli-face-api-usage-free-tier.png" target="_blank"><img src="images/Face/azure-cli-face-api-usage-free-tier.png" alt="Azure Portal - get usage for Face API free tier" style="max-width: 600px;" /></a>
+        </div>
+
+        <h4 class="pt-2">Paid tier</h4>
+
+        <div>
+            <p>Currently, the easiest to checks usage on paid tier is to go to Azure Portal cost analysis.</p>
+
+            <p>In Azure Portal:</p>
+            <ol>
+                <li>Go to the resource group of Azure Face API</li>
+                <li>Cost analysis</li>
+                <li>Click your resource under resources</li>
+            </ol>
+
+            <a href="images/Face/azure-portal-face-api-usage-paid-tier.png" target="_blank"><img src="images/Face/azure-portal-face-api-usage-paid-tier.png" alt="Azure portal - get usage for Face API paid tier" style="max-width: 600px;" /></a>
+        </div>
+
+        <h3 class="pt-2">Postman collections</h3>
 
         <p>If you need a more complete collection of Face API functionalities, I have created a <a href="https://github.com/jernejk/RealTimeFaceApi/tree/master/Postman"><i class="fa fa-github" aria-hidden="true"></i> Postman collection</a>.</p>
 
