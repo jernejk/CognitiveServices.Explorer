@@ -14,6 +14,7 @@
         {
             <MatTable Items="viewModel.People" FilterByColumnName="Name" SortBy="Name" Striped="true">
                 <MatTableHeader>
+                    <th style="padding: 0"></th>
                     <th style="width: 50px;"> &nbsp; </th>
                     <th>Person Id</th>
                     <th>Name</th>
@@ -21,17 +22,21 @@
                     <th>User Data</th>
                 </MatTableHeader>
                 <MatTableRow>
+                    <td style="padding: 0">
+                        <MatIconButton Icon="edit" OnClick="@(() => ShowUpdatePersonDialog(context))"></MatIconButton>
+                        <MatIconButton Icon="delete" OnClick="@(() => ShowDeletePersonDialog(context))"></MatIconButton>
+                    </td>
                     <td>
                         @{
-                            string? imageUrl = GetImageUrl(context.UserData);
-                            if (!string.IsNullOrWhiteSpace(imageUrl))
-                            {
-                            <img src="@imageUrl" width="40" />
-                            }
-                            else
-                            {
-                            <span>&nbsp;</span>
-                            }
+                                string? imageUrl = GetImageUrl(context.UserData);
+                                if (!string.IsNullOrWhiteSpace(imageUrl))
+                                {
+                                <img src="@imageUrl" width="40" />
+                                }
+                                else
+                                {
+                                <span>&nbsp;</span>
+                                }
                         }
                     </td>
                     <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@context.PersonId">@context.PersonId</a></td>
@@ -51,22 +56,65 @@
         }
     </div>
 
+    <MatButton Raised="true" Icon="add" OnClick="@ShowCreatePersonDialog">Create person</MatButton>
     <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetPeople">Refresh</MatButton>
     <MatButton Raised="true" Icon="memory" OnClick="@ShowTrainingPopup">Training</MatButton>
     <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
 
-<TrainingPopup
-    ShowPopup="@IsTrainingPopupVisible"
-    Train="@viewModel.Train"
-    RefreshTrainingStatus="@viewModel.RefreshTrainingStatus"
-    TrainingStatus="@viewModel.TrainingStatus"
-    Close="@(() => { IsTrainingPopupVisible = false; })"/>
+<MatDialog @bind-IsOpen="@_createOrEditPersonDialogOpen">
+    <MatDialogTitle>@(_isCreatingPerson ? "Add new" : "Edit") person</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@_person" OnValidSubmit="@CreateOrUpdatePerson">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                @if (!_isCreatingPerson)
+                {
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_person.PersonId" ReadOnly="true" Label="Id" Icon="supervisor_account" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                }
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_person.Name" Label="Name" Icon="translate" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_person.UserData" Label="User data (optional)" Icon="view_list" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _createOrEditPersonDialogOpen = false; })">Cancel</MatButton>
+        <MatButton Raised="true" OnClick="@CreateOrUpdatePerson">@(_isCreatingPerson ? "Create" : "Edit") Person</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@_deleteDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete person "@_person?.Name"?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _deleteDialogOpen = false; })">Cancel</MatButton>
+        <MatButton Raised="true" OnClick="@DeletePerson">Delete</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<TrainingPopup ShowPopup="@_isTrainingPopupVisible"
+               Train="@viewModel.Train"
+               RefreshTrainingStatus="@viewModel.RefreshTrainingStatus"
+               TrainingStatus="@viewModel.TrainingStatus"
+               Close="@(() => { _isTrainingPopupVisible = false; })" />
 
 @code {
     [Parameter] public string? PersonGroupId { get; set; }
 
-    bool IsTrainingPopupVisible { get; set; }
+    private bool _isTrainingPopupVisible;
+    private bool _createOrEditPersonDialogOpen;
+    private bool _isCreatingPerson;
+    private bool _deleteDialogOpen;
+    private PersonDto _person = new PersonDto();
 
     protected override async Task OnInitializedAsync()
     {
@@ -85,7 +133,7 @@
         return text;
     }
 
-    public string? GetImageUrl(string userData)
+    public string? GetImageUrl(string? userData)
     {
         var imageUrl = string.Empty;
         if (userData?.StartsWith("{") == true)
@@ -99,6 +147,56 @@
 
     public void ShowTrainingPopup()
     {
-        IsTrainingPopupVisible = true;
+        _isTrainingPopupVisible = true;
+    }
+
+    public async Task CreateOrUpdatePerson()
+    {
+        if (_isCreatingPerson)
+        {
+            await viewModel.CreatePerson(_person);
+        }
+        else
+        {
+            await viewModel.UpdatePerson(_person);
+        }
+
+        _createOrEditPersonDialogOpen = false;
+    }
+
+    public void ShowCreatePersonDialog()
+    {
+        _isCreatingPerson = true;
+        _createOrEditPersonDialogOpen = true;
+    }
+
+    public void ShowUpdatePersonDialog(PersonDto person)
+    {
+        _person = new PersonDto
+        {
+            PersonId = person.PersonId,
+            Name = person.Name,
+            UserData = person.UserData
+        };
+
+        _isCreatingPerson = false;
+        _createOrEditPersonDialogOpen = true;
+    }
+
+    public void ShowDeletePersonDialog(PersonDto person)
+    {
+        _person = person;
+        _deleteDialogOpen = true;
+    }
+
+    public async Task DeletePerson()
+    {
+        if (!string.IsNullOrWhiteSpace(_person.PersonId))
+        {
+            await viewModel.DeletePerson(_person.PersonId!);
+        }
+
+        _person = new PersonDto();
+        _deleteDialogOpen = false;
     }
 }
