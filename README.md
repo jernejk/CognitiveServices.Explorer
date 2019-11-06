@@ -23,12 +23,15 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 * Identify from detected faces
 * Add/update/delete groups
 * Add/update/delete people
+* Add/delete people faces
+* Add faces to person
+  * From URL
 
 #### Features planned in the coming weeks
 
 * Add faces to person
   * From web cam
-  * From URL
+  * ~~From URL~~
   * From file upload
 * Update face (user data only)
 * Detect faces
