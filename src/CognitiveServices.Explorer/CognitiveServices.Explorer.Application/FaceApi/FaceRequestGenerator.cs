@@ -30,7 +30,8 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             };
         }
 
-        public static HttpRequest Detect(string url,
+        public static HttpRequest Detect(
+            string url,
             string? returnFaceAttributes = null,
             bool? returnFaceLandmarks = null,
             string recognitionModel = DefaultRecognitionModel,

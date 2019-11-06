@@ -9,40 +9,43 @@
 <div class="content">
     @if (viewModel.Person != null)
     {
-        var imageUrl = string.Empty;
-        if (!string.IsNullOrWhiteSpace(viewModel.Person.UserData) && viewModel.Person.UserData.StartsWith("{"))
-        {
-            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(viewModel.Person.UserData);
-            imageUrl = customUserData.GetImageUrl();
-        }
-
-        <div class="card">
-            <h5 class="card-header">Person details</h5>
-            <div class="card-body">
-                @if (!string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    <img class="card-img-top" src="@imageUrl" alt="@viewModel.Person.Name's image" style="max-width: 200px;">
-                }
-                <h5 class="card-title">@viewModel.Person.Name</h5>
-                <p class="card-text">Person ID: @viewModel.Person.PersonId</p>
-                <p class="card-text">Faces:</p>
-                <ul>
-                    @foreach (var face in viewModel.Person.PersistedFaceIds)
-                    {
-                        <li>
-                            @*<a href="face/v1.0/persongroups/@PersonGroupId/persons/@viewModel.Person.PersonId/persistedFaces/@face">@face</a>*@
-                            @face
-                        </li>
-                    }
-                </ul>
+        <div class="row mb-4 ml-0">
+            <div style="width: 100px;" class="pull-left">
+                <img src="@_imageUrl" style="width: 100px;" />
             </div>
 
-            @if (!string.IsNullOrWhiteSpace(viewModel.Person.UserData))
+            <div class="ml-3">
+                <p>
+                    <b>@viewModel.Person.Name</b><br />
+                    <span style="color: #999;"><small>@viewModel.Person.PersonId</small></span>
+                </p>
+
+                <p>
+                    <b>Faces:</b> @(viewModel.Person.PersistedFaceIds?.Count ?? 0)<br />
+                </p>
+            </div>
+        </div>
+
+        <div>
+            <b>UserData:</b><br />
+            <pre style="width:100%;"><code>@viewModel.Person.UserData</code></pre>
+        </div>
+
+        <div>
+            @if (viewModel.Person.PersistedFaceIds?.Any() == true)
             {
-                <div class="card-body">
-                    <h5 class="card-title">User Data</h5>
-                    <code>@viewModel.Person.UserData</code>
-                </div>
+                <MatTable Items="viewModel.Person.PersistedFaceIds" SortBy="Name" Striped="true" ShowPaging="false">
+                    <MatTableHeader>
+                        <th style="padding: 0"></th>
+                        <th>Face Id</th>
+                    </MatTableHeader>
+                    <MatTableRow>
+                        <td style="padding: 0">
+                            <MatIconButton Icon="delete" OnClick="@(() => ShowDeleteDialog(context))"></MatIconButton>
+                        </td>
+                        <td>@context</td>
+                    </MatTableRow>
+                </MatTable>
             }
         </div>
     }
@@ -51,17 +54,119 @@
         <div class="alert alert-info">Loading person Id @PersonId...</div>
     }
 
-    <CurlRequest Request="viewModel.PersonRequest" ServiceConfig="viewModel.FaceApiConfig" />
+    <MatButton Raised="true" Icon="add" OnClick="@ShowAddDialog">Add face</MatButton>
+    @*<MatButton Raised="true" Icon="memory" OnClick="@ShowDeleteDialog">Delete person</MatButton>*@
+    <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetPerson">Refresh</MatButton>
+    <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
+
+<MatDialog @bind-IsOpen="@_createOrEditDialogOpen">
+    <MatDialogTitle>@(_isCreating ? "Add new" : "Edit") person</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@_face" OnValidSubmit="@CreateOrUpdate">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_faceImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@_face.UserData" Label="User data (optional)" Icon="view_list" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _createOrEditDialogOpen = false; })">Cancel</MatButton>
+        <MatButton Raised="true" OnClick="@CreateOrUpdate">@(_isCreating ? "Add" : "Edit") Face</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+<MatDialog @bind-IsOpen="@_deleteDialogOpen" Style="z-index:100">
+    <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure you want to delete face with ID "@_face?.PersistedFaceId"?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { _deleteDialogOpen = false; })">Cancel</MatButton>
+        <MatButton Raised="true" OnClick="@Delete">Delete</MatButton>
+    </MatDialogActions>
+</MatDialog>
 
 @code {
     [Parameter] public string? PersonGroupId { get; set; }
     [Parameter] public string? PersonId { get; set; }
+    private string _imageUrl = "images/Face/anonymous-avatar.jpg";
+
+    private bool _createOrEditDialogOpen;
+    private bool _isCreating;
+    private bool _deleteDialogOpen;
+    private FaceDto _face = new FaceDto();
+    private string? _faceImageUrl;
 
     protected override async Task OnInitializedAsync()
     {
         viewModel.PersonGroupId = PersonGroupId;
         viewModel.PersonId = PersonId;
         await viewModel.OnInitializedAsync();
+
+        if (!string.IsNullOrWhiteSpace(viewModel.Person?.UserData) && viewModel.Person!.UserData!.StartsWith("{"))
+        {
+            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(viewModel.Person.UserData);
+            var imageUrl = customUserData.GetImageUrl();
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                _imageUrl = imageUrl;
+            }
+        }
+    }
+
+    public async Task CreateOrUpdate()
+    {
+        if (_isCreating)
+        {
+            await viewModel.AddFace(_face, _faceImageUrl);
+        }
+        else
+        {
+            await viewModel.UpdateFace(_face);
+        }
+
+        _createOrEditDialogOpen = false;
+    }
+
+    public void ShowAddDialog()
+    {
+        _isCreating = true;
+        _createOrEditDialogOpen = true;
+    }
+
+    public void ShowUpdateDialog(FaceDto face)
+    {
+        _face = new FaceDto
+        {
+            PersistedFaceId = face.PersistedFaceId,
+            UserData = face.UserData
+        };
+
+        _isCreating = false;
+        _createOrEditDialogOpen = true;
+    }
+
+    public void ShowDeleteDialog(string faceId)
+    {
+        _face = new FaceDto { PersistedFaceId = faceId };
+        _deleteDialogOpen = true;
+    }
+
+    public async Task Delete()
+    {
+        if (!string.IsNullOrWhiteSpace(_face.PersistedFaceId))
+        {
+            await viewModel.DeleteFace(_face.PersistedFaceId!);
+        }
+
+        _face = new FaceDto();
+        _deleteDialogOpen = false;
     }
 }
