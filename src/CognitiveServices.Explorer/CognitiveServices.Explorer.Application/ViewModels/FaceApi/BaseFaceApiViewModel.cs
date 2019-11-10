@@ -1,4 +1,6 @@
 ﻿using CognitiveServices.Explorer.Application.Curl;
+using CognitiveServices.Explorer.Domain.Face;
+using Flurl.Http;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
@@ -31,7 +33,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             _faceApiConfig = await _csConfigService.GetConfig("FaceApi").ConfigureAwait(false);
         }
 
-        protected async Task<T> MakeRequest<T>(HttpRequest? request)
+        protected async Task<T?> MakeRequest<T>(HttpRequest? request)
             where T : class
         {
             Error = string.Empty;
@@ -53,6 +55,27 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 
                 RawJson = await _httpRequestService.Send(request, _faceApiConfig).ConfigureAwait(false) ?? string.Empty;
                 return JsonConvert.DeserializeObject<T>(RawJson);
+            }
+            catch (FlurlHttpException fe)
+            {
+                try
+                {
+                    ErrorDto e = await fe.GetResponseJsonAsync<ErrorDto>();
+                    if (e?.Error != null)
+                    {
+                        Error = $"Face API error code {e.Error.Code}: \n{e.Error.Message}";
+                    }
+                }
+                catch
+                {
+                }
+
+                if (string.IsNullOrWhiteSpace(Error))
+                {
+                    Error = fe.Message;
+                }
+
+                return default;
             }
             catch (Exception e)
             {
