@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CognitiveServices.Explorer.Domain.Face;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -6,8 +7,8 @@ namespace CognitiveServices.Explorer.Application.FaceApi
 {
     public static class FaceRequestGenerator
     {
-        public const string DefaultRecognitionModel = "recognition_01";
-        public const string DefaultDetectionModel = "detection_01";
+        public const string DefaultRecognitionModel = FaceApiConstants.RecognitionModelV01;
+        public const string DefaultDetectionModel = FaceApiConstants.DetectModelV01;
 
         public static HttpRequest Detect(
             byte[] data,

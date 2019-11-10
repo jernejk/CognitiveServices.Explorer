@@ -26,6 +26,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         }
 
         public string? SelectedPersonGroupId { get; set; }
+        public string SelectedDetectionModel { get; set; } = FaceApiConstants.DetectModelV02;
+        public string SelectedRecognitionModel { get; set; } = FaceApiConstants.RecognitionModelV01;
         public List<PersonGroupDto>? PersonGroups { get; private set; }
         public List<DetectedFaceDto>? Faces { get; private set; }
         public List<IdentityCandidate>? Candidates { get; private set; }
@@ -44,7 +46,11 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             Faces = null;
             Candidates = null;
 
-            _detectBinaryRequest = FaceRequestGenerator.Detect(data);
+            _detectBinaryRequest = FaceRequestGenerator.Detect(
+                data,
+                detectionModel: SelectedDetectionModel,
+                recognitionModel: SelectedRecognitionModel);
+
             UpdateRequestList();
 
             Faces = await MakeRequest<List<DetectedFaceDto>>(_detectBinaryRequest).ConfigureAwait(false)
@@ -56,7 +62,11 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             Faces = null;
             Candidates = null;
 
-            _detectUrlRequest = FaceRequestGenerator.Detect(imageUrl);
+            _detectUrlRequest = FaceRequestGenerator.Detect(
+                imageUrl,
+                detectionModel: SelectedDetectionModel,
+                recognitionModel: SelectedRecognitionModel);
+
             UpdateRequestList();
 
             Faces = await MakeRequest<List<DetectedFaceDto>>(_detectUrlRequest).ConfigureAwait(false)
