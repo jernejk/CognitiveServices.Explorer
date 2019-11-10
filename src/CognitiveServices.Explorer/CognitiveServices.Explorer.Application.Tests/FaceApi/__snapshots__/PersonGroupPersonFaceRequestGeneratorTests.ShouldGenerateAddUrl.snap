@@ -1,0 +1,22 @@
+﻿{
+  "RequestName": null,
+  "Headers": {},
+  "RelativePath": "face/v1.0/persongroups/default/persons/00000000-0000-0000-0000-000000000000/persistedFaces",
+  "Queries": {
+    "detectionModel": "",
+    "returnFaceAttributes": "",
+    "returnFaceLandmarks": ""
+  },
+  "HttpMethod": "POST",
+  "Body": "{\"url\":\"https://image.url\"}",
+  "BinaryContent": null,
+  "ContentType": "application/json",
+  "ExpectedHtppCode": 200,
+  "TokenHeaderName": "Ocp-Apim-Subscription-Key",
+  "Cost": {
+    "ServiceName": "FaceApi",
+    "Cost": 1.0,
+    "Unit": "tr"
+  },
+  "CognitiveServiceDoc": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523b"
+}

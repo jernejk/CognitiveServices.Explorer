@@ -29,7 +29,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                 BinaryContent = data,
                 ContentType = "application/octet-stream",
                 Cost = ServiceCost.FaceApiTransaction(1),
-                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523f"
+                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523b"
             };
         }
 
@@ -40,7 +40,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                 HttpMethod = HttpMethods.Get,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{userId}/persistedFaces/{faceId}",
                 Cost = ServiceCost.FaceApiTransaction(1),
-                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395243"
+                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395240"
             };
         }
 

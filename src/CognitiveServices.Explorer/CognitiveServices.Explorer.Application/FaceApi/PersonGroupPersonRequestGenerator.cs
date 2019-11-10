@@ -39,7 +39,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                     userData
                 }),
                 Cost = ServiceCost.FaceApiTransaction(1),
-                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523f"
+                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523c"
             };
         }
 
@@ -55,7 +55,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                     userData
                 }),
                 Cost = ServiceCost.FaceApiTransaction(1),
-                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523f"
+                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395242"
             };
         }
 
@@ -66,7 +66,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                 HttpMethod = HttpMethods.Delete,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{userId}",
                 Cost = ServiceCost.FaceApiTransaction(1),
-                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523f"
+                CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523d"
             };
         }
     }

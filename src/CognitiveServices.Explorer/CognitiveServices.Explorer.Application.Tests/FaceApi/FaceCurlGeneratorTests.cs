@@ -32,7 +32,18 @@ namespace CognitiveServices.Explorer.Application.Tests.FaceApi
                 .Detect("http://test.url", returnFaceAttributes: "age,gender");
 
             request.Cost.Should().NotBeNull();
-            request.Cost!.Cost.Should();
+            request.Cost!.Cost.Should().Be(2);
+            request.Should().MatchSnapshot();
+        }
+
+        [Fact]
+        public void ShouldGenerateDetectUrlWithFaceLandmarks()
+        {
+            var request = FaceRequestGenerator
+                .Detect("http://test.url", returnFaceLandmarks: true);
+
+            request.Cost.Should().NotBeNull();
+            request.Cost!.Cost.Should().Be(1);
             request.Should().MatchSnapshot();
         }
 
