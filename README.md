@@ -15,23 +15,22 @@ Pull requests are welcomed! 😄
 
 You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explorer/)
 
-![](images/screenshots/cs-explorer-groups-0.5b.png)
+![Explorer all of the groups on your account.](images/screenshots/cs-explorer-groups-0.5b.png)
 **Explorer all of the groups on your account.**
 
 ![](images/screenshots/cs-explorer-users-0.5b.png)
 **See all of the identities and you can configure it to see their picture.**
 
-![](images/screenshots/cs-explorer-face-details-0.5b.png)
+![See user details.](images/screenshots/cs-explorer-face-details-0.5b.png)
 **See user details.**
 
-![](images/screenshots/cs-explorer-detect-identify-0.5b.png)
+![Detect and identify people by URL, file upload or web cam.](images/screenshots/cs-explorer-detect-identify-0.5b.png)
 **Detect and identify people by URL, file upload or web cam.**
 
-![](images/screenshots/cs-explorer-select-profile-0.5b.png)
-**You can switch between different profiles.**
+![Create new profile linked to Azure Face API.](images/screenshots/cs-explorer-add-new-profile-0.5b.png)
+![Select your profile.](images/screenshots/cs-explorer-select-profile-0.5b.png)
 
-![](images/screenshots/cs-explorer-add-new-profile-0.5b.png?s=200)
-**And create new profiles link to your Azure Face API.**
+**You can switch and create new profiles link to your Azure Face API.**
 
 **NOTE:** Currently not working on iOS. (https://github.com/mono/mono/issues/16986)
 
