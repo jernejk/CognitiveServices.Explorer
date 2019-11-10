@@ -18,6 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubContent", "GitHubCont
 		..\..\README.md = ..\..\README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{9D5B62E1-B14E-4E83-B919-1826F82904CC}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\android-chrome-192x192.png = ..\..\android-chrome-192x192.png
+		..\..\android-chrome-512x512.png = ..\..\android-chrome-512x512.png
+		..\..\apple-touch-icon.png = ..\..\apple-touch-icon.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9D5B62E1-B14E-4E83-B919-1826F82904CC} = {D203B4F6-3805-48C2-BB18-17A825EAD7A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {73356F3B-DE1F-4484-942A-5762F596E1CD}

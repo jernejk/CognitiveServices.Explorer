@@ -1,10 +1,38 @@
-# CognitiveServices.Explorer
-This project is mean to be used as a show case what Cognitive Services can do, built in client-side Blazor.
+![Cognitive Services Explorer](logo.png)
+
+[![GitHub Stars](https://img.shields.io/github/stars/jernejk/CognitiveServices.Explorer.svg)](https://github.com/SamProf/MatBlazor/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/jernejk/CognitiveServices.Explorer.svg)](https://github.com/SamProf/MatBlazor/issues)
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://jernejk.github.io/CognitiveServices.Explorer/)
+[![Apache-2.0](https://img.shields.io/github/license/jernejk/CognitiveServices.Explorer.svg)](LICENSE)
+
+This is a PWA enabled app used to showcase what Cognitive Services can do, built-in client-side Blazor.
+
+You can use it on your machine, table or phone. iOS currently not supported as it uses WASM via client-side Blazor.
+
+Pull requests are welcomed! 😄
+
+## Demo
 
 You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explorer/)
 
+![](images/screenshots/cs-explorer-users-0.5b.png)
+**Explorer all of the groups on your account.**
+
+![](images/screenshots/cs-explorer-groups-0.5b.png)
+**See all of the identities and you can configure it to see their picture.**
+
+![](images/screenshots/cs-explorer-face-details-0.5b.png)
+** See user details.**
+
+![](images/screenshots/cs-explorer-select-profile-0.5b.png)
+**You can switch between different profiles.**
+
+![](images/screenshots/cs-explorer-add-new-profile-0.5b.png)
+**And create new profiles link to your Azure Face API.**
+
 **NOTE:** Currently not working on iOS. (https://github.com/mono/mono/issues/16986)
-**NOTE 2:** PWA doesn't have an update logic and might require wiping data for jernejk.github.io website in your browser.
+
+**NOTE 2:** Microsoft is not storing images in Azure Face API. You need to add property `ImageUrl` as JSON in `userData`.
 
 ## Supported features
 
@@ -16,7 +44,7 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 * Explore and manage groups, identities and faces
 * Show cURL requests
 * Train group
-* Check if group has been trained
+* Check if the group has been trained
 * Detect/Identify
   * From web cam
   * From file upload
