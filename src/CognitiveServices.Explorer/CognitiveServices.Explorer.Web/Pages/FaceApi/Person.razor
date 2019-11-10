@@ -80,6 +80,12 @@
                     <input type="file" @ref=_inputTypeFileElement />
                 </div>
                 <div class="form-group">
+                    <MatSelect id="face-api-selected-group-id" Label="Detection model" @bind-Value="_selectedDetectionModel">
+                        <MatOption Value="@FaceApiConstants.DetectModelV01">v01 (default)</MatOption>
+                        <MatOption Value="@FaceApiConstants.DetectModelV02">v02 (improved accuracy)</MatOption>
+                    </MatSelect>
+                </div>
+                <div class="form-group">
                     <MatTextField @bind-Value="@_face.UserData" Label="User data (optional)" Icon="view_list" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
                 </div>
             </fieldset>
@@ -112,6 +118,7 @@
     private bool _deleteDialogOpen;
     private FaceDto _face = new FaceDto();
     private string? _faceImageUrl;
+    private string _selectedDetectionModel = FaceApiConstants.DetectModelV01;
     ElementReference _inputTypeFileElement;
 
     protected override async Task OnInitializedAsync()
@@ -138,11 +145,11 @@
             var imageData = await ReadFile();
             if (imageData != null)
             {
-                await viewModel.AddFace(_face, imageData);
+                await viewModel.AddFace(_face, imageData, _selectedDetectionModel);
             }
             else if (!string.IsNullOrWhiteSpace(_faceImageUrl))
             {
-                await viewModel.AddFace(_face, _faceImageUrl!);
+                await viewModel.AddFace(_face, _faceImageUrl!, _selectedDetectionModel);
             }
         }
         else

@@ -71,9 +71,15 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             Person = await MakeRequest<PersonDto>(_personRequest).ConfigureAwait(false);
         }
 
-        public async Task AddFace(FaceDto face, string imageUrl)
+        public async Task AddFace(FaceDto face, string imageUrl, string detectionModel)
         {
-            _addFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(PersonGroupId!, PersonId!, imageUrl, null, face.UserData);
+            _addFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(
+                PersonGroupId!,
+                PersonId!,
+                imageUrl,
+                detectionModel,
+                face.UserData);
+
             UpdateRequestList();
 
             _ = await MakeRequest<string>(_addFaceRequest).ConfigureAwait(false);
@@ -82,9 +88,15 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             await GetPerson();
         }
 
-        public async Task AddFace(FaceDto face, byte[] imageData)
+        public async Task AddFace(FaceDto face, byte[] imageData, string detectionModel)
         {
-            _addBinaryFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(PersonGroupId!, PersonId!, imageData, null, face.UserData);
+            _addBinaryFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(
+                PersonGroupId!,
+                PersonId!,
+                imageData,
+                detectionModel,
+                face.UserData);
+
             UpdateRequestList();
 
             _ = await MakeRequest<string>(_addBinaryFaceRequest).ConfigureAwait(false);
