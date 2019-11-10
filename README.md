@@ -30,7 +30,7 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 ![](images/screenshots/cs-explorer-select-profile-0.5b.png)
 **You can switch between different profiles.**
 
-![](images/screenshots/cs-explorer-add-new-profile-0.5b.png)
+![](images/screenshots/cs-explorer-add-new-profile-0.5b.png?s=200)
 **And create new profiles link to your Azure Face API.**
 
 **NOTE:** Currently not working on iOS. (https://github.com/mono/mono/issues/16986)
