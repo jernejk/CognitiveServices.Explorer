@@ -22,6 +22,7 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
   * From file upload
   * From URL
   * Identify from the detected faces
+  * Different detection/recognition models
 
 <!--
 #### Features planned in the coming weeks
