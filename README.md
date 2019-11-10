@@ -26,13 +26,10 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 * Add/delete people faces
 * Add faces to person
   * From URL
+  * From file upload
 
 #### Features planned in the coming weeks
 
-* Add faces to person
-  * From web cam
-  * ~~From URL~~
-  * From file upload
 * Update face (user data only)
 * Detect faces
   * Emotions, gender, age, etc.

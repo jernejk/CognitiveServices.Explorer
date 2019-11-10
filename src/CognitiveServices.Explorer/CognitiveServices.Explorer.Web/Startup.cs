@@ -1,3 +1,4 @@
+using Blazor.FileReader;
 using Blazored.LocalStorage;
 using CognitiveServices.Explorer.Application;
 using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
@@ -37,11 +38,14 @@ namespace CognitiveServices.Explorer.Web
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
-
+            
+            // 3rd party
             FlurlHttp.Configure(settings =>
             {
                 settings.HttpClientFactory = new HttpClientFactoryForBlazor();
             });
+
+            services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
         }
 
         public void Configure(IComponentsApplicationBuilder app)

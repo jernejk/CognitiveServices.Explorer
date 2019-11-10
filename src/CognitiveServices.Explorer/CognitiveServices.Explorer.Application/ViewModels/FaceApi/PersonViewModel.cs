@@ -74,10 +74,20 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         public async Task AddFace(FaceDto face, string imageUrl)
         {
             _addFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(PersonGroupId!, PersonId!, imageUrl, null, face.UserData);
-            _addBinaryFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(PersonGroupId!, PersonId!, new byte[0]);
             UpdateRequestList();
 
             _ = await MakeRequest<string>(_addFaceRequest).ConfigureAwait(false);
+
+            // Refresh list.
+            await GetPerson();
+        }
+
+        public async Task AddFace(FaceDto face, byte[] imageData)
+        {
+            _addBinaryFaceRequest = PersonGroupPersonFaceRequestGenerator.Add(PersonGroupId!, PersonId!, imageData, null, face.UserData);
+            UpdateRequestList();
+
+            _ = await MakeRequest<string>(_addBinaryFaceRequest).ConfigureAwait(false);
 
             // Refresh list.
             await GetPerson();

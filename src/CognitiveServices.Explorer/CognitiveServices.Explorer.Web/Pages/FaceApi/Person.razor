@@ -2,7 +2,9 @@
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using System.IO;
 @inject PersonViewModel viewModel
+@inject Blazor.FileReader.IFileReaderService fileReaderService;
 
 <FaceApiConfiguration OnUpdated="viewModel.LoadLatestConfig" />
 
@@ -68,7 +70,9 @@
             <ValidationSummary />
             <fieldset>
                 <div class="form-group">
-                    <MatTextField @bind-Value="@_faceImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                    <MatTextField @bind-Value="@_faceImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                    <p><b>OR</b></p>
+                    <input type="file" @ref=_inputTypeFileElement />
                 </div>
                 <div class="form-group">
                     <MatTextField @bind-Value="@_face.UserData" Label="User data (optional)" Icon="view_list" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
@@ -103,6 +107,7 @@
     private bool _deleteDialogOpen;
     private FaceDto _face = new FaceDto();
     private string? _faceImageUrl;
+    ElementReference _inputTypeFileElement;
 
     protected override async Task OnInitializedAsync()
     {
@@ -125,7 +130,15 @@
     {
         if (_isCreating)
         {
-            await viewModel.AddFace(_face, _faceImageUrl);
+            var imageData = await ReadFile();
+            if (imageData != null)
+            {
+                await viewModel.AddFace(_face, imageData);
+            }
+            else if (!string.IsNullOrWhiteSpace(_faceImageUrl))
+            {
+                await viewModel.AddFace(_face, _faceImageUrl!);
+            }
         }
         else
         {
@@ -139,6 +152,7 @@
     {
         _isCreating = true;
         _createOrEditDialogOpen = true;
+        _faceImageUrl = string.Empty;
     }
 
     public void ShowUpdateDialog(FaceDto face)
@@ -168,5 +182,39 @@
 
         _face = new FaceDto();
         _deleteDialogOpen = false;
+    }
+
+    public async Task<byte[]> ReadFile()
+    {
+        try
+        {
+            foreach (var file in await fileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync())
+            {
+                int offset = 0;
+                var buffer = new byte[4096];
+
+                // Read into memory and act
+                using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
+                {
+                    // Read into buffer and act (uses less memory)
+                    using (Stream stream = await file.OpenReadAsync())
+                    {
+                        // Do (async) stuff with stream...
+                        await stream.ReadAsync(buffer, 0, buffer.Length);
+                        memoryStream.Write(buffer, offset, buffer.Length);
+
+                        offset += buffer.Length;
+                    }
+
+                    return memoryStream.ToArray();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return null;
     }
 }
