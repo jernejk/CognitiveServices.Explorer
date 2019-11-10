@@ -50,16 +50,21 @@
                 </MatTable>
             }
         </div>
+
+
+
+        <MatButton Raised="true" Icon="add" OnClick="@ShowAddDialog">Add face</MatButton>
+        @*<MatButton Raised="true" Icon="memory" OnClick="@ShowDeleteDialog">Delete person</MatButton>*@
+        <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetPerson">Refresh</MatButton>
+        <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
     }
     else
     {
         <div class="alert alert-info">Loading person Id @PersonId...</div>
-    }
 
-    <MatButton Raised="true" Icon="add" OnClick="@ShowAddDialog">Add face</MatButton>
-    @*<MatButton Raised="true" Icon="memory" OnClick="@ShowDeleteDialog">Delete person</MatButton>*@
-    <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetPerson">Refresh</MatButton>
-    <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
+        <MatButton Raised="true" Icon="refresh" OnClick="@viewModel.GetPerson">Refresh</MatButton>
+        <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
+    }
 </div>
 
 <MatDialog @bind-IsOpen="@_createOrEditDialogOpen">
@@ -184,7 +189,7 @@
         _deleteDialogOpen = false;
     }
 
-    public async Task<byte[]> ReadFile()
+    public async Task<byte[]?> ReadFile()
     {
         try
         {

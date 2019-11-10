@@ -12,32 +12,29 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 
 #### Feature implemented
 
-* Store base URL and subscription key to local storage
-* Explore groups, identities and faces
+* Multiple Face API accounts
+* Explore and manage groups, identities and faces
 * Show cURL requests
 * Train group
 * Check if group has been trained
-* Detect
-  * No facial features
+* Detect/Identify
   * From web cam
-* Identify from detected faces
-* Add/update/delete groups
-* Add/update/delete people
-* Add/delete people faces
-* Add faces to person
-  * From URL
   * From file upload
+  * From URL
+  * Identify from the detected faces
 
+<!--
 #### Features planned in the coming weeks
 
 * Update face (user data only)
 * Detect faces
   * Emotions, gender, age, etc.
   * ~~From web cam~~
-  * From file upload
-  * From URL
+  * ~~From file upload~~
+  * ~~From URL~~
 * Find similar faces
 * Verify face
+-->
 
 ### Other Cognitive Services in planning (coming months)
 

@@ -64,15 +64,9 @@ namespace CognitiveServices.Explorer.Application
                     break;
             }
 
-            try
+            using (var response = await responseTask)
             {
-                using var response = await responseTask;
                 return await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception: " + e.ToString());
-                return null;
             }
         }
     }

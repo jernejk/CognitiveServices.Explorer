@@ -1,24 +1,58 @@
 ﻿@page "/face/v1.0/detect"
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using System.IO;
 @inject DetectViewModel viewModel
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject Blazor.FileReader.IFileReaderService fileReaderService;
 
 <FaceApiConfiguration OnUpdated="UpdatedProfile" />
 
 <div class="content">
     <h3>Detect</h3>
 
-    <div class="videoCont">
-        <video crossorigin="anonymous" autoplay class="player"></video>
-    </div>
-
-    <canvas id="canvas" class="canvas" style="display: none;"></canvas>
-
     @if (viewModel.FaceApiConfig != null)
     {
-        <button class="btn btn-primary" @onclick="SendFrameToDetect">Detect (1 TR)</button>
+        @if (viewModel.PersonGroups?.Any() == true)
+        {
+            <h5 class="mt-3">1. Get image</h5>
+
+            <MatAccordion>
+                <MatExpansionPanel @bind-Expanded="ImageUrlTabOpened">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Image URL</MatExpansionPanelHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <MatTextField @bind-Value="@_faceImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+                <MatExpansionPanel @bind-Expanded="ImageUploadTabOpened">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>File Upload</MatExpansionPanelHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <input type="file" @ref=_inputTypeFileElement />
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+                <MatExpansionPanel @bind-Expanded="WebCamTabOpened">
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>Web cam</MatExpansionPanelHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <div class="videoCont">
+                            <video crossorigin="anonymous" autoplay class="player"></video>
+                        </div>
+
+                        <canvas id="canvas" class="canvas" style="display: none;"></canvas>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+            </MatAccordion>
+
+            <h5 class="mt-3">2. Detect faces</h5>
+
+            <button class="btn btn-primary" @onclick="DetectImage">Detect (1 TR)</button>
+        }
     }
     else
     {
@@ -48,48 +82,75 @@
                 </tbody>
             </table>
 
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon3">Face Group ID</span>
-                </div>
-                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="Face group ID" @bind-value="@groupId" />
-            </div>
-
-            <button class="btn btn-primary" @onclick="SendIdentifyRequest">Identify (1 TR)</button>
-
-            if (viewModel.Candidates?.Any() == true)
+            if (viewModel.PersonGroups != null)
             {
-                <table class="table table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th scope="col">Face Id</th>
-                            <th scope="col">Person Id</th>
-                            <th scope="col">Confidence</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var potentialIdentity in viewModel.Candidates)
+                <h5 class="mt-3">3. Select group</h5>
+                <EditForm Model="@viewModel.SelectedPersonGroupId">
+                    <MatSelect id="face-api-selected-group-id" Label="Group" @bind-Value="viewModel.SelectedPersonGroupId">
+                        @foreach (var group in viewModel.PersonGroups)
                         {
-                            foreach (var candidate in potentialIdentity.Candidates)
-                            {
-                                <tr>
-                                    <td>@potentialIdentity.FaceId</td>
-                                    <td><a href="face/v1.0/persongroups/@groupId/persons/@candidate.PersonId">@candidate.PersonId</a></td>
-                                    <td>@(Math.Round(candidate.Confidence * 100, 2))%</td>
-                                </tr>
-                            }
+                            <MatOption Value="@group.PersonGroupId">@group.Name</MatOption>
                         }
-                    </tbody>
-                </table>
+                    </MatSelect>
+                </EditForm>
+
+                <h5 class="mt-3">4. Identify faces</h5>
+
+                <button class="btn btn-primary" @onclick="SendIdentifyRequest">Identify (1 TR)</button>
+
+                if (viewModel.Candidates?.Any() == true)
+                {
+                    <h5 class="mt-3">5. Select identity for more details</h5>
+
+                    <table class="table table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Face Id</th>
+                                <th scope="col">Person Id</th>
+                                <th scope="col">Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var potentialIdentity in viewModel.Candidates)
+                            {
+                                foreach (var candidate in potentialIdentity.Candidates)
+                                {
+                                    <tr>
+                                        <td>@potentialIdentity.FaceId</td>
+                                        <td><a href="face/v1.0/persongroups/@groupId/persons/@candidate.PersonId">@candidate.PersonId</a></td>
+                                        <td>@(Math.Round(candidate.Confidence * 100, 2))%</td>
+                                    </tr>
+                                }
+
+                                if (!potentialIdentity.Candidates.Any())
+                                {
+                                    <tr>
+                                        <td>@potentialIdentity.FaceId</td>
+                                        <td>No candidates</td>
+                                        <td>- %</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+                else if (viewModel.Candidates != null)
+                {
+                    <div class="alert alert-warning" role="alert">No identities found...</div>
+                }
+            }
+            else if (viewModel.PersonGroups == null)
+            {
+                <div class="alert alert-warning" role="alert">Loading groups...</div>
+            }
+            else if (!viewModel.PersonGroups.Any())
+            {
+                <div class="alert alert-warning" role="alert">No groups available for identification process.</div>
             }
         }
         else if (viewModel.Faces != null)
         {
             <div class="alert alert-warning" role="alert">No faces found</div>
-        }
-        else if (!string.IsNullOrWhiteSpace(viewModel.Error))
-        {
-            <div class="alert alert-danger" role="alert">@viewModel.Error</div>
         }
         else if (isRunning)
         {
@@ -97,17 +158,72 @@
         }
     </div>
 
+    @if (!string.IsNullOrWhiteSpace(viewModel.Error))
+    {
+    <div class="alert alert-danger" role="alert">@viewModel.Error</div>
+    }
+
     <CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.FaceApiConfig" />
 </div>
 
 @code {
+    int imageTabIndex;
+    string? _faceImageUrl;
     string groupId = string.Empty;
     bool isRunning = false;
+    ElementReference _inputTypeFileElement;
+
+    private string openedTab = "";
+
+    public bool ImageUrlTabOpened
+    {
+        get { return openedTab == "imageUrl"; }
+        set
+        {
+            if (value)
+            {
+                openedTab = "imageUrl";
+                this.StateHasChanged();
+            }
+        }
+    }
+
+    public bool ImageUploadTabOpened
+    {
+        get { return openedTab == "imageUpload"; }
+        set
+        {
+            if (value)
+            {
+                openedTab = "imageUpload";
+                this.StateHasChanged();
+            }
+        }
+    }
+
+    public bool WebCamTabOpened
+    {
+        get { return openedTab == "webcam"; }
+        set
+        {
+            if (value)
+            {
+                openedTab = "webcam";
+                this.StateHasChanged();
+
+                StartWebCam();
+            }
+            else
+            {
+                StopWebCam();
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await viewModel.OnInitializedAsync().ConfigureAwait(false);
-        await StartWebCam();
+        //await StartWebCam();
 
         NavigationManager.LocationChanged += LocationChanged;
     }
@@ -115,42 +231,88 @@
     public void LocationChanged(object sender, LocationChangedEventArgs args)
     {
         NavigationManager.LocationChanged -= LocationChanged;
-        Stop();
+        StopWebCam();
     }
 
     public async Task StartWebCam()
     {
         if (viewModel.FaceApiConfig != null && !isRunning)
         {
-            await JSRuntime.InvokeVoidAsync("startVideoOnloaded");
-            isRunning = true;
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("startVideoOnloaded");
+                isRunning = true;
+            }
+            catch
+            {
+            }
         }
     }
 
-    public async Task Stop()
+    public async Task StopWebCam()
     {
         if (isRunning)
         {
-            isRunning = false;
-            await JSRuntime.InvokeVoidAsync("stopVideo");
+            try
+            {
+                isRunning = false;
+                await JSRuntime.InvokeVoidAsync("stopVideo");
+            }
+            catch
+            {
+            }
         }
     }
 
-    public async Task SendFrameToDetect()
+    public async Task DetectImage()
     {
-        var base64 = await JSRuntime.InvokeAsync<string>("getFrame");
-        if (base64?.Contains(",") == true && base64.Length > 1)
+        if (openedTab == "webcam")
         {
-            base64 = base64.Split(',')[1];
-            byte[] data = Convert.FromBase64String(base64);
+            if (!isRunning)
+            {
+                viewModel.Error = "Webcam is not running.";
+                return;
+            }
 
-            await viewModel.Detect(data);
+            var base64 = await JSRuntime.InvokeAsync<string>("getFrame");
+            if (base64?.Contains(",") == true && base64.Length > 1)
+            {
+                base64 = base64.Split(',')[1];
+                byte[] data = Convert.FromBase64String(base64);
+
+                await viewModel.Detect(data);
+            }
+            else
+            {
+                viewModel.Error = "Unable to get image from webcam";
+            }
+        }
+        else if (openedTab == "imageUrl")
+        {
+            if (string.IsNullOrWhiteSpace(_faceImageUrl))
+            {
+                viewModel.Error = "Image URL can't be empty.";
+                return;
+            }
+
+            await viewModel.Detect(_faceImageUrl!);
+        }
+        else if (openedTab == "imageUpload")
+        {
+            var imageData = await ReadFile();
+            if (imageData == null)
+            {
+                viewModel.Error = "Unable to load the image.";
+                return;
+            }
+
+            await viewModel.Detect(imageData);
         }
     }
 
     public async Task SendIdentifyRequest()
     {
-        await viewModel.Identify(groupId);
+        await viewModel.Identify();
 
         base.StateHasChanged();
     }
@@ -160,5 +322,39 @@
         await viewModel.LoadLatestConfig();
         await StartWebCam();
         base.StateHasChanged();
+    }
+
+    public async Task<byte[]?> ReadFile()
+    {
+        try
+        {
+            foreach (var file in await fileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync())
+            {
+                int offset = 0;
+                var buffer = new byte[4096];
+
+                // Read into memory and act
+                using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
+                {
+                    // Read into buffer and act (uses less memory)
+                    using (Stream stream = await file.OpenReadAsync())
+                    {
+                        // Do (async) stuff with stream...
+                        await stream.ReadAsync(buffer, 0, buffer.Length);
+                        memoryStream.Write(buffer, offset, buffer.Length);
+
+                        offset += buffer.Length;
+                    }
+
+                    return memoryStream.ToArray();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return null;
     }
 }
