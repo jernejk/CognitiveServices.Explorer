@@ -27,9 +27,7 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 ![Detect and identify people by URL, file upload or web cam.](images/screenshots/cs-explorer-detect-identify-0.5b.png)
 **Detect and identify people by URL, file upload or web cam.**
 
-![Create new profile linked to Azure Face API.](images/screenshots/cs-explorer-add-new-profile-0.5b.png)
-![Select your profile.](images/screenshots/cs-explorer-select-profile-0.5b.png)
-
+![Create and switch between profiles linked to Azure Face API.](images/screenshots/cs-explorer-profile-switcher-0.5b.png)
 **You can switch and create new profiles link to your Azure Face API.**
 
 **NOTE:** Currently not working on iOS. (https://github.com/mono/mono/issues/16986)
