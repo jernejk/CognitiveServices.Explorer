@@ -1,0 +1,47 @@
+﻿@using CognitiveServices.Explorer.Domain.Face
+@using CognitiveServices.Explorer.Application.ViewModels.FaceApi
+@using System.Text.Json
+
+<div>
+    @if (Person != null)
+    {
+    <p class="mb-1">
+        <b>Person ID:</b> @Person.PersonId<br />
+        <b>Number of faces:</b> @(Person.PersistedFaceIds?.Count ?? 0)
+    </p>
+    var userData = ReadUserData();
+    if (userData?.Any() == true)
+    {
+    <p class="mb-1 mt-2">
+        @foreach (var keyPair in userData)
+        {
+            <b>@keyPair.Key:</b> @keyPair.Value<br />
+        }
+    </p>
+    }
+    }
+</div>
+
+@code {
+    [Parameter] public PersonDto? Person { get; set; }
+
+    public Dictionary<string, string>? ReadUserData()
+    {
+        if (Person?.UserData?.StartsWith("{") != true)
+        {
+            return null;
+        }
+
+        Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+        var options = new JsonDocumentOptions { AllowTrailingCommas = true };
+        using (JsonDocument document = JsonDocument.Parse(Person!.UserData, options))
+        {
+            foreach (var element in document.RootElement.EnumerateObject())
+            {
+                keyValuePairs.Add(element.Name, element.Value.ToString());
+            }
+
+            return keyValuePairs;
+        }
+    }
+}

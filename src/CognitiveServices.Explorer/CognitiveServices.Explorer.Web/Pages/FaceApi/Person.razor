@@ -21,16 +21,12 @@
                     <b>@viewModel.Person.Name</b><br />
                     <span style="color: #999;"><small>@viewModel.Person.PersonId</small></span>
                 </p>
-
-                <p>
-                    <b>Faces:</b> @(viewModel.Person.PersistedFaceIds?.Count ?? 0)<br />
-                </p>
             </div>
         </div>
 
         <div>
             <b>UserData:</b><br />
-            <pre style="width:100%;"><code>@viewModel.Person.UserData</code></pre>
+            <UserData Person="viewModel.Person"></UserData>
         </div>
 
         <div>

@@ -15,10 +15,7 @@
             <MatTable Items="viewModel.People" FilterByColumnName="Name" SortBy="Name" Striped="true">
                 <MatTableHeader>
                     <th style="padding: 0"></th>
-                    <th style="width: 50px;"> &nbsp; </th>
-                    <th>Person Id</th>
-                    <th>Name</th>
-                    <th>Number of faces</th>
+                    <th><span style="width: 200px;">Person</span></th>
                     <th>User Data</th>
                 </MatTableHeader>
                 <MatTableRow>
@@ -27,22 +24,16 @@
                         <MatIconButton Icon="delete" OnClick="@(() => ShowDeletePersonDialog(context))"></MatIconButton>
                     </td>
                     <td>
-                        @{
-                                string? imageUrl = GetImageUrl(context.UserData);
-                                if (!string.IsNullOrWhiteSpace(imageUrl))
-                                {
-                                <img src="@imageUrl" width="40" />
-                                }
-                                else
-                                {
-                                <span>&nbsp;</span>
-                                }
-                        }
+                        <div style="width: 140px;">
+                            <div class="pull-left mr-2">
+                                <img src="@GetImageUrl(context.UserData)" width="40" />
+                            </div>
+                            <div class="pl-2">
+                                <a href="face/v1.0/persongroups/@PersonGroupId/persons/@context.PersonId">@context.Name</a><br />
+                            </div>
+                        </div>
                     </td>
-                    <td><a href="face/v1.0/persongroups/@PersonGroupId/persons/@context.PersonId">@context.PersonId</a></td>
-                    <td>@context.Name</td>
-                    <td>@(context.PersistedFaceIds?.Count ?? 0)</td>
-                    <td><code>@CropText(context.UserData)</code></td>
+                    <td class="pb-0"><UserData Person="context"></UserData></td>
                 </MatTableRow>
             </MatTable>
         }
@@ -140,6 +131,11 @@
         {
             var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(userData);
             imageUrl = customUserData.GetImageUrl();
+        }
+
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            imageUrl = "images/Face/anonymous-avatar.jpg";
         }
 
         return imageUrl;
