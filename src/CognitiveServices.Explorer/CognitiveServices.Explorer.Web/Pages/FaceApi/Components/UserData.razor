@@ -27,21 +27,28 @@
 
     public Dictionary<string, string>? ReadUserData()
     {
-        if (Person?.UserData?.StartsWith("{") != true)
+        try
+        {
+            if (Person?.UserData?.StartsWith("{") != true)
+            {
+                return null;
+            }
+            
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+            var options = new JsonDocumentOptions { AllowTrailingCommas = true };
+            using (JsonDocument document = JsonDocument.Parse(Person!.UserData, options))
+            {
+                foreach (var element in document.RootElement.EnumerateObject())
+                {
+                    keyValuePairs.Add(element.Name, element.Value.ToString());
+                }
+
+                return keyValuePairs;
+            }
+        }
+        catch
         {
             return null;
-        }
-
-        Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
-        var options = new JsonDocumentOptions { AllowTrailingCommas = true };
-        using (JsonDocument document = JsonDocument.Parse(Person!.UserData, options))
-        {
-            foreach (var element in document.RootElement.EnumerateObject())
-            {
-                keyValuePairs.Add(element.Name, element.Value.ToString());
-            }
-
-            return keyValuePairs;
         }
     }
 }
