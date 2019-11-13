@@ -1,0 +1,52 @@
+﻿@page "/speech"
+@inject IJSRuntime JSRuntime
+
+<h3>ProtoType</h3>
+
+<button @onclick="StartRecording">Init recording</button>
+<button id="recorder-button" style="@(_isRecordButtonVisible ? "" : "display: none;")">
+    <div id="recorder-button-div" style="background-color: red; border-radius: 50%; width: 100px; height: 100px;"></div>
+</button>
+<audio id="audio"></audio>
+
+<button @onclick="DownloadLastRecording">Download last recording</button>
+
+<p>@_debugText</p>
+
+@code { 
+    private bool _isRecordButtonVisible = false;
+    private string _debugText = string.Empty;
+    protected async override Task OnInitializedAsync()
+    {
+        //await JSRuntime.InvokeVoidAsync("initAudioRecording");
+
+        await base.OnInitializedAsync();
+    }
+
+    public async Task StartRecording()
+    {
+        // @onclick="StartRecording"
+        _isRecordButtonVisible = true;
+        await JSRuntime.InvokeVoidAsync("initAudioRecording");
+    }
+
+    public async Task DownloadLastRecording()
+    {
+        //getLastAudioRecording
+        var url = await JSRuntime.InvokeAsync<string>("getLastAudioRecording");
+
+        try
+        {
+            HttpClient client = new HttpClient();
+
+            var data = await client.GetByteArrayAsync(url);
+
+            _debugText = data?.Length.ToString() ?? "-1";
+            Console.WriteLine(data.Length);
+        }
+        catch (Exception e)
+        {
+            _debugText = "Failed: " + e;
+        }
+    }
+}
