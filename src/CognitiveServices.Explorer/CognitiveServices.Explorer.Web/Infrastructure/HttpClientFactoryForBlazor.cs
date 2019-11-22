@@ -1,6 +1,8 @@
 ﻿using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Blazor.Http;
+using System;
 using System.Net.Http;
+using System.Reflection;
 
 namespace CognitiveServices.Explorer.Web.Infrastructure
 {
@@ -8,7 +10,8 @@ namespace CognitiveServices.Explorer.Web.Infrastructure
     {
         public override HttpMessageHandler CreateMessageHandler()
         {
-            return new WebAssemblyHttpMessageHandler();
+            var wasmHttpMessageHandlerType = Assembly.Load("WebAssembly.Net.Http").GetType("WebAssembly.Net.Http.HttpClient.WasmHttpMessageHandler");
+            return (HttpMessageHandler)Activator.CreateInstance(wasmHttpMessageHandlerType);
         }
     }
 }
