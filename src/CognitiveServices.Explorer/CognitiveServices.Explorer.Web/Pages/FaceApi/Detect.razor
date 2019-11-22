@@ -338,8 +338,7 @@
 
     public async Task UpdatedProfile()
     {
-        await viewModel.LoadLatestConfig();
-        await StartWebCam();
+        await viewModel.ProfileChanged();
         base.StateHasChanged();
     }
 

@@ -9,7 +9,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public class DetectViewModel : BaseFaceApiViewModel
     {
-        private HttpRequest _personGroupListRequest;
+        private readonly HttpRequest _personGroupListRequest;
         private HttpRequest _detectBinaryRequest;
         private HttpRequest _detectUrlRequest;
         private HttpRequest _identifyRequest;
@@ -39,6 +39,16 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 
             PersonGroups = await MakeRequest<List<PersonGroupDto>>(_personGroupListRequest);
             SelectedPersonGroupId = PersonGroups?.Select(g => g.PersonGroupId).FirstOrDefault();
+        }
+
+        public async Task ProfileChanged()
+        {
+            // This information is no longer valid as the Face IDs are not shared between accounts.
+            Faces = null;
+            Candidates = null;
+
+            await LoadLatestConfig();
+            PersonGroups = await MakeRequest<List<PersonGroupDto>>(_personGroupListRequest);
         }
 
         public async Task Detect(byte[] data)
