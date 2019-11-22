@@ -68,7 +68,7 @@ function startAudioRecording() {
                             encodeAfterRecord: true,
                             // mp3: bitRate: '160 is default, 320 is max quality'
                             // mp3: { bitRate: '320' }
-                            wav: { bitRate: 160 }
+                            wav: { bitRate: 16 }
                         }
                     });
                     // the method that fires when the recording finishes (triggered by webAudioRecorder.finishRecording() below)
