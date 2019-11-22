@@ -129,7 +129,7 @@
         var imageUrl = string.Empty;
         if (userData?.StartsWith("{") == true)
         {
-            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(userData);
+            var customUserData = System.Text.Json.JsonSerializer.Deserialize<UserDataWithImageUrl>(userData);
             imageUrl = customUserData.GetImageUrl();
         }
 

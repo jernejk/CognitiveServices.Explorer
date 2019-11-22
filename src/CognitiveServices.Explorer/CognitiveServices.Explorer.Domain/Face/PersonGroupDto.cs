@@ -15,6 +15,6 @@ namespace CognitiveServices.Explorer.Domain.Face
         public string UserData { get; set; }
 
         [DataMember(Name = "recognitionModel")]
-        public string RecogntionModel { get; set; }
+        public string RecognitionModel { get; set; }
     }
 }

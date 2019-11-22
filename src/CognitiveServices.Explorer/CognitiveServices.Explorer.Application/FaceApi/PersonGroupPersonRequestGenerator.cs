@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
 {
-    public class PersonGroupPersonRequestGenerator
+    public static class PersonGroupPersonRequestGenerator
     {
         public static HttpRequest List(string groupId)
         {
@@ -33,7 +33,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             {
                 HttpMethod = HttpMethods.Post,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons",
-                Body = JsonConvert.SerializeObject(new
+                Body = JsonSerializer.Serialize(new
                 {
                     name,
                     userData
@@ -49,7 +49,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             {
                 HttpMethod = HttpMethods.Patch,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{userId}",
-                Body = JsonConvert.SerializeObject(new
+                Body = JsonSerializer.Serialize(new
                 {
                     name,
                     userData

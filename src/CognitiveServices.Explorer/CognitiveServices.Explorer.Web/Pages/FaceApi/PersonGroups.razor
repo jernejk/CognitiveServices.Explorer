@@ -27,7 +27,7 @@
                     </td>
                     <td><a href="face/v1.0/persongroups/@context.PersonGroupId/persons">@context.PersonGroupId</a></td>
                     <td>@context.Name</td>
-                    <td>@context.RecogntionModel</td>
+                    <td>@context.RecognitionModel</td>
                     <td>@context.UserData</td>
                 </MatTableRow>
             </MatTable>
@@ -68,7 +68,7 @@
                     <MatTextField @bind-Value="@viewModel.EditGroup.UserData" Label="User data (optional)" Icon="view_list" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
                 </div>
                 <div class="form-group">
-                    <MatSelect id="face-api-selected-group-id" Label="Group" @bind-Value="viewModel.EditGroup.RecogntionModel">
+                    <MatSelect id="face-api-selected-group-id" Label="Group" @bind-Value="viewModel.EditGroup.RecognitionModel">
                         <MatOption Value="@FaceApiConstants.RecognitionModelV01">v01</MatOption>
                         <MatOption Value="@FaceApiConstants.RecognitionModelV02">v02 (improved accuracy)</MatOption>
                     </MatSelect>
@@ -137,7 +137,7 @@
             PersonGroupId = personGroup.PersonGroupId,
             Name = personGroup.Name,
             UserData = personGroup.UserData,
-            RecogntionModel = personGroup.RecogntionModel
+            RecognitionModel = personGroup.RecognitionModel
         };
 
         _isCreatingGroup = false;

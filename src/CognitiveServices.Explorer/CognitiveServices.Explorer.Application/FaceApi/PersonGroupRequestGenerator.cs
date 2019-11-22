@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
 {
@@ -13,7 +13,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                 HttpMethod = HttpMethods.Put,
                 ContentType = "application/json",
                 RelativePath = $"face/v1.0/persongroups/{groupId}",
-                Body = JsonConvert.SerializeObject(new
+                Body = JsonSerializer.Serialize(new
                 {
                     name,
                     recognitionModel,
@@ -31,7 +31,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                 HttpMethod = HttpMethods.Patch,
                 ContentType = "application/json",
                 RelativePath = $"face/v1.0/persongroups/{groupId}",
-                Body = JsonConvert.SerializeObject(new
+                Body = JsonSerializer.Serialize(new
                 {
                     name,
                     userData

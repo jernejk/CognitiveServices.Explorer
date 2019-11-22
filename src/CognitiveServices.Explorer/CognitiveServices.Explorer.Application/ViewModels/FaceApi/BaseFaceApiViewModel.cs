@@ -1,8 +1,8 @@
 ﻿using CognitiveServices.Explorer.Application.Curl;
 using CognitiveServices.Explorer.Domain.Face;
 using Flurl.Http;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
@@ -54,7 +54,10 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
                 await LoadLatestConfig().ConfigureAwait(false);
 
                 RawJson = await _httpRequestService.Send(request, _faceApiConfig).ConfigureAwait(false) ?? string.Empty;
-                return JsonConvert.DeserializeObject<T>(RawJson);
+                return JsonSerializer.Deserialize<T>(RawJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
             }
             catch (FlurlHttpException fe)
             {

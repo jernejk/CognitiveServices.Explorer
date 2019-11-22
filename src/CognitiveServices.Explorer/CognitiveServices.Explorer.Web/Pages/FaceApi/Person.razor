@@ -125,7 +125,7 @@
 
         if (!string.IsNullOrWhiteSpace(viewModel.Person?.UserData) && viewModel.Person!.UserData!.StartsWith("{"))
         {
-            var customUserData = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDataWithImageUrl>(viewModel.Person.UserData);
+            var customUserData = System.Text.Json.JsonSerializer.Deserialize<UserDataWithImageUrl>(viewModel.Person.UserData);
             var imageUrl = customUserData.GetImageUrl();
             if (!string.IsNullOrWhiteSpace(imageUrl))
             {

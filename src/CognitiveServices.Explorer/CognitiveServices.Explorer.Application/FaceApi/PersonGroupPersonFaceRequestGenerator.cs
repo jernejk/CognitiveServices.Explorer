@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace CognitiveServices.Explorer.Application.FaceApi
 {
@@ -13,7 +13,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
                 HttpMethod = HttpMethods.Post,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{userId}/persistedFaces",
                 Queries = GenerateQueries(detectionModel, userData, targetFace),
-                Body = JsonConvert.SerializeObject(new { url = imageUrl }),
+                Body = JsonSerializer.Serialize(new { url = imageUrl }),
                 Cost = ServiceCost.FaceApiTransaction(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523b"
             };
@@ -50,7 +50,7 @@ namespace CognitiveServices.Explorer.Application.FaceApi
             {
                 HttpMethod = HttpMethods.Patch,
                 RelativePath = $"face/v1.0/persongroups/{groupId}/persons/{userId}/persistedFaces/{faceId}",
-                Body = JsonConvert.SerializeObject(new { userData }),
+                Body = JsonSerializer.Serialize(new { userData }),
                 Cost = ServiceCost.FaceApiTransaction(1),
                 CognitiveServiceDoc = "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395243"
             };

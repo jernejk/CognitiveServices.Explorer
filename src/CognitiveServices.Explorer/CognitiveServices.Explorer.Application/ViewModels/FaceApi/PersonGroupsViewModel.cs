@@ -40,7 +40,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 
         public async Task CreateGroup()
         {
-            CreatePersonGroupRequest = PersonGroupRequestGenerator.Create(EditGroup.PersonGroupId, EditGroup.Name, EditGroup.UserData, EditGroup.RecogntionModel);
+            CreatePersonGroupRequest = PersonGroupRequestGenerator.Create(EditGroup.PersonGroupId, EditGroup.Name, EditGroup.UserData, EditGroup.RecognitionModel);
             UpdateRequestList();
 
             _ = await MakeRequest<string>(CreatePersonGroupRequest).ConfigureAwait(false);
