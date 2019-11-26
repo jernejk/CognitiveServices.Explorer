@@ -26,6 +26,19 @@
         </MatNavSubMenuList>
     </MatNavSubMenu>
 
+    <MatNavSubMenu Expanded="true">
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false">
+                <MatIcon>headset_mic</MatIcon><span class="miniHover"> Speech API</span>
+            </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            <MatNavItem Href="speech">
+                <MatIcon>hot_tub</MatIcon> <span class="miniHover">Prototype</span>
+            </MatNavItem>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+
     @*<MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
         <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>
     </MatNavItem>

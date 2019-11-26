@@ -1,38 +1,120 @@
 ﻿@page "/speech"
+@using CognitiveServices.Explorer.Application
+@using CognitiveServices.Explorer.Domain.Speech
+@using CognitiveServices.Explorer.Domain.Text
 @inject IJSRuntime JSRuntime
+@inject ICognitiveServicesConfigService csConfigService
 
-<h3>ProtoType</h3>
+<h3>Speech prototype (early beta)</h3>
 
-<button @onclick="StartRecording">Init recording</button>
+<p>
+    Experimental feature, which hasn't been nicely integrated in client-side Blazor.<br />
+    Most of the capture logic is happening on JS side and might not work all the time.
+</p>
+
+<ol>
+    <li>Enter Speech API details</li>
+    <li>Click Init recording (once only)</li>
+    <li>Start recording</li>
+    <li>Stop recording</li>
+    <li>Send to Speech API</li>
+</ol>
+
+<EditForm Model="@_speechConfig">
+    <fieldset>
+        <h4>Speech API details</h4>
+        <div class="form-group">
+            <MatTextField @bind-Value="@_speechConfig.ProfileName" Label="Profile name (optional)" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@_speechConfig.BaseUrl" Label="Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@_speechConfig.Token" Label="Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+    </fieldset>
+</EditForm>
+
+@if (!_isRecordButtonVisible)
+{
+    <button @onclick="StartRecording">Init recording</button>
+}
+
 <button id="recorder-button" style="@(_isRecordButtonVisible ? "" : "display: none;")">
     <div id="recorder-button-div" style="background-color: red; border-radius: 50%; width: 100px; height: 100px;"></div>
 </button>
 <audio id="audio"></audio>
 
-<button @onclick="DownloadLastRecording">Download last recording</button>
+<button @onclick="DownloadLastRecording">Send to Speech API</button>
 
-<p>@_debugText</p>
+<small><pre>DEBUG: @_debugText</pre></small>
 
-@code { 
+@if (_isSpeechSuccsefull)
+{
+    <p>
+        <h4>Recognized text</h4>
+        @_recognizedText
+    </p>
+
+    <EditForm Model="@_textConfig">
+        <fieldset>
+            <h4>Text API details (because why not 😁)</h4>
+            <div class="form-group">
+                <MatTextField @bind-Value="@_textConfig.ProfileName" Label="Profile name (optional)" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@_textConfig.BaseUrl" Label="Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatTextField @bind-Value="@_textConfig.Token" Label="Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+        </fieldset>
+    </EditForm>
+
+    <button @onclick="SendToTextApi">Send to Text API</button>
+
+    <pre>@_textAnalysis</pre>
+}
+
+@code {
     private bool _isRecordButtonVisible = false;
     private string _debugText = string.Empty;
+    private string _recognizedText = string.Empty;
+    private CognitiveServiceConfig _speechConfig;
+    private CognitiveServiceConfig _textConfig;
+    private bool _isSpeechSuccsefull = false;
+    private bool _usePreviewVersion = true;
+    private string _textAnalysis = string.Empty;
+
     protected async override Task OnInitializedAsync()
     {
-        //await JSRuntime.InvokeVoidAsync("initAudioRecording");
-
         await base.OnInitializedAsync();
+
+        _speechConfig = await csConfigService.GetConfig("SpeechApi");
+        if (_speechConfig == null)
+        {
+            _speechConfig = new CognitiveServiceConfig("SpeechApi");
+            _speechConfig.ProfileName = "default";
+        }
+
+        _textConfig = await csConfigService.GetConfig("TextApi");
+        if (_textConfig == null)
+        {
+            _textConfig = new CognitiveServiceConfig("TextApi");
+            _textConfig.ProfileName = "default";
+        }
     }
 
     public async Task StartRecording()
     {
-        // @onclick="StartRecording"
         _isRecordButtonVisible = true;
         await JSRuntime.InvokeVoidAsync("initAudioRecording");
     }
 
     public async Task DownloadLastRecording()
     {
-        //getLastAudioRecording
+        await csConfigService.SetConfig(_speechConfig);
+
         var url = await JSRuntime.InvokeAsync<string>("getLastAudioRecording");
 
         try
@@ -41,13 +123,13 @@
 
             var data = await client.GetByteArrayAsync(url);
 
-            _debugText = data?.Length.ToString() ?? "-1";
-            Console.WriteLine(_debugText);
+            _debugText = string.Empty;
+            Console.WriteLine("Audio size: " + data.Length);
 
             client.DefaultRequestHeaders.Add("ContentType", "audio/wav; codecs=audio/pcm; samplerate=16000");
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "");
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _speechConfig.Token);
 
-            var uri = new Uri("https://australiaeast.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed");
+            var uri = new Uri($"{_speechConfig.BaseUrl}/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed");
 
             try
             {
@@ -55,10 +137,26 @@
                 Console.WriteLine(response.StatusCode);
 
                 string json = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(json);
+                _debugText = json;
+
+                var speechResult = System.Text.Json.JsonSerializer.Deserialize<SpeechRecognizedResult>(json, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = false
+                });
+
+                if (speechResult?.NBest?.Any() == true)
+                {
+                    _recognizedText = speechResult.NBest.First().Display;
+                    _isSpeechSuccsefull = true;
+                }
+                else if (!string.IsNullOrWhiteSpace(speechResult?.RecognitionStatus))
+                {
+                    _debugText = "Status: " + speechResult!.RecognitionStatus;
+                }
             }
             catch (Exception e)
             {
+                _debugText = "Failed to get response: " + e.ToString();
                 Console.WriteLine("Exception: " + e);
             }
 
@@ -67,5 +165,116 @@
         {
             _debugText = "Failed: " + e;
         }
+    }
+
+    public async Task SendToTextApi()
+    {
+        await csConfigService.SetConfig(_textConfig);
+        _textAnalysis = $"Text analysis for `{_recognizedText}`:\n";
+
+        try
+        {
+            var documentRequest = new TextApiRequest
+            {
+                documents = new Document[]
+                {
+                    new Document
+                    {
+                        language = "en",
+                        id = "1",
+                        text = _recognizedText
+                    }
+                    }
+            };
+
+            AnalysedDocument sentimentResult = await AnalyzeDocument(documentRequest, "sentiment");
+            if (sentimentResult != null)
+            {
+                // We get back score representing sentiment.
+                if (_usePreviewVersion)
+                {
+                    // We are getting a more accurate representation of how positive, negative and neutral the text is.
+                    _textAnalysis += $"  Sentiment is {sentimentResult.sentiment} with scores:\n";
+                    _textAnalysis += $"   - Positive:  {Math.Round(sentimentResult.documentScores.positive * 100, 2)}%\n";
+                    _textAnalysis += $"   - Neutral:   {Math.Round(sentimentResult.documentScores.neutral * 100, 2)}%\n";
+                    _textAnalysis += $"   - Negative:  {Math.Round(sentimentResult.documentScores.negative * 100, 2)}%\n";
+                }
+                else
+                {
+                    // We only get how potentially positive the text is in Sentiment analysis v2.
+                    double score = sentimentResult.score;
+
+                    // Try to determine if message is positive, negative or neutral.
+                    string sentiment = score >= 0.75 ? "positive" : (score < 0.25 ? "negative" : "neutral");
+                    _textAnalysis += $"  Sentiment is {sentiment} ({Math.Round(score * 100)}%)\n";
+                }
+            }
+            else
+            {
+                _textAnalysis += "  No sentiment found.\n";
+            }
+
+
+            _textAnalysis += "\n";
+
+            AnalysedDocument keyPhrasesResult = await AnalyzeDocument(documentRequest, "keyPhrases");
+            if (keyPhrasesResult?.keyPhrases?.Any() == true)
+            {
+                _textAnalysis += $"  Key phrases:\n";
+                foreach (var keyPhrase in keyPhrasesResult.keyPhrases)
+                {
+                    _textAnalysis += $"   - {keyPhrase}\n";
+                }
+            }
+            else
+            {
+                _textAnalysis += "  No key phrases found.\n";
+            }
+
+            _textAnalysis += "\n";
+
+            AnalysedDocument namedEntitiesResult = await AnalyzeDocument(documentRequest, "entities");
+            if (namedEntitiesResult?.entities?.Any() == true)
+            {
+                _textAnalysis += "  Entities:\n";
+                foreach (var entity in namedEntitiesResult.entities)
+                {
+                    _textAnalysis += $"   - {entity.name} ({entity.type})\n";
+                    if (!string.IsNullOrWhiteSpace(entity.wikipediaUrl))
+                    {
+                        _textAnalysis += $"       {entity.wikipediaUrl}\n";
+                    }
+                }
+            }
+            else
+            {
+                _textAnalysis += "  No entities found.\n";
+            }
+        }
+        catch (Exception e)
+        {
+            _debugText = "Failed: " + e;
+        }
+    }
+
+    private async Task<AnalysedDocument?> AnalyzeDocument(TextApiRequest sentimentDocument, string textAnalysisType)
+    {
+        // A preview version 3 only exists for sentiment analysis.
+        string version = _usePreviewVersion && textAnalysisType == "sentiment" ? "3.0-preview" : "2.1";
+
+        TextApiResponse textApiResponse;
+        using (var client = new HttpClient())
+        {
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _textConfig.Token);
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(sentimentDocument);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"{_textConfig.BaseUrl}/text/analytics/v{version}/{textAnalysisType}", content);
+
+            string responseJson = await response.Content.ReadAsStringAsync();
+            textApiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<TextApiResponse>(responseJson);
+        }
+
+        return textApiResponse?.documents?.FirstOrDefault();
     }
 }

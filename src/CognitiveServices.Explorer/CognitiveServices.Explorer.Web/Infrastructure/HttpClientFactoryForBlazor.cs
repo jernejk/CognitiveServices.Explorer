@@ -1,5 +1,4 @@
 ﻿using Flurl.Http.Configuration;
-using Microsoft.AspNetCore.Blazor.Http;
 using System;
 using System.Net.Http;
 using System.Reflection;
