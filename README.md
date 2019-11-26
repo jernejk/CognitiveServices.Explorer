@@ -38,8 +38,6 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 
 ### Face API
 
-#### Feature implemented
-
 * Multiple Face API accounts
 * Explore and manage groups, identities and faces
 * Show cURL requests
@@ -51,6 +49,18 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
   * From URL
   * Identify from the detected faces
   * Different detection/recognition models
+
+
+### Speech API (alpha)
+
+* Record and send voice to Speech API
+
+### Text API (alpha)
+
+* Send text from speech API
+  * Sentiment
+  * Key phrase
+  * Entities
 
 <!--
 #### Features planned in the coming weeks
@@ -65,9 +75,8 @@ You can check out [live demo](https://jernejk.github.io/CognitiveServices.Explor
 * Verify face
 -->
 
-### Other Cognitive Services in planning (coming months)
+## Other Cognitive Services in planning (coming months)
 
-* Text Analyzer
 * Translation
 * Language Understanding
 * Search
