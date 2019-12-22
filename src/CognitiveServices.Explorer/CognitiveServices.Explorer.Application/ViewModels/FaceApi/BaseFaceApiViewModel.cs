@@ -1,6 +1,8 @@
-﻿using CognitiveServices.Explorer.Application.Curl;
+﻿using CognitiveServices.Explorer.Application.Commands;
+using CognitiveServices.Explorer.Application.Curl;
 using CognitiveServices.Explorer.Domain.Face;
 using Flurl.Http;
+using MediatR;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,13 +12,15 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
     public abstract class BaseFaceApiViewModel
     {
         protected readonly ICognitiveServicesConfigService _csConfigService;
-        protected readonly HttpRequestService _httpRequestService = new HttpRequestService();
+        private readonly IMediator _mediator;
+        //protected readonly HttpRequestService _httpRequestService = new HttpRequestService();
         protected readonly CurlGenerator _curlGenerator = new CurlGenerator();
         protected CognitiveServiceConfig? _faceApiConfig = null;
 
-        public BaseFaceApiViewModel(ICognitiveServicesConfigService csConfigService)
+        public BaseFaceApiViewModel(ICognitiveServicesConfigService csConfigService, IMediator mediator)
         {
             _csConfigService = csConfigService;
+            _mediator = mediator;
         }
 
         public string RawJson { get; set; } = string.Empty;
@@ -53,7 +57,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             {
                 await LoadLatestConfig().ConfigureAwait(false);
 
-                RawJson = await _httpRequestService.Send(request, _faceApiConfig).ConfigureAwait(false) ?? string.Empty;
+                RawJson = await _mediator.Send(new ExecuteCognitiveServicesCommand(request, _faceApiConfig)).ConfigureAwait(false) ?? string.Empty;
+                //RawJson = await _httpRequestService.Send(request, _faceApiConfig).ConfigureAwait(false) ?? string.Empty;
                 return JsonSerializer.Deserialize<T>(RawJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true

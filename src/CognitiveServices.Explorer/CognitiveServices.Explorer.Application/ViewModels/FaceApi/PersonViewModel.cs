@@ -1,5 +1,6 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
 using CognitiveServices.Explorer.Domain.Face;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,8 +16,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         private HttpRequest? _updateFaceRequest;
         private HttpRequest? _deleteFaceRequest;
 
-        public PersonViewModel(ICognitiveServicesConfigService csConfigService)
-            : base(csConfigService)
+        public PersonViewModel(ICognitiveServicesConfigService csConfigService, IMediator mediator)
+            : base(csConfigService, mediator)
         {
         }
 
