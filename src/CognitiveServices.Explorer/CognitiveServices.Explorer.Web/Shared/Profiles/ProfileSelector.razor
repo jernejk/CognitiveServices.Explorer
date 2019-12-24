@@ -3,7 +3,7 @@
     {
         <div>
             <EditForm Model="@SelectedProfile">
-                <MatSelect id="face-api-selected-profile" Label="Face API Profile" @bind-Value="SelectedProfile">
+                <MatSelect id="face-api-selected-profile" Label="Profiles" @bind-Value="SelectedProfile">
                     @foreach (var profile in _profiles)
                     {
                         <MatOption Value="@profile.ProfileName">@profile.ProfileName</MatOption>
