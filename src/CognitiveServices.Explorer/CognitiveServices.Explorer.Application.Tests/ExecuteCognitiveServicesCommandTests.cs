@@ -1,4 +1,5 @@
-﻿using CognitiveServices.Explorer.Application.FaceApi;
+﻿using CognitiveServices.Explorer.Application.Commands;
+using CognitiveServices.Explorer.Application.FaceApi;
 using CognitiveServices.Explorer.Domain.Profiles;
 using Flurl.Http.Testing;
 using System.Net.Http;
@@ -7,19 +8,24 @@ using Xunit;
 
 namespace CognitiveServices.Explorer.Application.Tests
 {
-    public class HttpRequestServiceTests
+    public class ExecuteCognitiveServicesCommandTests
     {
+        private readonly ExecuteCognitiveServicesCommand.Handler _handler;
+
+        public ExecuteCognitiveServicesCommandTests()
+        {
+            _handler = new ExecuteCognitiveServicesCommand.Handler();
+        }
+
         [Fact]
-        public async Task ShouldQueryPersonGroupList()
+        public async Task ShouldPass()
         {
             using var httpTest = new HttpTest();
             httpTest.RespondWith("{}");
 
             var request = PersonGroupRequestGenerator.List();
-            var httpRequestService = new HttpRequestService();
-
             var config = new CognitiveServiceConfig("FaceApi", "http://cs-explorer.com", "test-token");
-            await httpRequestService.Send(request, config);
+            await _handler.Handle(new ExecuteCognitiveServicesCommand(request, config), default);
 
             httpTest
                 .ShouldHaveCalled("http://cs-explorer.com/face/v1.0/persongroups?returnRecognitionModel=true")
@@ -35,10 +41,8 @@ namespace CognitiveServices.Explorer.Application.Tests
             httpTest.RespondWith("{}");
 
             var request = PersonGroupRequestGenerator.Delete("default-group");
-            var httpRequestService = new HttpRequestService();
-
             var config = new CognitiveServiceConfig("FaceApi", "http://cs-explorer.com", "test-token");
-            await httpRequestService.Send(request, config);
+            await _handler.Handle(new ExecuteCognitiveServicesCommand(request, config), default);
 
             httpTest
                 .ShouldHaveCalled("http://cs-explorer.com/face/v1.0/persongroups/default-group")
@@ -54,10 +58,8 @@ namespace CognitiveServices.Explorer.Application.Tests
             httpTest.RespondWith("{}");
 
             var request = PersonGroupRequestGenerator.Update("default-group", "test name");
-            var httpRequestService = new HttpRequestService();
-
             var config = new CognitiveServiceConfig("FaceApi", "http://cs-explorer.com", "test-token");
-            await httpRequestService.Send(request, config);
+            await _handler.Handle(new ExecuteCognitiveServicesCommand(request, config), default);
 
             httpTest
                 .ShouldHaveCalled("http://cs-explorer.com/face/v1.0/persongroups/default-group")

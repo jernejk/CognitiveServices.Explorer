@@ -13,7 +13,6 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public abstract class BaseFaceApiViewModel
     {
-        protected readonly HttpRequestService _httpRequestService = new HttpRequestService();
         protected readonly CurlGenerator _curlGenerator = new CurlGenerator();
         private readonly IMediator _mediator;
         protected CognitiveServiceConfig? _faceApiConfig = null;
