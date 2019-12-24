@@ -1,5 +1,6 @@
 ﻿using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Application.Profiles.Shared;
+using MediatR;
 using System;
 using System.Linq;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.Profiles.Commands
 {
-    public class DeleteProfileCommand
+    public class DeleteProfileCommand : IRequest
     {
         public DeleteProfileCommand(Guid profileId)
         {
@@ -15,31 +16,33 @@ namespace CognitiveServices.Explorer.Application.Profiles.Commands
         }
 
         public Guid ProfileId { get; }
-    }
 
-    public class DeleteProfileCommandHandler
-    {
-        private readonly IProfilesRepository _profilesRepository;
-
-        public DeleteProfileCommandHandler(IProfilesRepository profilesRepository)
+        public class Handler : IRequestHandler<DeleteProfileCommand>
         {
-            _profilesRepository = profilesRepository;
-        }
+            private readonly IProfilesRepository _profilesRepository;
 
-        public async Task Handle(DeleteProfileCommand request, CancellationToken ct = default)
-        {
-            var profiles = await _profilesRepository.GetProfiles();
-
-            var profile = profiles.FirstOrDefault(p => p.Id == request.ProfileId);
-            if (profile == null)
+            public Handler(IProfilesRepository profilesRepository)
             {
-                return;
+                _profilesRepository = profilesRepository;
             }
 
-            profiles.Remove(profile);
-            profiles.UpdateIsSelected();
+            public async Task<Unit> Handle(DeleteProfileCommand request, CancellationToken cancellationToken)
+            {
+                var profiles = await _profilesRepository.GetProfiles();
 
-            await _profilesRepository.SaveProfiles(profiles);
+                var profile = profiles.FirstOrDefault(p => p.Id == request.ProfileId);
+                if (profile == null)
+                {
+                    return Unit.Value;
+                }
+
+                profiles.Remove(profile);
+                profiles.UpdateIsSelected();
+
+                await _profilesRepository.SaveProfiles(profiles);
+
+                return Unit.Value;
+            }
         }
     }
 }

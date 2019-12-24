@@ -21,7 +21,7 @@ namespace CognitiveServices.Explorer.Application.Tests.Profiles
                 .ReturnsAsync(new List<Profile>())
                 .Verifiable();
 
-            var handler = new GetCurrentProfileQueryHandler(_profilesRepoMock.Object);
+            var handler = new GetCurrentProfileQuery.Handler(_profilesRepoMock.Object);
 
             var profile = await handler.Handle(new GetCurrentProfileQuery(), default);
 
@@ -46,7 +46,7 @@ namespace CognitiveServices.Explorer.Application.Tests.Profiles
                 })
                 .Verifiable();
 
-            var handler = new GetCurrentProfileQueryHandler(_profilesRepoMock.Object);
+            var handler = new GetCurrentProfileQuery.Handler(_profilesRepoMock.Object);
 
             var profile = await handler.Handle(new GetCurrentProfileQuery(), default);
 

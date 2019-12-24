@@ -1,27 +1,27 @@
 ﻿using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Domain.Profiles;
+using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.Profiles.Queries
 {
-    public class GetAllProfilesQuery
+    public class GetAllProfilesQuery : IRequest<List<Profile>>
     {
-    }
-
-    public class GetAllProfilesQueryHandler
-    {
-        private readonly IProfilesRepository _profilesRepository;
-
-        public GetAllProfilesQueryHandler(IProfilesRepository profilesRepository)
+        public class Handler : IRequestHandler<GetAllProfilesQuery, List<Profile>>
         {
-            _profilesRepository = profilesRepository;
-        }
+            private readonly IProfilesRepository _profilesRepository;
 
-        public Task<List<Profile>> Handle(GetAllProfilesQuery request, CancellationToken ct = default)
-        {
-            return _profilesRepository.GetProfiles();
+            public Handler(IProfilesRepository profilesRepository)
+            {
+                _profilesRepository = profilesRepository;
+            }
+
+            public Task<List<Profile>> Handle(GetAllProfilesQuery request, CancellationToken cancellationToken)
+            {
+                return _profilesRepository.GetProfiles();
+            }
         }
     }
 }

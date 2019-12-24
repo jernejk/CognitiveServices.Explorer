@@ -34,9 +34,9 @@ namespace CognitiveServices.Explorer.Application.Tests.Profiles
                 })
                 .Verifiable();
 
-            var handler = new SelectProfileCommandHandler(_profilesRepoMock.Object);
+            var handler = new SelectProfileCommand.Handler(_profilesRepoMock.Object);
 
-            await handler.Handle(new SelectProfileCommand(profileId));
+            await handler.Handle(new SelectProfileCommand(profileId), default);
 
             _profilesRepoMock.Verify();
 
