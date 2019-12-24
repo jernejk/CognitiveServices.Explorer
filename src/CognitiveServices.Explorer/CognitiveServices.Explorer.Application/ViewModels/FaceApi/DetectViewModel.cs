@@ -1,5 +1,4 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
-using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using MediatR;
 using System;
@@ -16,8 +15,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         private HttpRequest _detectUrlRequest;
         private HttpRequest _identifyRequest;
 
-        public DetectViewModel(ICognitiveServicesConfigService csConfigService, IMediator mediator)
-            : base(csConfigService, mediator)
+        public DetectViewModel(IMediator mediator)
+            : base(mediator)
         {
             _personGroupListRequest = PersonGroupRequestGenerator.List();
             _detectBinaryRequest = FaceRequestGenerator.Detect(Array.Empty<byte>());

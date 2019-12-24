@@ -1,5 +1,4 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
-using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using MediatR;
 using System.Collections.Generic;
@@ -9,8 +8,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public class PersonGroupsViewModel : BaseFaceApiViewModel
     {
-        public PersonGroupsViewModel(ICognitiveServicesConfigService csConfigService, IMediator mediator)
-            : base(csConfigService, mediator)
+        public PersonGroupsViewModel(IMediator mediator)
+            : base(mediator)
         {
             PersonGroupListRequest = PersonGroupRequestGenerator.List();
             CreatePersonGroupRequest = PersonGroupRequestGenerator.Create("group-id", "Group name");

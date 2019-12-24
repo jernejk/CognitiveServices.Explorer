@@ -1,5 +1,4 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
-using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using MediatR;
 using System;
@@ -17,8 +16,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         private HttpRequest? _getGroupTrainStatusRequest;
         private HttpRequest? _trainRequest;
 
-        public PersonGroupsPersonViewModel(ICognitiveServicesConfigService csConfigService, IMediator mediator)
-            : base(csConfigService, mediator)
+        public PersonGroupsPersonViewModel(IMediator mediator)
+            : base(mediator)
         {
         }
 
