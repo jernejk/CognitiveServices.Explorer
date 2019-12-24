@@ -24,7 +24,7 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
 
             container.Should().NotBeNull();
             container.Version.Should().Be(2);
-            container.Profiles.Should().BeEmpty();
+            container.Profiles.Should().BeEmpty().And.NotBeNull();
         }
 
         [Fact]
