@@ -30,6 +30,12 @@ namespace CognitiveServices.Explorer.Application.Profiles.Commands
             {
                 var profiles = await _profilesRepository.GetProfiles();
 
+                if (request.ProfileId == Guid.Empty)
+                {
+                    // Not supported.
+                    return Unit.Value;
+                }
+
                 var profile = profiles.FirstOrDefault(p => p.Id == request.ProfileId);
                 if (profile == null)
                 {

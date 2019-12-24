@@ -61,6 +61,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
         {
             try
             {
+                Console.WriteLine($"Profile to delete {_newProfile.ProfileName} ({_newProfile.Id})");
                 await Mediator.Send(new DeleteProfileCommand(_newProfile.Id));
                 await Refresh();
             }
@@ -89,6 +90,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
 
             await Mediator.Send(new SelectProfileCommand(selectedProfileId));
 
+            await Refresh();
             await UpdateListeners();
         }
 
