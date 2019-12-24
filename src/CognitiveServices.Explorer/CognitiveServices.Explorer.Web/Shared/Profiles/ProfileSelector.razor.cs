@@ -96,13 +96,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
 
         public void AddNewProfile()
         {
-            _newProfile = new Profile
-            {
-                IsSelected = true,
-                FaceApiConfig = new CognitiveServiceConfig(),
-                TextApiConfig = new CognitiveServiceConfig(),
-                SpeechApiConfig = new CognitiveServiceConfig()
-            };
+            _newProfile = new Profile { IsSelected = true };
 
             _dialogIsOpen = true;
         }
@@ -110,9 +104,6 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
         public void EditProfile()
         {
             _newProfile = _profiles.FirstOrDefault(p => p.IsSelected);
-            _newProfile.FaceApiConfig ??= new CognitiveServiceConfig();
-            _newProfile.TextApiConfig ??= new CognitiveServiceConfig();
-            _newProfile.SpeechApiConfig ??= new CognitiveServiceConfig();
             _dialogIsOpen = true;
         }
 

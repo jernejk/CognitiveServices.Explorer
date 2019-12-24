@@ -157,8 +157,10 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
                         first.FaceApiConfig!.ServiceName.Should().Be("FaceApi");
                         first.FaceApiConfig.BaseUrl.Should().Be("http://mycompany-cservice.com");
                         first.FaceApiConfig.Token.Should().Be("token1");
-                        first.TextApiConfig.Should().BeNull();
-                        first.SpeechApiConfig.Should().BeNull();
+                        first.TextApiConfig.Should().NotBeNull();
+                        first.TextApiConfig!.IsConfigured().Should().BeFalse();
+                        first.SpeechApiConfig.Should().NotBeNull();
+                        first.SpeechApiConfig!.IsConfigured().Should().BeFalse();
                     },
                     second =>
                     {
@@ -169,8 +171,10 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
                         second.FaceApiConfig!.ServiceName.Should().Be("FaceApi");
                         second.FaceApiConfig.BaseUrl.Should().Be("http://contoso-cservice.com");
                         second.FaceApiConfig.Token.Should().Be("token2");
-                        second.TextApiConfig.Should().BeNull();
-                        second.SpeechApiConfig.Should().BeNull();
+                        second.TextApiConfig.Should().NotBeNull();
+                        second.TextApiConfig!.IsConfigured().Should().BeFalse();
+                        second.SpeechApiConfig.Should().NotBeNull();
+                        second.SpeechApiConfig!.IsConfigured().Should().BeFalse();
                     },
                     third =>
                     {
