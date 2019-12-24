@@ -1,4 +1,5 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
+using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         private HttpRequest? _getGroupTrainStatusRequest;
         private HttpRequest? _trainRequest;
 
-        public PersonGroupsPersonViewModel(ICognitiveServicesConfigService csConfigService)
-            : base(csConfigService)
+        public PersonGroupsPersonViewModel(GetCurrentProfileQueryHandler getCurrentProfileQueryHandler)
+            : base(getCurrentProfileQueryHandler)
         {
         }
 

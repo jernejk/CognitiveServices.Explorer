@@ -1,6 +1,9 @@
 using Blazor.FileReader;
 using Blazored.LocalStorage;
-using CognitiveServices.Explorer.Application;
+using CognitiveServices.Explorer.Application.Persistence.Profiles;
+using CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations;
+using CognitiveServices.Explorer.Application.Profiles.Commands;
+using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
 using CognitiveServices.Explorer.Web.Infrastructure;
 using Flurl.Http;
@@ -20,11 +23,21 @@ namespace CognitiveServices.Explorer.Web
 
             // More permanent cache
             services.AddBlazoredLocalStorage();
-            services.AddTransient<ICognitiveServicesConfigService, CognitiveServicesConfigService>();
             services.AddTransient<PersonGroupsViewModel>();
             services.AddTransient<PersonGroupsPersonViewModel>();
             services.AddTransient<PersonViewModel>();
             services.AddTransient<DetectViewModel>();
+
+            // Will be replaced by MediatR
+            services.AddTransient<GetCurrentProfileQueryHandler>();
+            services.AddTransient<GetAllProfilesQueryHandler>();
+            services.AddTransient<DeleteProfileCommandHandler>();
+            services.AddTransient<SaveProfileCommandHandler>();
+            services.AddTransient<SelectProfileCommandHandler>();
+
+            // Repos
+            services.AddTransient<IProfilesRepository, ProfilesRepository>();
+            services.AddTransient<IProfileMigrations, ProfileMigrations>();
 
             // MatBlazor
             services.AddScoped<AppState>();

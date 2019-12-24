@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.Persistence.Profiles
 {
-    public class ProfilesRepository
+    public class ProfilesRepository : IProfilesRepository
     {
         public const string ProfileStorageKey = "Profiles";
 
@@ -22,10 +22,19 @@ namespace CognitiveServices.Explorer.Application.Persistence.Profiles
         public async Task<List<Profile>> GetProfiles()
         {
             var container = await _localStorageService.GetItemAsync<ProfileStorageContainer?>(ProfileStorageKey);
-
             container = await MigrateIfNecessary(container);
 
             return container.Profiles;
+        }
+
+        public Task SaveProfiles(List<Profile> profiles)
+        {
+            var container = new ProfileStorageContainer
+            {
+                Profiles = profiles
+            };
+
+            return _localStorageService.SetItemAsync(ProfileStorageKey, container);
         }
 
         private async Task<ProfileStorageContainer> MigrateIfNecessary(ProfileStorageContainer? container)
@@ -38,5 +47,11 @@ namespace CognitiveServices.Explorer.Application.Persistence.Profiles
 
             return container;
         }
+    }
+
+    public interface IProfilesRepository
+    {
+        Task<List<Profile>> GetProfiles();
+        Task SaveProfiles(List<Profile> profiles);
     }
 }

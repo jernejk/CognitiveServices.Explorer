@@ -1,9 +1,13 @@
 ﻿@page "/speech"
-@using CognitiveServices.Explorer.Application
+@using CognitiveServices.Explorer.Application.Profiles.Queries
 @using CognitiveServices.Explorer.Domain.Speech
 @using CognitiveServices.Explorer.Domain.Text
+@using CognitiveServices.Explorer.Domain.Profiles
+@using CognitiveServices.Explorer.Web.Shared.Profiles
 @inject IJSRuntime JSRuntime
-@inject ICognitiveServicesConfigService csConfigService
+@inject GetCurrentProfileQueryHandler getCurrentProfileQuery
+
+<ProfileSelector OnUpdated="UpdatedProfile" />
 
 <h3>Speech prototype (early beta)</h3>
 
@@ -13,27 +17,17 @@
 </p>
 
 <ol>
-    <li>Enter Speech API details</li>
+    <li>Enter Speech API details (in Profile top right)</li>
     <li>Click Init recording (once only)</li>
     <li>Start recording</li>
     <li>Stop recording</li>
     <li>Send to Speech API</li>
 </ol>
 
-<EditForm Model="@_speechConfig">
-    <fieldset>
-        <h4>Speech API details</h4>
-        <div class="form-group">
-            <MatTextField @bind-Value="@_speechConfig.ProfileName" Label="Profile name (optional)" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-Value="@_speechConfig.BaseUrl" Label="Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-        <div class="form-group">
-            <MatTextField @bind-Value="@_speechConfig.Token" Label="Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-        </div>
-    </fieldset>
-</EditForm>
+@if (_currentProfile?.SpeechApiConfig?.IsConfigured() != true)
+{
+    <div class="alert alert-warning" role="alert">Current profile doesn't have Speech configuration.</div>
+}
 
 @if (!_isRecordButtonVisible)
 {
@@ -56,21 +50,6 @@
         @_recognizedText
     </p>
 
-    <EditForm Model="@_textConfig">
-        <fieldset>
-            <h4>Text API details (because why not 😁)</h4>
-            <div class="form-group">
-                <MatTextField @bind-Value="@_textConfig.ProfileName" Label="Profile name (optional)" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
-            </div>
-            <div class="form-group">
-                <MatTextField @bind-Value="@_textConfig.BaseUrl" Label="Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-            </div>
-            <div class="form-group">
-                <MatTextField @bind-Value="@_textConfig.Token" Label="Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
-            </div>
-        </fieldset>
-    </EditForm>
-
     <button @onclick="SendToTextApi">Send to Text API</button>
 
     <pre>@_textAnalysis</pre>
@@ -80,29 +59,24 @@
     private bool _isRecordButtonVisible = false;
     private string _debugText = string.Empty;
     private string _recognizedText = string.Empty;
-    private CognitiveServiceConfig _speechConfig;
-    private CognitiveServiceConfig _textConfig;
     private bool _isSpeechSuccsefull = false;
     private bool _usePreviewVersion = true;
     private string _textAnalysis = string.Empty;
+    private Profile? _currentProfile;
 
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        _currentProfile = await getCurrentProfileQuery.Handle(new GetCurrentProfileQuery());
+    }
 
-        _speechConfig = await csConfigService.GetConfig("SpeechApi");
-        if (_speechConfig == null)
-        {
-            _speechConfig = new CognitiveServiceConfig("SpeechApi");
-            _speechConfig.ProfileName = "default";
-        }
+    public async Task UpdatedProfile()
+    {
+        //await viewModel.LoadLatestConfig();
+        //await viewModel.GetGroups();
 
-        _textConfig = await csConfigService.GetConfig("TextApi");
-        if (_textConfig == null)
-        {
-            _textConfig = new CognitiveServiceConfig("TextApi");
-            _textConfig.ProfileName = "default";
-        }
+        _currentProfile = await getCurrentProfileQuery.Handle(new GetCurrentProfileQuery());
+        base.StateHasChanged();
     }
 
     public async Task StartRecording()
@@ -113,7 +87,11 @@
 
     public async Task DownloadLastRecording()
     {
-        await csConfigService.SetConfig(_speechConfig);
+        if (_currentProfile?.SpeechApiConfig?.IsConfigured() != true)
+        {
+            // TODO: Say it needs to be configured.
+            return;
+        }
 
         var url = await JSRuntime.InvokeAsync<string>("getLastAudioRecording");
 
@@ -127,9 +105,9 @@
             Console.WriteLine("Audio size: " + data.Length);
 
             client.DefaultRequestHeaders.Add("ContentType", "audio/wav; codecs=audio/pcm; samplerate=16000");
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _speechConfig.Token);
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _currentProfile.SpeechApiConfig.Token);
 
-            var uri = new Uri($"{_speechConfig.BaseUrl}/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed");
+            var uri = new Uri($"{_currentProfile.SpeechApiConfig.BaseUrl}/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed");
 
             try
             {
@@ -169,7 +147,13 @@
 
     public async Task SendToTextApi()
     {
-        await csConfigService.SetConfig(_textConfig);
+        if (_currentProfile?.TextApiConfig?.IsConfigured() != true)
+        {
+            // TODO: Say it needs to be configured.
+            _textAnalysis = $"Text API not configured in your Profile.";
+            return;
+        }
+
         _textAnalysis = $"Text analysis for `{_recognizedText}`:\n";
 
         try
@@ -184,7 +168,7 @@
                         id = "1",
                         text = _recognizedText
                     }
-                    }
+                }
             };
 
             AnalysedDocument sentimentResult = await AnalyzeDocument(documentRequest, "sentiment");
@@ -265,11 +249,11 @@
         TextApiResponse textApiResponse;
         using (var client = new HttpClient())
         {
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _textConfig.Token);
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _currentProfile.TextApiConfig.Token);
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(sentimentDocument);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"{_textConfig.BaseUrl}/text/analytics/v{version}/{textAnalysisType}", content);
+            var response = await client.PostAsync($"{_currentProfile.TextApiConfig.BaseUrl}/text/analytics/v{version}/{textAnalysisType}", content);
 
             string responseJson = await response.Content.ReadAsStringAsync();
             textApiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<TextApiResponse>(responseJson);

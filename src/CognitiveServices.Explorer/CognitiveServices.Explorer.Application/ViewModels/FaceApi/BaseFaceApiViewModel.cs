@@ -1,5 +1,7 @@
 ﻿using CognitiveServices.Explorer.Application.Curl;
+using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
+using CognitiveServices.Explorer.Domain.Profiles;
 using Flurl.Http;
 using System;
 using System.Text.Json;
@@ -9,14 +11,14 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public abstract class BaseFaceApiViewModel
     {
-        protected readonly ICognitiveServicesConfigService _csConfigService;
         protected readonly HttpRequestService _httpRequestService = new HttpRequestService();
         protected readonly CurlGenerator _curlGenerator = new CurlGenerator();
+        private readonly GetCurrentProfileQueryHandler _getCurrentProfileQueryHandler;
         protected CognitiveServiceConfig? _faceApiConfig = null;
 
-        public BaseFaceApiViewModel(ICognitiveServicesConfigService csConfigService)
+        protected BaseFaceApiViewModel(GetCurrentProfileQueryHandler getCurrentProfileQueryHandler)
         {
-            _csConfigService = csConfigService;
+            _getCurrentProfileQueryHandler = getCurrentProfileQueryHandler;
         }
 
         public string RawJson { get; set; } = string.Empty;
@@ -30,7 +32,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 
         public async Task LoadLatestConfig()
         {
-            _faceApiConfig = await _csConfigService.GetConfig("FaceApi").ConfigureAwait(false);
+            var profile = await _getCurrentProfileQueryHandler.Handle(new GetCurrentProfileQuery());
+            _faceApiConfig = profile?.FaceApiConfig;
         }
 
         protected async Task<T?> MakeRequest<T>(HttpRequest? request)

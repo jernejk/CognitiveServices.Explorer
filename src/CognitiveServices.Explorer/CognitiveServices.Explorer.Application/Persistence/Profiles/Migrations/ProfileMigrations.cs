@@ -30,15 +30,13 @@ namespace CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations
         private async Task<ProfileStorageContainer> MigrateFromNull()
         {
             var container = new ProfileStorageContainer();
-
-            string serviceName = "FaceApi";
-
+            
             await MigrateServiceConfigV1(container, "FaceApi", (p, c) => p.FaceApiConfig = c);
             await MigrateServiceConfigV1(container, "TextApi", (p, c) => p.TextApiConfig = c);
             await MigrateServiceConfigV1(container, "SpeechApi", (p, c) => p.SpeechApiConfig = c);
 
             Profile selectedProfile;
-            var selectedFaceApi = await _localStorageService.GetItemAsync<string>($"cs-config-profile-{serviceName}-selected");
+            var selectedFaceApi = await _localStorageService.GetItemAsync<string>("cs-config-profile-FaceApi-selected");
             if (selectedFaceApi != null)
             {
                 selectedProfile = container.Profiles.FirstOrDefault(p => p.ProfileName == selectedFaceApi);
@@ -55,6 +53,16 @@ namespace CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations
             }
 
             await _localStorageService.SetItemAsync(ProfilesRepository.ProfileStorageKey, container);
+
+            await _localStorageService.RemoveItemAsync("faceApiKey");
+            await _localStorageService.RemoveItemAsync("faceApiBaseUrl");
+
+            await _localStorageService.RemoveItemAsync("cs-config-profile-FaceApi");
+            await _localStorageService.RemoveItemAsync("cs-config-profile-FaceApi-selected");
+            await _localStorageService.RemoveItemAsync("cs-config-profile-TextApi");
+            await _localStorageService.RemoveItemAsync("cs-config-profile-TextApi-selected");
+            await _localStorageService.RemoveItemAsync("cs-config-profile-SpeechApi");
+            await _localStorageService.RemoveItemAsync("cs-config-profile-SpeechApi-selected");
 
             return container;
         }
@@ -77,7 +85,7 @@ namespace CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations
                         container.Profiles.Add(profile);
                     }
 
-                    var newConfig = new Domain.Profiles.CognitiveServiceConfig
+                    var newConfig = new CognitiveServiceConfig
                     {
                         BaseUrl = config.Value.BaseUrl,
                         ServiceName = config.Value.ServiceName,

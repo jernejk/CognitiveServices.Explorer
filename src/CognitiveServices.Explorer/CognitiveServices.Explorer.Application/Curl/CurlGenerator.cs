@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using CognitiveServices.Explorer.Domain.Profiles;
+using System.Linq;
 
 namespace CognitiveServices.Explorer.Application.Curl
 {

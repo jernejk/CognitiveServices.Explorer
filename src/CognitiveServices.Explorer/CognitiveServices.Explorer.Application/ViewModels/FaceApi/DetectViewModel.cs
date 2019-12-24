@@ -1,4 +1,5 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
+using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         private HttpRequest _detectUrlRequest;
         private HttpRequest _identifyRequest;
 
-        public DetectViewModel(ICognitiveServicesConfigService csConfigService)
-            : base(csConfigService)
+        public DetectViewModel(GetCurrentProfileQueryHandler getCurrentProfileQueryHandler)
+            : base(getCurrentProfileQueryHandler)
         {
             _personGroupListRequest = PersonGroupRequestGenerator.List();
             _detectBinaryRequest = FaceRequestGenerator.Detect(Array.Empty<byte>());

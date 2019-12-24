@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations;
+using CognitiveServices.Explorer.Domain.Profiles;
 using FluentAssertions;
 using Moq;
 using System;
@@ -49,8 +50,8 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
         {
             var faceApiConfig = new Dictionary<string, CognitiveServiceConfig>
             {
-                { "MyCompany", new CognitiveServiceConfig("FaceApi", "MyCompany", "http://mycompany-cservice.com", "token1") },
-                { "Contoso", new CognitiveServiceConfig("FaceApi", "Contoso", "http://contoso-cservice.com", "token2") }
+                { "MyCompany", new CognitiveServiceConfig("FaceApi", "http://mycompany-cservice.com", "token1") },
+                { "Contoso", new CognitiveServiceConfig("FaceApi", "http://contoso-cservice.com", "token2") }
             };
 
             _localStorageServiceMock
@@ -76,7 +77,7 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
                         first.ProfileName.Should().Be("MyCompany");
                         first.IsSelected.Should().BeTrue();
                         first.FaceApiConfig.Should().NotBeNull();
-                        first.FaceApiConfig.ServiceName.Should().Be("FaceApi");
+                        first.FaceApiConfig!.ServiceName.Should().Be("FaceApi");
                         first.FaceApiConfig.BaseUrl.Should().Be("http://mycompany-cservice.com");
                         first.FaceApiConfig.Token.Should().Be("token1");
                     },
@@ -86,12 +87,12 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
                         second.ProfileName.Should().Be("Contoso");
                         second.IsSelected.Should().BeFalse();
                         second.FaceApiConfig.Should().NotBeNull();
-                        second.FaceApiConfig.ServiceName.Should().Be("FaceApi");
+                        second.FaceApiConfig!.ServiceName.Should().Be("FaceApi");
                         second.FaceApiConfig.BaseUrl.Should().Be("http://contoso-cservice.com");
                         second.FaceApiConfig.Token.Should().Be("token2");
                     });
 
-            _localStorageServiceMock.Invocations.Should().HaveCount(5);
+            _localStorageServiceMock.Invocations.Should().HaveCount(13);
             _localStorageServiceMock.Verify();
         }
 
@@ -100,19 +101,19 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
         {
             var faceApiConfig = new Dictionary<string, CognitiveServiceConfig>
             {
-                { "MyCompany", new CognitiveServiceConfig("FaceApi", "MyCompany", "http://mycompany-cservice.com", "token1") },
-                { "Contoso", new CognitiveServiceConfig("FaceApi", "Contoso", "http://contoso-cservice.com", "token2") },
-                { "default", new CognitiveServiceConfig("FaceApi", "default", "http://face-default-cservice.com", "token9") }
+                { "MyCompany", new CognitiveServiceConfig("FaceApi", "http://mycompany-cservice.com", "token1") },
+                { "Contoso", new CognitiveServiceConfig("FaceApi", "http://contoso-cservice.com", "token2") },
+                { "default", new CognitiveServiceConfig("FaceApi", "http://face-default-cservice.com", "token9") }
             };
 
             var textApiConfig = new Dictionary<string, CognitiveServiceConfig>
             {
-                { "default", new CognitiveServiceConfig("TextApi", "default", "http://default-text-cservice.com", "token3") }
+                { "default", new CognitiveServiceConfig("TextApi", "http://default-text-cservice.com", "token3") }
             };
 
             var speechApiConfig = new Dictionary<string, CognitiveServiceConfig>
             {
-                { "default", new CognitiveServiceConfig("SpeechApi", "default", "http://default-speech-cservice.com", "token3") }
+                { "default", new CognitiveServiceConfig("SpeechApi", "http://default-speech-cservice.com", "token3") }
             };
 
             _localStorageServiceMock
@@ -193,7 +194,7 @@ namespace CognitiveServices.Explorer.Application.Tests.Persistence.Profiles
                         third.SpeechApiConfig.Token.Should().Be("token3");
                     });
 
-            _localStorageServiceMock.Invocations.Should().HaveCount(5);
+            _localStorageServiceMock.Invocations.Should().HaveCount(13);
             _localStorageServiceMock.Verify();
         }
     }

@@ -19,5 +19,7 @@
         public string ServiceName { get; set; } = string.Empty;
         public string BaseUrl { get; set; } = string.Empty;
         public string Token { get; set; } = string.Empty;
+
+        public bool IsConfigured() => !string.IsNullOrWhiteSpace(BaseUrl);
     }
 }

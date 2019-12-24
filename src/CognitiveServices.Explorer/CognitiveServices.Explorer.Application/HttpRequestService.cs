@@ -1,6 +1,6 @@
-﻿using Flurl;
+﻿using CognitiveServices.Explorer.Domain.Profiles;
+using Flurl;
 using Flurl.Http;
-using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
