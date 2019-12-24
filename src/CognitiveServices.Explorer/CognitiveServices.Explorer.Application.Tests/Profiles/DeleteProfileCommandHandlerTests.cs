@@ -32,9 +32,9 @@ namespace CognitiveServices.Explorer.Application.Tests.Profiles
                 })
                 .Verifiable();
 
-            var handler = new DeleteProfileCommandHandler(_profilesRepoMock.Object);
+            var handler = new DeleteProfileCommand.Handler(_profilesRepoMock.Object);
 
-            await handler.Handle(new DeleteProfileCommand(profileId));
+            await handler.Handle(new DeleteProfileCommand(profileId), default);
 
             _profilesRepoMock.Verify();
             _profilesRepoMock

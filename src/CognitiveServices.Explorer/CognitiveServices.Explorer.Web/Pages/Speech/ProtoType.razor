@@ -4,8 +4,9 @@
 @using CognitiveServices.Explorer.Domain.Text
 @using CognitiveServices.Explorer.Domain.Profiles
 @using CognitiveServices.Explorer.Web.Shared.Profiles
+@using MediatR
 @inject IJSRuntime JSRuntime
-@inject GetCurrentProfileQueryHandler getCurrentProfileQuery
+@inject IMediator Mediator
 
 <ProfileSelector OnUpdated="UpdatedProfile" />
 
@@ -67,7 +68,7 @@
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _currentProfile = await getCurrentProfileQuery.Handle(new GetCurrentProfileQuery());
+        _currentProfile = await Mediator.Send(new GetCurrentProfileQuery());
     }
 
     public async Task UpdatedProfile()
@@ -75,7 +76,7 @@
         //await viewModel.LoadLatestConfig();
         //await viewModel.GetGroups();
 
-        _currentProfile = await getCurrentProfileQuery.Handle(new GetCurrentProfileQuery());
+        _currentProfile = await Mediator.Send(new GetCurrentProfileQuery());
         base.StateHasChanged();
     }
 

@@ -34,9 +34,9 @@ namespace CognitiveServices.Explorer.Application.Tests.Profiles
                 }
             };
 
-            var handler = new SaveProfileCommandHandler(_profilesRepoMock.Object);
+            var handler = new SaveProfileCommand.Handler(_profilesRepoMock.Object);
 
-            await handler.Handle(new SaveProfileCommand(profile));
+            await handler.Handle(new SaveProfileCommand(profile), default);
 
             _profilesRepoMock.Verify();
             _profilesRepoMock
@@ -75,9 +75,9 @@ namespace CognitiveServices.Explorer.Application.Tests.Profiles
                 }
             };
 
-            var handler = new SaveProfileCommandHandler(_profilesRepoMock.Object);
+            var handler = new SaveProfileCommand.Handler(_profilesRepoMock.Object);
            
-            await handler.Handle(new SaveProfileCommand(profile));
+            await handler.Handle(new SaveProfileCommand(profile), default);
 
             _profilesRepoMock.Verify();
             _profilesRepoMock

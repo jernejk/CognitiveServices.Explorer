@@ -1,28 +1,28 @@
 ﻿using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Domain.Profiles;
+using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.Profiles.Queries
 {
-    public class GetCurrentProfileQuery
+    public class GetCurrentProfileQuery : IRequest<Profile?>
     {
-    }
-
-    public class GetCurrentProfileQueryHandler
-    {
-        private readonly IProfilesRepository _profilesRepository;
-
-        public GetCurrentProfileQueryHandler(IProfilesRepository profilesRepository)
+        public class Handler : IRequestHandler<GetCurrentProfileQuery, Profile?>
         {
-            _profilesRepository = profilesRepository;
-        }
+            private readonly IProfilesRepository _profilesRepository;
 
-        public async Task<Profile?> Handle(GetCurrentProfileQuery request, CancellationToken ct = default)
-        {
-            var profiles = await _profilesRepository.GetProfiles();
-            return profiles.FirstOrDefault(p => p.IsSelected);
+            public Handler(IProfilesRepository profilesRepository)
+            {
+                _profilesRepository = profilesRepository;
+            }
+
+            public async Task<Profile?> Handle(GetCurrentProfileQuery request, CancellationToken cancellationToken)
+            {
+                var profiles = await _profilesRepository.GetProfiles();
+                return profiles.FirstOrDefault(p => p.IsSelected);
+            }
         }
     }
 }

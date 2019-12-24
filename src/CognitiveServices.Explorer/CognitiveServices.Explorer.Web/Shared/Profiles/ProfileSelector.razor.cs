@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using MediatR;
 
 namespace CognitiveServices.Explorer.Web.Shared.Profiles
 {
@@ -16,10 +17,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
         private string? _selectedProfile;
         private bool _dialogIsOpen;
 
-        [Inject] public GetAllProfilesQueryHandler GetAllProfilesQueryHandler { get; set; }
-        [Inject] public SelectProfileCommandHandler SelectProfileCommandHandler { get; set; }
-        [Inject] public SaveProfileCommandHandler SaveProfileCommandHandler { get; set; }
-        [Inject] public DeleteProfileCommandHandler DeleteProfileCommandHandler { get; set; }
+        [Inject] public IMediator Mediator { get; set; }
 
         [Parameter] public Func<Task>? OnUpdated { get; set; }
         [Parameter] public bool AllowManagingProfiles { get; set; } = true;
@@ -47,7 +45,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
             try
             {
                 Console.WriteLine("Save profile");
-                await SaveProfileCommandHandler.Handle(new SaveProfileCommand(_newProfile));
+                await Mediator.Send(new SaveProfileCommand(_newProfile));
                 await Refresh();
             }
             catch
@@ -63,7 +61,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
         {
             try
             {
-                await DeleteProfileCommandHandler.Handle(new DeleteProfileCommand(_newProfile.Id));
+                await Mediator.Send(new DeleteProfileCommand(_newProfile.Id));
                 await Refresh();
             }
             catch
@@ -89,7 +87,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
                 .Select(p => p.Id)
                 .FirstOrDefault();
 
-            await SelectProfileCommandHandler.Handle(new SelectProfileCommand(selectedProfileId));
+            await Mediator.Send(new SelectProfileCommand(selectedProfileId));
 
             await UpdateListeners();
         }
@@ -109,7 +107,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
 
         public async Task Refresh()
         {
-            _profiles = await GetAllProfilesQueryHandler.Handle(new GetAllProfilesQuery());
+            _profiles = await Mediator.Send(new GetAllProfilesQuery());
             _selectedProfile = _profiles
                 .Where(p => p.IsSelected)
                 .Select(p => p.ProfileName)

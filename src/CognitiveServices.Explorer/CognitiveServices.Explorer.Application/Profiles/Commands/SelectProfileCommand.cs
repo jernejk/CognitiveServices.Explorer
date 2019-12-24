@@ -1,5 +1,6 @@
 ﻿using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Application.Profiles.Shared;
+using MediatR;
 using System;
 using System.Linq;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.Profiles.Commands
 {
-    public class SelectProfileCommand
+    public class SelectProfileCommand : IRequest
     {
         public SelectProfileCommand(Guid profileId)
         {
@@ -15,31 +16,33 @@ namespace CognitiveServices.Explorer.Application.Profiles.Commands
         }
 
         public Guid ProfileId { get; }
-    }
 
-    public class SelectProfileCommandHandler
-    {
-        private readonly IProfilesRepository _profilesRepository;
-
-        public SelectProfileCommandHandler(IProfilesRepository profilesRepository)
+        public class Handler : IRequestHandler<SelectProfileCommand>
         {
-            _profilesRepository = profilesRepository;
-        }
+            private readonly IProfilesRepository _profilesRepository;
 
-        public async Task Handle(SelectProfileCommand request, CancellationToken ct = default)
-        {
-            var profiles = await _profilesRepository.GetProfiles();
-
-            var profile = profiles.FirstOrDefault(p => p.Id == request.ProfileId);
-            if (profile == null)
+            public Handler(IProfilesRepository profilesRepository)
             {
-                return;
+                _profilesRepository = profilesRepository;
             }
 
-            profile.IsSelected = true;
-            profiles.UpdateIsSelected(profile);
+            public async Task<Unit> Handle(SelectProfileCommand request, CancellationToken cancellationToken)
+            {
+                var profiles = await _profilesRepository.GetProfiles();
 
-            await _profilesRepository.SaveProfiles(profiles);
+                var profile = profiles.FirstOrDefault(p => p.Id == request.ProfileId);
+                if (profile == null)
+                {
+                    return Unit.Value;
+                }
+
+                profile.IsSelected = true;
+                profiles.UpdateIsSelected(profile);
+
+                await _profilesRepository.SaveProfiles(profiles);
+
+                return Unit.Value;
+            }
         }
     }
 }

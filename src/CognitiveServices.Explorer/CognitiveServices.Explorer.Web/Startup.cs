@@ -1,13 +1,13 @@
 using Blazor.FileReader;
 using Blazored.LocalStorage;
+using CognitiveServices.Explorer.Application.Commands;
 using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations;
-using CognitiveServices.Explorer.Application.Profiles.Commands;
-using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
 using CognitiveServices.Explorer.Web.Infrastructure;
 using Flurl.Http;
 using MatBlazor;
+using MediatR;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
@@ -28,16 +28,11 @@ namespace CognitiveServices.Explorer.Web
             services.AddTransient<PersonViewModel>();
             services.AddTransient<DetectViewModel>();
 
-            // Will be replaced by MediatR
-            services.AddTransient<GetCurrentProfileQueryHandler>();
-            services.AddTransient<GetAllProfilesQueryHandler>();
-            services.AddTransient<DeleteProfileCommandHandler>();
-            services.AddTransient<SaveProfileCommandHandler>();
-            services.AddTransient<SelectProfileCommandHandler>();
-
             // Repos
             services.AddTransient<IProfilesRepository, ProfilesRepository>();
             services.AddTransient<IProfileMigrations, ProfileMigrations>();
+
+            services.AddMediatR(typeof(ExecuteCognitiveServicesCommand));
 
             // MatBlazor
             services.AddScoped<AppState>();

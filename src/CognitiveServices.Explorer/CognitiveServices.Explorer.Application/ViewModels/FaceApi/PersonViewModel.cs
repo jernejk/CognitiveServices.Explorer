@@ -1,6 +1,6 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
-using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,8 +16,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
         private HttpRequest? _updateFaceRequest;
         private HttpRequest? _deleteFaceRequest;
 
-        public PersonViewModel(GetCurrentProfileQueryHandler getCurrentProfileQueryHandler)
-            : base(getCurrentProfileQueryHandler)
+        public PersonViewModel(IMediator mediator)
+            : base(mediator)
         {
         }
 

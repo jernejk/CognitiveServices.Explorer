@@ -1,8 +1,10 @@
-﻿using CognitiveServices.Explorer.Application.Curl;
+﻿using CognitiveServices.Explorer.Application.Commands;
+using CognitiveServices.Explorer.Application.Curl;
 using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using CognitiveServices.Explorer.Domain.Profiles;
 using Flurl.Http;
+using MediatR;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,14 +13,13 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 {
     public abstract class BaseFaceApiViewModel
     {
-        protected readonly HttpRequestService _httpRequestService = new HttpRequestService();
         protected readonly CurlGenerator _curlGenerator = new CurlGenerator();
-        private readonly GetCurrentProfileQueryHandler _getCurrentProfileQueryHandler;
+        private readonly IMediator _mediator;
         protected CognitiveServiceConfig? _faceApiConfig = null;
 
-        protected BaseFaceApiViewModel(GetCurrentProfileQueryHandler getCurrentProfileQueryHandler)
+        protected BaseFaceApiViewModel(IMediator mediator)
         {
-            _getCurrentProfileQueryHandler = getCurrentProfileQueryHandler;
+            _mediator = mediator;
         }
 
         public string RawJson { get; set; } = string.Empty;
@@ -32,7 +33,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
 
         public async Task LoadLatestConfig()
         {
-            var profile = await _getCurrentProfileQueryHandler.Handle(new GetCurrentProfileQuery());
+            var profile = await _mediator.Send(new GetCurrentProfileQuery());
             _faceApiConfig = profile?.FaceApiConfig;
         }
 
@@ -56,7 +57,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             {
                 await LoadLatestConfig().ConfigureAwait(false);
 
-                RawJson = await _httpRequestService.Send(request, _faceApiConfig).ConfigureAwait(false) ?? string.Empty;
+                RawJson = await _mediator.Send(new ExecuteCognitiveServicesCommand(request, _faceApiConfig)).ConfigureAwait(false) ?? string.Empty;
                 return JsonSerializer.Deserialize<T>(RawJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
