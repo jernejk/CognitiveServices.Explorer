@@ -1,4 +1,5 @@
 ﻿using CognitiveServices.Explorer.Application.FaceApi;
+using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Domain.Face;
 using MediatR;
 using System;

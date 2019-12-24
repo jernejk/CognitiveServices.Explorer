@@ -2,13 +2,14 @@
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using CognitiveServices.Explorer.Web.Shared.Profiles
 @using System.IO;
 @inject DetectViewModel viewModel
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject Blazor.FileReader.IFileReaderService fileReaderService;
 
-<FaceApiConfiguration OnUpdated="UpdatedProfile" />
+<ProfileSelector OnUpdated="UpdatedProfile" />
 
 <div class="content">
     <h3>Detect</h3>

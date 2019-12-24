@@ -2,9 +2,10 @@
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using CognitiveServices.Explorer.Web.Shared.Profiles
 @inject PersonGroupsPersonViewModel viewModel
 
-<FaceApiConfiguration OnUpdated="viewModel.LoadLatestConfig" />
+<ProfileSelector OnUpdated="viewModel.LoadLatestConfig" />
 
 <div class="content">
     <h3>Person Group @PersonGroupId</h3>
@@ -62,9 +63,9 @@
             <fieldset>
                 @if (!_isCreatingPerson)
                 {
-                <div class="form-group">
-                    <MatTextField @bind-Value="@_person.PersonId" ReadOnly="true" Label="Id" Icon="supervisor_account" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
-                </div>
+                    <div class="form-group">
+                        <MatTextField @bind-Value="@_person.PersonId" ReadOnly="true" Label="Id" Icon="supervisor_account" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                    </div>
                 }
                 <div class="form-group">
                     <MatTextField @bind-Value="@_person.Name" Label="Name" Icon="translate" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>

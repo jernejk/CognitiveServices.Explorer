@@ -1,0 +1,37 @@
+﻿<div class="pull-right row align-items-center">
+    @if (!string.IsNullOrWhiteSpace(SelectedProfile))
+    {
+        <div>
+            <EditForm Model="@SelectedProfile">
+                <MatSelect id="face-api-selected-profile" Label="Face API Profile" @bind-Value="SelectedProfile">
+                    @foreach (var profile in _profiles)
+                    {
+                        <MatOption Value="@profile.ProfileName">@profile.ProfileName</MatOption>
+                    }
+                </MatSelect>
+            </EditForm>
+        </div>
+
+        if (AllowManagingProfiles)
+        {
+            <div>
+                <MatButton Icon="add" @onclick="AddNewProfile" Raised="true"></MatButton>
+                <MatButton Icon="edit" Label="" @onclick="EditProfile" Raised="true"></MatButton>
+            </div>
+        }
+    }
+    else if (AllowManagingProfiles)
+    {
+        <MatButton Icon="add" Label="New Account" @onclick="AddNewProfile" Raised="true"></MatButton>
+    }
+</div>
+
+@if (AllowManagingProfiles)
+{
+    <AddProfilePopup
+        IsDialogOpen="_dialogIsOpen"
+        Profile="_newProfile"
+        OnSaveProfile="SaveProfile"
+        OnDeleteProfile="DeleteProfile"
+        OnCancel="CloseDialog" />
+}

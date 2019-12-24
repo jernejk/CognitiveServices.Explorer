@@ -2,11 +2,12 @@
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@using CognitiveServices.Explorer.Web.Shared.Profiles
 @using System.IO;
 @inject PersonViewModel viewModel
 @inject Blazor.FileReader.IFileReaderService fileReaderService;
 
-<FaceApiConfiguration OnUpdated="viewModel.LoadLatestConfig" />
+<ProfileSelector OnUpdated="viewModel.LoadLatestConfig" />
 
 <div class="content">
     @if (viewModel.Person != null)
