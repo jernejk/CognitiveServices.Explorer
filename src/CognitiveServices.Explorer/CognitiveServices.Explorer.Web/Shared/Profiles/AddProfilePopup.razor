@@ -1,0 +1,40 @@
+﻿<MatDialog @bind-IsOpen="@IsDialogOpen">
+    <MatDialogTitle>Add new Profile</MatDialogTitle>
+    <MatDialogContent>
+        <EditForm Model="@Profile" OnValidSubmit="@SaveProfile">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.ProfileName" Label="Profile name" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.FaceApiConfig.BaseUrl" Label="Face API Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.FaceApiConfig.Token" Label="Face API Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.TextApiConfig.BaseUrl" Label="Text API Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.TextApiConfig.Token" Label="Text API Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.SpeechApiConfig.BaseUrl" Label="Speech API Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.SpeechApiConfig.Token" Label="Speech API Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+            </fieldset>
+        </EditForm>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton @onclick="Cancel" Outlined="true" Class="mr-2">Cancel</MatButton>
+        @if (!IsNewProfile())
+        {
+            <MatButton @onclick="DeleteProfile" Class="bg-danger text-light mr-2">Delete Profile</MatButton>
+        }
+        <MatButton @onclick="SaveProfile" Raised="true">@(IsNewProfile() ? "Add Profile" : "Update Profile")</MatButton>
+    </MatDialogActions>
+</MatDialog>

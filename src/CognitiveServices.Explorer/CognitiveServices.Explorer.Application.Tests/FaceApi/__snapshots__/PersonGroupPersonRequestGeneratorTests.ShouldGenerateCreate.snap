@@ -4,7 +4,7 @@
   "RelativePath": "face/v1.0/persongroups/default/persons",
   "Queries": null,
   "HttpMethod": "POST",
-  "Body": "{\"name\":\"User\",\"userData\":\"{\\\"test\\\":\\\"data\\\"}\"}",
+  "Body": "{\"name\":\"User\",\"userData\":\"{\\u0022test\\u0022:\\u0022data\\u0022}\"}",
   "BinaryContent": null,
   "ContentType": "application/json",
   "ExpectedHtppCode": 200,
