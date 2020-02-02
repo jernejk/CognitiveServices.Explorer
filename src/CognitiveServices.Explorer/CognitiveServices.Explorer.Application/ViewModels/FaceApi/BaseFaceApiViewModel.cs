@@ -67,7 +67,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FaceApi
             {
                 try
                 {
-                    ErrorDto e = await fe.GetResponseJsonAsync<ErrorDto>();
+                    ErrorDto e = await fe.Call.Response.GetJsonAsync<ErrorDto>();
                     if (e?.Error != null)
                     {
                         Error = $"Face API error code {e.Error.Code}: \n{e.Error.Message}";

@@ -22,7 +22,7 @@ namespace CognitiveServices.Explorer.Application
                 url = url.SetQueryParams(request.Queries);
             }
 
-            Task<HttpResponseMessage> responseTask = null!;
+            Task<IFlurlResponse> responseTask = null!;
             string httpMethod = request.HttpMethod.ToUpperInvariant();
             switch (httpMethod)
             {
@@ -66,7 +66,7 @@ namespace CognitiveServices.Explorer.Application
 
             using (var response = await responseTask)
             {
-                return await response.Content.ReadAsStringAsync();
+                return await response.GetStringAsync();
             }
         }
     }
