@@ -1,9 +1,10 @@
-name: Production deployment
+name: Build and deploy
 
 on:
   push:
     branches:
       - master
+      - dev
 
 jobs:
   test:
@@ -19,6 +20,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      
+    - name: Dump GitHub context
+      env:
+        BRANCH: ${{ toJson(github) }}
+        IS_PROD: ${{ github.ref }}
+      run: echo Branch $BRANCH is production deployment => $IS_PROD
     
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
