@@ -29,6 +29,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CC708385-7816-481E-82C3-C64FFE960425}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\..\manifest.json = ..\..\manifest.json
+		..\..\serviceworker.js = ..\..\serviceworker.js
 	EndProjectSection
 EndProject
 Global
