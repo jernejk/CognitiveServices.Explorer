@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubContent", "GitHubContent", "{D203B4F6-3805-48C2-BB18-17A825EAD7A8}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\.gitignore = ..\..\.gitignore
+		..\..\.actionspanel\buttons.yml = ..\..\.actionspanel\buttons.yml
 		..\..\publish-github-pages.ps1 = ..\..\publish-github-pages.ps1
 		..\..\README.md = ..\..\README.md
 	EndProjectSection

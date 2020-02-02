@@ -1,0 +1,5 @@
+buttons:
+  - title: Run tests
+    action: "run_tests"
+    description: Run your tests
+EOF
