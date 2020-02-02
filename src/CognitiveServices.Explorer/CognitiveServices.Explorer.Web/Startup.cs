@@ -4,8 +4,6 @@ using CognitiveServices.Explorer.Application.Commands;
 using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations;
 using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
-using CognitiveServices.Explorer.Web.Infrastructure;
-using Flurl.Http;
 using MatBlazor;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
