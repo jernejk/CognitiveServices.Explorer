@@ -21,8 +21,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "commandLineArgs": "--pathbase=/CognitiveServices.Explorer",
-      "launchUrl": "http://localhost:39816/CognitiveServices.Explorer",
+      //"commandLineArgs": "--pathbase=/CognitiveServices.Explorer",
+      "launchUrl": "http://localhost:39816/",
       "applicationUrl": "http://localhost:39816/"
     }
   }
