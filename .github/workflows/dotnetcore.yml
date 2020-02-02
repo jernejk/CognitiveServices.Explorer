@@ -3,6 +3,14 @@ name: .NET Core
 on: [push]
 
 jobs:
+  test:
+    if: github.event.action == 'run_tests'
+    name: Run your tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test
+      run: dotnet test ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.sln --configuration Release
+
   build:
 
     runs-on: ubuntu-latest
