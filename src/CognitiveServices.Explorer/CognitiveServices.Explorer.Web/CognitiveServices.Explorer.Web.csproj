@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview1.20073.1" />
@@ -22,6 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.1" />
     <PackageReference Include="Tewr.Blazor.FileReader" Version="1.2.0.19363" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="10.0.0" />
     <PackageReference Include="MatBlazor" Version="2.0.5" />
@@ -30,10 +31,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj" />
     <ProjectReference Include="..\CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\Profiles\" />
   </ItemGroup>
 
 </Project>

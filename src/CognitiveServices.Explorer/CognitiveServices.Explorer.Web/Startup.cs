@@ -45,12 +45,8 @@ namespace CognitiveServices.Explorer.Web
                 config.MaximumOpacity = 95;
                 config.VisibleStateDuration = 3000;
             });
-            
-            // 3rd party
-            FlurlHttp.Configure(settings =>
-            {
-                settings.HttpClientFactory = new HttpClientFactoryForBlazor();
-            });
+
+            services.AddHttpClient();
 
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
         }
