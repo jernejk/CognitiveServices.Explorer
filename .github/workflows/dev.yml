@@ -4,6 +4,9 @@ on:
     branches:
       - dev
 
+env:
+  azure_blob_str_con_str: ${{ secrets.AzureDevBlobStorageConnectionString }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,6 +33,6 @@ jobs:
         # The name of the storage account container these assets will be uploaded to
         container_name: $web
         # The connection string for the storage account
-        connection_string: ${{secrets.AzureDevBlobStorageConnectionString}}
+        connection_string: ${{evn.azure_blob_str_con_str}}
         # extra arguments that can be passed to `az storage blob upload-batch`. Useful for passing flags like `--pattern` or `--destination-path`
         #extra_args: # optional
