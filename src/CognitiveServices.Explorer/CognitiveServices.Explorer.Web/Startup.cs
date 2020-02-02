@@ -8,7 +8,6 @@ using CognitiveServices.Explorer.Web.Infrastructure;
 using Flurl.Http;
 using MatBlazor;
 using MediatR;
-using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
@@ -54,11 +53,6 @@ namespace CognitiveServices.Explorer.Web
             });
 
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
-        }
-
-        public void Configure(IComponentsApplicationBuilder app)
-        {
-            app.AddComponent<App>("app");
         }
     }
 }
