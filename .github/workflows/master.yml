@@ -1,6 +1,9 @@
-name: .NET Core
+name: Cognitive Services Prod deployment
 
-on: [push]
+on:
+  push:
+    branches:
+      - master # Push events on master branch
 
 jobs:
   test:
@@ -12,7 +15,6 @@ jobs:
       run: dotnet test ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.sln --configuration Release
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
