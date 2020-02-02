@@ -1,4 +1,4 @@
-![Cognitive Services Explorer](logo.png)
+![Cognitive Studio](logo.png)
 
 [![GitHub Stars](https://img.shields.io/github/stars/jernejk/CognitiveServices.Explorer.svg)](https://github.com/SamProf/MatBlazor/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/jernejk/CognitiveServices.Explorer.svg)](https://github.com/SamProf/MatBlazor/issues)
