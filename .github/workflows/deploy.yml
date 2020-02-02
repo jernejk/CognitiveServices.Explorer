@@ -22,13 +22,7 @@ jobs:
     - uses: actions/checkout@v2
       
     - name: Dump GitHub context
-      if: github.ref == 'refs/heads/master'
-      env:
-        BRANCH: master
-      run: echo Branch $BRANCH is production deployment
-      
-    - name: Dump GitHub context 2
-      run: echo Branch 2 $BRANCH is production deployment
+      run: echo Deployment for ${{ github.ref }}
     
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
@@ -41,7 +35,8 @@ jobs:
     - name: Publish
       run: dotnet publish ./src/CognitiveServices.Explorer/ -c Release -o ./dist/
     
-    - name: Azure Blob Storage Upload
+    - name: Azure Blob Storage Upload (production)
+      if: github.ref == 'refs/heads/master'
       uses: bacongobbler/azure-blob-storage-upload@v1.0.0
       with:
         # The name of the directory you want to upload
@@ -50,5 +45,18 @@ jobs:
         container_name: $web
         # The connection string for the storage account
         connection_string: ${{secrets.AzureBlobStorageConnectionString}}
+        # extra arguments that can be passed to `az storage blob upload-batch`. Useful for passing flags like `--pattern` or `--destination-path`
+        #extra_args: # optional
+          
+    - name: Azure Blob Storage Upload (dev)
+      if: github.ref == 'refs/heads/dev'
+      uses: bacongobbler/azure-blob-storage-upload@v1.0.0
+      with:
+        # The name of the directory you want to upload
+        source_dir: ./dist/CognitiveServices.Explorer.Web/dist/
+        # The name of the storage account container these assets will be uploaded to
+        container_name: $web
+        # The connection string for the storage account
+        connection_string: ${{secrets. AzureDevBlobStorageConnectionString}}
         # extra arguments that can be passed to `az storage blob upload-batch`. Useful for passing flags like `--pattern` or `--destination-path`
         #extra_args: # optional
