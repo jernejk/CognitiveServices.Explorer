@@ -1,9 +1,9 @@
-name: Cognitive Services Prod deployment
+name: Production deployment
 
 on:
   push:
     branches:
-      - master # Push events on master branch
+      - master
 
 jobs:
   test:
