@@ -27,12 +27,12 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
         public TextViewModel(IMediator mediator)
         {
             _mediator = mediator;
-            _sentimentAnalysis = TextRequestGenerator.Sentiment("Dummy text", Language, TextApiVersion);
-            _keyPhrases = TextRequestGenerator.KeyPhrases("Dummy text", Language, TextApiVersion);
-            _entities = TextRequestGenerator.Entities("Dummy text", Language, TextApiVersion);
-            _detectLanguage = TextRequestGenerator.DetectLanguage("Dummy text", Language, TextApiVersion);
-            _entityLinking = TextRequestGenerator.EntityLinking("Dummy text (only for preview API)", Language);
-            _entityRecognitionPii = TextRequestGenerator.EntityRecognitionPii("Dummy text (only for preview API)", Language);
+            _sentimentAnalysis = TextRequestGenerator.Sentiment(Text, Language, TextApiVersion);
+            _keyPhrases = TextRequestGenerator.KeyPhrases(Text, Language, TextApiVersion);
+            _entities = TextRequestGenerator.Entities(Text, Language, TextApiVersion);
+            _detectLanguage = TextRequestGenerator.DetectLanguage(Text, Language, TextApiVersion);
+            _entityLinking = TextRequestGenerator.EntityLinking(Text, Language);
+            _entityRecognitionPii = TextRequestGenerator.EntityRecognitionPii(Text, Language);
 
             Requests.Add(_sentimentAnalysis);
             Requests.Add(_keyPhrases);
