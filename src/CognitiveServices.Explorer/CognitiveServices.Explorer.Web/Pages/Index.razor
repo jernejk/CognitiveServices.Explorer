@@ -1,4 +1,9 @@
 ﻿@page "/"
+@inject NavigationManager navigationManager
+
+@{
+    var isGitHub = navigationManager.BaseUri.IndexOf("jernejk.github.io", StringComparison.OrdinalIgnoreCase) > 0;
+}
 
 <div class="content">
     <h1>Cognitive Studio</h1>
@@ -15,6 +20,11 @@
             <li><i class="fa fa-check"></i> <a href="text"><i class="fa fa-align-center"></i> Text API (beta - no visualization)</a></li>
             <li><i class="fa fa-check"></i> <a href="speech"><i class="fa fa-microphone"></i> Speech + Text API (very early stage)</a></li>
         </ul>
+
+        @if (isGitHub)
+        {
+            <div class="alert alert-warning" role="alert">The app is moving away from GitHub pages to <a href="https://cognitivestudio.dev/">https://cognitivestudio.dev/</a></div>
+        }
     </p>
 
     <p>

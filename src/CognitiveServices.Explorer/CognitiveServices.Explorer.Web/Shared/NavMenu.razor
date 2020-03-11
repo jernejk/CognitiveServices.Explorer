@@ -1,8 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Components;
 @inject NavigationManager navigationManager
 
+@{
+    var isGitHub = navigationManager.BaseUri.IndexOf("jernejk.github.io", StringComparison.OrdinalIgnoreCase) > 0;
+    var homeUrl = isGitHub ? "/CognitiveServices.Explorer/" : "/";
+}
+
 <MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="/">
+    <MatNavItem Href="@homeUrl">
         <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
     </MatNavItem>
 
