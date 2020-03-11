@@ -1,8 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Components;
 @inject NavigationManager navigationManager
 
+@{
+    var isGitHub = navigationManager.BaseUri.IndexOf("jernejk.github.io", StringComparison.OrdinalIgnoreCase) > 0;
+    var homeUrl = isGitHub ? "/CognitiveServices.Explorer/" : "/";
+}
+
 <MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="/CognitiveServices.Explorer/">
+    <MatNavItem Href="@homeUrl">
         <MatIcon>home</MatIcon> <span class="miniHover">Home page</span>
     </MatNavItem>
 
@@ -26,7 +31,15 @@
         </MatNavSubMenuList>
     </MatNavSubMenu>
 
-    <MatNavSubMenu Expanded="true">
+    <MatNavItem Href="text">
+        <MatIcon>subject</MatIcon> <span class="miniHover"> Text API (beta)</span>
+    </MatNavItem>
+
+    <MatNavItem Href="speech">
+        <MatIcon>headset_mic</MatIcon> <span class="miniHover"> Speech API (alpha)</span>
+    </MatNavItem>
+
+    @*<MatNavSubMenu Expanded="true">
         <MatNavSubMenuHeader>
             <MatNavItem AllowSelection="false">
                 <MatIcon>headset_mic</MatIcon><span class="miniHover"> Speech API</span>
@@ -37,7 +50,7 @@
                 <MatIcon>hot_tub</MatIcon> <span class="miniHover">Prototype</span>
             </MatNavItem>
         </MatNavSubMenuList>
-    </MatNavSubMenu>
+    </MatNavSubMenu>*@
 
     @*<MatNavItem Href="@navigationManager.ToAbsoluteUri("dashboard").AbsoluteUri" Disabled="@(!IsLoggedIn)">
         <MatIcon>bar_chart</MatIcon> <span class="miniHover">Dashboard</span>

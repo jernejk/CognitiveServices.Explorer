@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CognitiveServices.Explorer.Domain.Speech
+﻿namespace CognitiveServices.Explorer.Domain.Speech
 {
     public class SpeechRecognizedResult
     {
@@ -20,5 +16,4 @@ namespace CognitiveServices.Explorer.Domain.Speech
         public string MaskedITN { get; set; }
         public string Display { get; set; }
     }
-
 }
