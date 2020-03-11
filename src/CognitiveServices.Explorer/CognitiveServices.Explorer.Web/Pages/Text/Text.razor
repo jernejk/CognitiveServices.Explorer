@@ -1,0 +1,80 @@
+﻿@page "/text"
+@using CognitiveServices.Explorer.Application.ViewModels.TextApi
+@using CognitiveServices.Explorer.Web.Shared.Profiles
+@using CognitiveServices.Explorer.Application.Text
+@using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
+@inject TextViewModel viewModel
+
+<ProfileSelector OnUpdated="UpdatedProfile" />
+
+<div class="content">
+    <h3>Text (preview)</h3>
+
+    @if (!viewModel.IsTextApiAvailable)
+    {
+        <div class="alert alert-warning" role="alert">Current profile doesn't have TextApi configuration.</div>
+    }
+    else
+    {
+        <MatTextField @bind-Value="@viewModel.Text" Label="Text" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        <MatTextField @bind-Value="@viewModel.Language" Label="Language" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        <MatSelect id="face-api-selected-group-id" Label="Detection model" @bind-Value="viewModel.TextApiVersion">
+            <MatOption Value="@TextRequestGenerator.StableVersion">Stable (v2.1)</MatOption>
+            <MatOption Value="@TextRequestGenerator.PreviewVersion">Preview (v3.0-preview.1)</MatOption>
+        </MatSelect>
+
+        <MatButton Label="Sentiment" @onclick="viewModel.SentimentAnalysis" Raised="true"></MatButton>
+        <MatButton Label="Key phrases" @onclick="viewModel.KeyPhrasesAnalysis" Raised="true"></MatButton>
+        <MatButton Label="Entities" @onclick="viewModel.EntitiesAnalysis" Raised="true"></MatButton>
+        <MatButton Label="Detect language" @onclick="viewModel.DetectLanguage" Raised="true"></MatButton>
+
+        if (viewModel.IsPreviewApi)
+        {
+            <MatButton Label="Entity Linking" @onclick="viewModel.EntityLinking" Raised="true"></MatButton>
+            <MatButton Label="Entity Recognition PII" @onclick="viewModel.EntityRecognitionPii" Raised="true"></MatButton>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.SentimentJson))
+        {
+            <h4>Sentiment analysis</h4>
+            <code>@viewModel.SentimentJson</code>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.KeyPhraseJson))
+        {
+            <h4>Key Phrases analysis</h4>
+            <code>@viewModel.KeyPhraseJson</code>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.EntitiesJson))
+        {
+            <h4>Entities analysis</h4>
+            <code>@viewModel.EntitiesJson</code>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.DetectLanguageJson))
+        {
+            <h4>Detected language</h4>
+            <code>@viewModel.DetectLanguageJson</code>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.EntityLinkingJson))
+        {
+            <h4>Entity Linking</h4>
+            <code>@viewModel.EntityLinkingJson</code>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.EntityRecognitionPiiJson))
+        {
+            <h4>Entity Recognition PII</h4>
+            <code>@viewModel.EntityRecognitionPiiJson</code>
+        }
+
+        if (!string.IsNullOrWhiteSpace(viewModel.Error))
+        {
+            <div class="alert alert-danger" role="alert">Error: @viewModel.Error</div>
+        }
+    }
+</div>
+
+<CurlRequestList Requests="viewModel.Requests" ServiceConfig="viewModel.TextApiConfig" />

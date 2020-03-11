@@ -29,6 +29,16 @@ namespace CognitiveServices.Explorer.Application
             };
         }
 
+        public static ServiceCost TextApiTransaction(float cost = 1)
+        {
+            return new ServiceCost
+            {
+                ServiceName = "TextApi",
+                Cost = cost,
+                Unit = "tr"
+            };
+        }
+
         public string ServiceName { get; set; }
         public float Cost { get; set; }
         public string Unit { get; set; }
