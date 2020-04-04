@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Blazor.Hosting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace CognitiveServices.Explorer.Web
 {
