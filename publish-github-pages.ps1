@@ -6,8 +6,8 @@ Write-Output "----==== Publish $pathToSolution"
 dotnet publish $pathToSolution -c Release -o ./dist/
 Write-Output ""
 
-Write-Output "----==== Copy from ./dist/$projectName/dist"
-Copy-Item -Path "./dist/$projectName/dist/*" -Destination "./" -Recurse -Force
+Write-Output "----==== Copy from ./dist/wwwroot"
+Copy-Item -Path "./dist/wwwroot/*" -Destination "./" -Recurse -Force
 Write-Output ""
 
 $indexFile = "./index.html"
