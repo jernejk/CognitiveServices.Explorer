@@ -45,7 +45,7 @@
         </div>
         <div class="loading-container">
             <img src="android-chrome-192x192.png" alt="Loading" title="Loading Cognitive Studio app" /><br />
-            Loading Cognitive Studio App v0.14.0b...<br />
+            Loading Cognitive Studio App v0.14.1b...<br />
             <span><small>May take a while to load Blazor libraries and it might not work on older browser or iOS.</small></span>
         </div>
     </app>
@@ -61,15 +61,6 @@
     <script src="scripts/web_audio_recorder_js/WebAudioRecorder.js"></script>
     <script src="scripts/audio-recording.js"></script>
 
-    <!-- PWA script -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            console.log('Registering service worker now');
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => {
-                    console.log('Service Worker Registered');
-                });
-        }
-    </script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 </html>
