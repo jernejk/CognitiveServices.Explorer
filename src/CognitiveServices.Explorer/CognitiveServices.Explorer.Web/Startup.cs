@@ -47,6 +47,7 @@ namespace CognitiveServices.Explorer.Web
             });
 
             services.AddHttpClient();
+            services.AddBaseAddressHttpClient();
 
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
         }

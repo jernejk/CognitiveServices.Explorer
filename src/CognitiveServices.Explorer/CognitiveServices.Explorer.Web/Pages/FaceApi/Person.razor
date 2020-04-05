@@ -75,7 +75,6 @@
                     <MatTextField @bind-Value="@_faceImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
                     <p><b>OR</b></p>
                     <input type="file" @ref=_inputTypeFileElement accept="image/*" />
-                    <div class="alert alert-warning" role="alert">Is currently broken due Blazor 3.2.0 Preview 1 upgrade.</div>
                 </div>
                 <div class="form-group">
                     <MatSelect id="face-api-selected-group-id" Label="Detection model" @bind-Value="_selectedDetectionModel">
