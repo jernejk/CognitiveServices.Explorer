@@ -1,6 +1,6 @@
 ﻿{
   "name": "Cognitive Studio",
-  "short_name": "CS Explorer",
+  "short_name": "Cognitive Studio",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#8AD",

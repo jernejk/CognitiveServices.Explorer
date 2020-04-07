@@ -1,21 +1,27 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject AppState appState
+
+@{
+    var isGitHub = navigationManager.BaseUri.IndexOf("jernejk.github.io", StringComparison.OrdinalIgnoreCase) > 0;
+    var homeUrl = isGitHub ? "/CognitiveServices.Explorer/" : "/";
+}
+
 <MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
         <header class="drawer-header">
             <div class="drawer-logo">
                 <img alt="Cognitive Studio" class="logo-img" src="android-chrome-192x192.png" title="Cognitive Studio">
-                <a class="miniHover ml-2" href="/CognitiveServices.Explorer/" title="Cognitive Studio">Cognitive Studio</a>
+                <a class="miniHover ml-2" href="@homeUrl" title="Cognitive Studio">Cognitive Studio</a>
             </div>
             @*<UserProfile />*@
         </header>
         <NavMenu />
         @*<footer class="drawer-footer">
-            <MatTooltip Tooltip="Help">
-                <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
-            </MatTooltip>
-        </footer>*@
+                <MatTooltip Tooltip="Help">
+                    <MatButton Icon="help" RefBack="@context" Link="https://github.com/enkodellc/blazorboilerplate"><span class="miniHover">Help & Support</span></MatButton>
+                </MatTooltip>
+            </footer>*@
     </MatDrawer>
     <MatDrawerContent>
         <MatAppBarContainer>
@@ -29,20 +35,20 @@
                             <nav>
                                 <ul>
                                     @*<li>
-                                        <MatTooltip Tooltip="Toggle Navigation">
-                                            <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
-                                        </MatTooltip>
-                                    </li>*@
+                                            <MatTooltip Tooltip="Toggle Navigation">
+                                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                                            </MatTooltip>
+                                        </li>*@
                                     <li>
                                         <MatTooltip Tooltip="Minify Navigation">
                                             <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
                                         </MatTooltip>
                                     </li>
                                     @*<li>
-                                        <MatTooltip Tooltip="Lock Navigation" >
-                                            <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
-                                        </MatTooltip>
-                                    </li>*@
+                                            <MatTooltip Tooltip="Lock Navigation" >
+                                                <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+                                            </MatTooltip>
+                                        </li>*@
                                 </ul>
                             </nav>
                         </div>
