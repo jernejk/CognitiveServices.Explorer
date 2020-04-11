@@ -36,7 +36,6 @@ jobs:
       with:
         find: "android-chrome-192x192.png"
         replace: "android-chrome-192x192-dev.png"
-        include: "*.json"
 
     # Replace values in appsettings.json (prod only)
     - uses: microsoft/variable-substitution@v1 
