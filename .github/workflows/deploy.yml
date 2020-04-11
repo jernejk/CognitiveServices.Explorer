@@ -41,6 +41,7 @@ jobs:
 
     # Replace values in appsettings.json (prod only)
     - uses: microsoft/variable-substitution@v1 
+      if: github.ref == 'refs/heads/master'
       with:
         files: '**/appsettings.json'
       env:
