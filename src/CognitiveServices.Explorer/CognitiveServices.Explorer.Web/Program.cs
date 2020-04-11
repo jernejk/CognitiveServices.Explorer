@@ -11,7 +11,8 @@ namespace CognitiveServices.Explorer.Web
             builder.RootComponents.Add<App>("app");
 
             // I prefer this setup to be separate from Program.cs just like regular ASP.NET web app.
-            new Startup().ConfigureServices(builder.Services);
+            Startup.ConfigureConfiguration(builder.Configuration);
+            Startup.ConfigureServices(builder.Services);
 
             await builder.Build().RunAsync();
         }
