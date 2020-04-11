@@ -41,7 +41,7 @@
     <ProjectReference Include="..\CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj" />
     <ProjectReference Include="..\CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup Condition="$(Configuration)=='Debug'">
     <EmbeddedResource Include="appsettings.json" />
     <EmbeddedResource Include="appsettings.Local.json" />
