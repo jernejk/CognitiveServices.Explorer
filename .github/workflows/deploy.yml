@@ -28,6 +28,25 @@ jobs:
       uses: actions/setup-dotnet@v1.4.0
       with:
         dotnet-version: 3.1.300-preview-015048
+        
+    # Make sure the icons are configured correctly for DEV
+    - name: Copy file
+      if: github.ref == 'refs/heads/dev'
+      uses: canastro/copy-action@0.0.2
+      with:
+        # Source file
+        source: wwwroot/android-chrome-192x192-dev.png
+        # Target file
+        target: wwwroot/android-chrome-192x192.png
+
+    # Replace values in appsettings.json (prod only)
+    - uses: microsoft/variable-substitution@v1 
+      with:
+        files: './src/CognitiveServices.Explorer/CognitiveServices.Explorer.Web/appsettings.json'
+      env:
+        IsDev: false
+        Environment: "Prod"
+        Title: Cognitive Studio
     
     - name: Test
       run: dotnet test ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.sln --configuration Release
