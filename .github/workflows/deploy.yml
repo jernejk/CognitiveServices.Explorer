@@ -42,11 +42,11 @@ jobs:
     # Replace values in appsettings.json (prod only)
     - uses: microsoft/variable-substitution@v1 
       with:
-        files: './src/CognitiveServices.Explorer/CognitiveServices.Explorer.Web/appsettings.json'
+        files: '**/appsettings.json'
       env:
-        IsDev: false
+        IsDev: "false"
         Environment: "Prod"
-        Title: Cognitive Studio
+        Title: "Cognitive Studio"
     
     - name: Test
       run: dotnet test ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.sln --configuration Release
