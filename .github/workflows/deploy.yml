@@ -28,16 +28,15 @@ jobs:
       uses: actions/setup-dotnet@v1.4.0
       with:
         dotnet-version: 3.1.300-preview-015048
-        
-    # Make sure the icons are configured correctly for DEV
-    - name: Copy file
+
+    # Use dev image in manifest.json and appsettings.json
+    - name: Find and Replace
       if: github.ref == 'refs/heads/dev'
-      uses: canastro/copy-action@0.0.2
+      uses: jacobtomlinson/gha-find-replace@master
       with:
-        # Source file
-        source: ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.Web/wwwroot/android-chrome-192x192-dev.png
-        # Target file
-        target: ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.Web/wwwroot/android-chrome-192x192.png
+        find: "android-chrome-192x192.png"
+        replace: "android-chrome-192x192-dev.png"
+        include: "*.json"
 
     # Replace values in appsettings.json (prod only)
     - uses: microsoft/variable-substitution@v1 
