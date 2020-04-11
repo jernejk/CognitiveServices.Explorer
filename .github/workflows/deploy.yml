@@ -44,9 +44,9 @@ jobs:
       with:
         files: '**/appsettings.json'
       env:
-        IsDev: "false"
-        Environment: "Prod"
-        Title: "Cognitive Studio"
+        App.IsDev: "false"
+        App.Environment: "Prod"
+        App.Title: "Cognitive Studio"
     
     - name: Test
       run: dotnet test ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.sln --configuration Release
