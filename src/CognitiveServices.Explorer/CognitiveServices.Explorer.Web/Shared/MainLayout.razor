@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject AppState appState
+@inject AppConfiguration appConfig
 
 @{
     var isGitHub = navigationManager.BaseUri.IndexOf("jernejk.github.io", StringComparison.OrdinalIgnoreCase) > 0;
@@ -11,8 +12,8 @@
     <MatDrawer @bind-Opened="@_navMenuOpened">
         <header class="drawer-header">
             <div class="drawer-logo">
-                <img alt="Cognitive Studio" class="logo-img" src="android-chrome-192x192.png" title="Cognitive Studio">
-                <a class="miniHover ml-2" href="@homeUrl" title="Cognitive Studio">Cognitive Studio</a>
+                <img alt="Cognitive Studio" class="logo-img" src="@appConfig.TitleImg" title="Cognitive Studio">
+                <a class="miniHover ml-2" href="@homeUrl" title="Cognitive Studio">@appConfig.Title</a>
             </div>
             @*<UserProfile />*@
         </header>
@@ -72,7 +73,7 @@
                 </section>
                 <footer class="page-footer">
                     <div class="flex-1">
-                        © 2020 <a href="https://jkdev.me" target="_blank">JK</a>, template by <a href="//blazorboilerplate.com" target="_blank">Blazor Boilerplate</a>
+                        © 2020 <a href="https://jkdev.me" target="_blank">JK</a>, template by <a href="//blazorboilerplate.com" target="_blank">Blazor Boilerplate</a> @(appConfig.IsDev ? $"Environment: {appConfig.Environment}" : "")
                     </div>
                 </footer>
             </MatAppBarContent>

@@ -7,15 +7,39 @@ using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
 using CognitiveServices.Explorer.Application.ViewModels.TextApi;
 using MatBlazor;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
+using System.Reflection;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace CognitiveServices.Explorer.Web
 {
-    public class Startup
+    public static class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureConfiguration(IConfigurationBuilder configurationBuilder)
         {
+            Assembly assembly = typeof(Startup).Assembly;
+
+            var appsettingsFiles = assembly.GetManifestResourceNames()
+                .Where(f => f.Contains("appsettings.", StringComparison.OrdinalIgnoreCase) && f.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var resourceName in appsettingsFiles)
+            {
+                configurationBuilder.AddJsonStream(assembly.GetManifestResourceStream(resourceName));
+            }
+        }
+
+        public static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton(provider =>
+            {
+                var config = provider.GetService<IConfiguration>();
+                return config.GetSection("app").Get<AppConfiguration>();
+            });
+
             // Temporary cache
             services.AddMemoryCache();
 

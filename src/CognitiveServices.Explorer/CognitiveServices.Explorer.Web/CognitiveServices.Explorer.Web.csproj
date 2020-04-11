@@ -41,6 +41,15 @@
     <ProjectReference Include="..\CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj" />
     <ProjectReference Include="..\CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj" />
   </ItemGroup>
+
+  <ItemGroup Condition="$(Configuration)=='Debug'">
+    <EmbeddedResource Include="appsettings.json" />
+    <EmbeddedResource Include="appsettings.Local.json" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(Configuration)!='Debug'">
+    <EmbeddedResource Include="appsettings.json" />
+  </ItemGroup>
   
   <!-- When publishing, swap service-worker.published.js in place of service-worker.js -->
   <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
