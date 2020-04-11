@@ -37,7 +37,7 @@ namespace CognitiveServices.Explorer.Web
             services.AddSingleton(provider =>
             {
                 var config = provider.GetService<IConfiguration>();
-                return config.GetSection("app").Get<AppConfiguration>();
+                return config.GetSection("App").Get<AppConfiguration>();
             });
 
             // Temporary cache
