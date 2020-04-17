@@ -7,10 +7,12 @@ using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
 using CognitiveServices.Explorer.Application.ViewModels.TextApi;
 using MatBlazor;
 using MediatR;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
@@ -18,7 +20,7 @@ namespace CognitiveServices.Explorer.Web
 {
     public static class Startup
     {
-        public static void ConfigureConfiguration(IConfigurationBuilder configurationBuilder)
+        public static void ConfigureConfiguration(IConfigurationBuilder configurationBuilder, IWebAssemblyHostEnvironment hostEnvironment)
         {
             Assembly assembly = typeof(Startup).Assembly;
 
@@ -32,7 +34,7 @@ namespace CognitiveServices.Explorer.Web
             }
         }
 
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services, IWebAssemblyHostEnvironment hostEnvironment)
         {
             services.AddSingleton(provider =>
             {
@@ -71,7 +73,7 @@ namespace CognitiveServices.Explorer.Web
             });
 
             services.AddHttpClient();
-            services.AddBaseAddressHttpClient();
+            services.AddSingleton(new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) }); ;
 
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
         }
