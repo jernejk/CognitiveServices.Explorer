@@ -27,7 +27,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.300-preview-015048
+        dotnet-version: 3.1.201
 
     # Use dev image in manifest.json and appsettings.json
     - name: Find and Replace
