@@ -56,6 +56,17 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <script>
+        const environmentName = 'Local';
+        const originalFetch = fetch;
+        fetch = async (url, options) => {
+            const response = await originalFetch(url, options);
+            return url.endsWith('/blazor.boot.json')
+                ? new Response(await response.blob(), { headers: { 'blazor-environment': environmentName } })
+                : response;
+        };
+    </script>
+
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="scripts/camera.js" type="text/javascript" async></script>
     <script src="scripts/web_audio_recorder_js/WebAudioRecorder.js"></script>

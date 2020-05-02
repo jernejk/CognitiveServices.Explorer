@@ -20,26 +20,13 @@ namespace CognitiveServices.Explorer.Web
 {
     public static class Startup
     {
-        public static void ConfigureConfiguration(IConfigurationBuilder configurationBuilder, IWebAssemblyHostEnvironment hostEnvironment)
-        {
-            Assembly assembly = typeof(Startup).Assembly;
-
-            var appsettingsFiles = assembly.GetManifestResourceNames()
-                .Where(f => f.Contains("appsettings.", StringComparison.OrdinalIgnoreCase) && f.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            foreach (var resourceName in appsettingsFiles)
-            {
-                configurationBuilder.AddJsonStream(assembly.GetManifestResourceStream(resourceName));
-            }
-        }
-
         public static void ConfigureServices(IServiceCollection services, IWebAssemblyHostEnvironment hostEnvironment)
         {
-            services.AddSingleton(provider =>
+            Console.WriteLine("Host env: " + hostEnvironment.Environment);
+            services.AddSingleton<AppConfiguration>(provider =>
             {
                 var config = provider.GetService<IConfiguration>();
-                return config.GetSection("App").Get<AppConfiguration>();
+                return config.GetSection("App").Get<AppConfiguration>() ?? new AppConfiguration();
             });
 
             // Temporary cache
@@ -73,7 +60,7 @@ namespace CognitiveServices.Explorer.Web
             });
 
             services.AddHttpClient();
-            services.AddSingleton(new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) }); ;
+            services.AddSingleton(new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
 
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
         }
