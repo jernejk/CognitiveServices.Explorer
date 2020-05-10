@@ -1,0 +1,91 @@
+﻿@page "/forms/custom/analyze"
+@using CognitiveServices.Explorer.Application.ViewModels.FormApi
+@using CognitiveServices.Explorer.Web.Shared.Profiles
+
+@inject CustomFormsViewModel viewModel;
+@inject Blazor.FileReader.IFileReaderService fileReaderService;
+
+<ProfileSelector OnUpdated="UpdatedProfile" />
+
+<div class="content">
+    <h3>Analyze Forms</h3>
+
+    <div><a href="forms/intro">Getting started</a></div>
+
+    @if (!viewModel.IsFormApiAvailable)
+    {
+        <div>Add Form Recognizer Cognitive Services account.</div>
+    }
+    else if (viewModel.Models?.modelList == null && viewModel.Models?.error == null)
+    {
+        <div>Loading...</div>
+    }
+    else if (viewModel.Models.error != null)
+    {
+        <div>Error: @viewModel.Models?.error?.message</div>
+    }
+    else if (viewModel.Models?.modelList?.Any() != true)
+    {
+        <div>No models available.</div>
+    }
+    else
+    {
+        <div>
+            <MatSelect id="face-api-selected-group-id" Label="Select trained model" @bind-Value="viewModel.ModelId">
+                @foreach (var model in viewModel.Models.modelList.OrderByDescending(m => m.lastUpdatedDateTime))
+                    {
+                    <MatOption Value="@model.modelId">Last updated at @model.lastUpdatedDateTime (@model.status)</MatOption>
+                    }
+            </MatSelect>
+
+            @if (!string.IsNullOrWhiteSpace(viewModel.ModelId))
+            {
+                <MatAccordion>
+                    <MatExpansionPanel @bind-Expanded="ImageUrlTabOpened">
+                        <MatExpansionPanelSummary>
+                            <MatExpansionPanelHeader>Image URL</MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <MatTextField @bind-Value="@ImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                    <MatExpansionPanel @bind-Expanded="ImageUploadTabOpened">
+                        <MatExpansionPanelSummary>
+                            <MatExpansionPanelHeader>File Upload</MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <input type="file" @ref=InputTypeFileElement accept="image/jpeg,image/png,image/tiff,application/pdf" />
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                </MatAccordion>
+
+                @if (OpenedTab == "imageUpload")
+                {
+                    <MatSelect id="face-api-selected-group-id" Label="Select trained model" @bind-Value="viewModel.ContentType">
+                        @foreach (var contentType in viewModel.SupportedContentTypes)
+                                    {
+                            <MatOption Value="@contentType">@contentType</MatOption>
+                                    }
+                    </MatSelect>
+                }
+
+                @if (viewModel.ContentType == "application/pdf" || viewModel.ContentType == "image/tiff")
+                {
+                    <div>
+                        NOTES:
+                        <ul>
+                            <li>If you're using free tier (F0), only first to pages will be processed.</li>
+                            <li>Multi-page PDF or TIFF file is treated as a single form rather than 1 form per page.</li>
+                        </ul>
+                    </div>
+                }
+
+                <button class="btn btn-primary" @onclick="AnalyzeForm">Analyze</button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+}
