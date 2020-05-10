@@ -14,5 +14,6 @@
     "Cost": 1.0,
     "Unit": "tr"
   },
-  "CognitiveServiceDoc": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523e"
+  "CognitiveServiceDoc": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523e",
+  "AbsoluteUrl": null
 }
