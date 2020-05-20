@@ -43,7 +43,8 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
         public async Task UpdatedProfile()
         {
             // NOTE: This will update a few variables that are not caught but Blazor.
-            await viewModel.LoadLatestConfig();
+            await viewModel.OnInitializedAsync();
+
             StateHasChanged();
         }
 

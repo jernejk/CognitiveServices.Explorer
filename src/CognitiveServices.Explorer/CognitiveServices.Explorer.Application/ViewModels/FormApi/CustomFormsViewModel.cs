@@ -50,8 +50,10 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
 
         public virtual async Task OnInitializedAsync()
         {
+            Console.WriteLine($"Loading configs...");
             await LoadLatestConfig().ConfigureAwait(false);
 
+            Console.WriteLine($"Attempt loading? {IsFormApiAvailable}");
             if (IsFormApiAvailable)
             {
                 Console.WriteLine("Loading");
