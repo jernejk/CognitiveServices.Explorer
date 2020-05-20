@@ -4,6 +4,7 @@ using CognitiveServices.Explorer.Application.Commands;
 using CognitiveServices.Explorer.Application.Persistence.Profiles;
 using CognitiveServices.Explorer.Application.Persistence.Profiles.Migrations;
 using CognitiveServices.Explorer.Application.ViewModels.FaceApi;
+using CognitiveServices.Explorer.Application.ViewModels.FormApi;
 using CognitiveServices.Explorer.Application.ViewModels.TextApi;
 using MatBlazor;
 using MediatR;
@@ -52,6 +53,7 @@ namespace CognitiveServices.Explorer.Web
             services.AddTransient<PersonViewModel>();
             services.AddTransient<DetectViewModel>();
             services.AddTransient<TextViewModel>();
+            services.AddTransient<CustomFormsViewModel>();
 
             // Repos
             services.AddTransient<IProfilesRepository, ProfilesRepository>();

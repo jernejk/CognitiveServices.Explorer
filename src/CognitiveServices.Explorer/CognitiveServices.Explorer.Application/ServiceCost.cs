@@ -29,6 +29,16 @@ namespace CognitiveServices.Explorer.Application
             };
         }
 
+        public static ServiceCost FormApiTransaction(float cost = 1)
+        {
+            return new ServiceCost
+            {
+                ServiceName = "FormsApi",
+                Cost = cost,
+                Unit = "tr"
+            };
+        }
+
         public static ServiceCost TextApiTransaction(float cost = 1)
         {
             return new ServiceCost

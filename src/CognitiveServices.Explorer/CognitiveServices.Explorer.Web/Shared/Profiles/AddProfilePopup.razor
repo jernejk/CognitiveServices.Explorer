@@ -26,6 +26,12 @@
                 <div class="form-group">
                     <MatTextField @bind-Value="@Profile.SpeechApiConfig.Token" Label="Speech API Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
                 </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.FormApiConfig.BaseUrl" Label="Form Recognizer API Base URL" Icon="cloud" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
+                <div class="form-group">
+                    <MatTextField @bind-Value="@Profile.FormApiConfig.Token" Label="Form Recognizer API Subscription Key" Icon="vpn_key" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
+                </div>
             </fieldset>
         </EditForm>
     </MatDialogContent>

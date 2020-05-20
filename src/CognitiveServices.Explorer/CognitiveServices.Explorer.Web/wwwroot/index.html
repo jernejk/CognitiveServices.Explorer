@@ -58,6 +58,17 @@
     <script src="scripts/web_audio_recorder_js/WebAudioRecorder.js"></script>
     <script src="scripts/audio-recording.js"></script>
 
+    <script>
+        if(window.navigator && navigator.serviceWorker) {
+            navigator.serviceWorker.getRegistrations()
+            .then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+            });
+        }
+    </script>
+
     <!--<script>navigator.serviceWorker.register('service-worker.js');</script>-->
 </body>
 </html>

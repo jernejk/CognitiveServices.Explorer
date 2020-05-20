@@ -17,5 +17,6 @@ namespace CognitiveServices.Explorer.Application
         public string TokenHeaderName { get; set; } = "Ocp-Apim-Subscription-Key";
         public ServiceCost? Cost { get; set; }
         public string? CognitiveServiceDoc { get; set; }
+        public string? AbsoluteUrl { get; set; }
     }
 }

@@ -25,9 +25,18 @@ namespace CognitiveServices.Explorer.Application.Commands
         {
             public async Task<string?> Handle(ExecuteCognitiveServicesCommand request, CancellationToken ct)
             {
-                var url = new Url(request.CognitiveServiceConfig.BaseUrl)
-                    .AppendPathSegment(request.Request.RelativePath)
-                    .WithHeader(request.Request.TokenHeaderName, request.CognitiveServiceConfig.Token);
+                IFlurlRequest url;
+                if (string.IsNullOrWhiteSpace(request.Request.AbsoluteUrl))
+                {
+                    url = new Url(request.CognitiveServiceConfig.BaseUrl)
+                        .AppendPathSegment(request.Request.RelativePath)
+                        .WithHeader(request.Request.TokenHeaderName, request.CognitiveServiceConfig.Token);
+                }
+                else
+                {
+                    url = new Url(request.Request.AbsoluteUrl)
+                        .WithHeader(request.Request.TokenHeaderName, request.CognitiveServiceConfig.Token);
+                }
 
                 if (request.Request.Queries?.Any() == true)
                 {
