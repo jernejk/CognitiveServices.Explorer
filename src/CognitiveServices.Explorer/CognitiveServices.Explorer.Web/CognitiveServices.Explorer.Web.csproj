@@ -45,13 +45,14 @@
     <ProjectReference Include="..\CognitiveServices.Explorer.Application\CognitiveServices.Explorer.Application.csproj" />
     <ProjectReference Include="..\CognitiveServices.Explorer.Domain\CognitiveServices.Explorer.Domain.csproj" />
   </ItemGroup>
-  
-  <ItemGroup Condition="$(Configuration)=='Debug'">
-    <EmbeddedResource Include="appsettings.json" />
-    <EmbeddedResource Include="appsettings.Local.json" />
-  </ItemGroup>
 
-  <ItemGroup Condition="$(Configuration)!='Debug'">
+  <!-- Embedd production appsettings -->
+  <ItemGroup>
     <EmbeddedResource Include="appsettings.json" />
+  </ItemGroup>
+  
+  <!-- Embedd local appsettings -->
+  <ItemGroup Condition="$(Configuration)=='Debug'">
+    <EmbeddedResource Include="appsettings.Local.json" />
   </ItemGroup>
 </Project>
