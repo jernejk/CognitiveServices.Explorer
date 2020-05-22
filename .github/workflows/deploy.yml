@@ -82,3 +82,19 @@ jobs:
         connection_string: ${{secrets. AzureDevBlobStorageConnectionString}}
         # extra arguments that can be passed to `az storage blob upload-batch`. Useful for passing flags like `--pattern` or `--destination-path`
         #extra_args: # optional
+          
+    - name: HTTP Request Action
+      uses: fjogeleit/http-request-action@1.3.0
+      with:
+        # Request URL
+        url: https://api.cloudflare.com/client/v4/zones/${{secrets.CloudFlareZoneId}}/purge_cache
+        # Request Method
+        method: POST
+        # Content Type
+        contentType: application/json
+        # Request Body as JSON String
+        data: "{\"purge_everything\":true}"
+        # Request Timeout in Sec
+        timeout: 360
+        # Bearer Authentication Token
+        bearerToken: ${{secrets.CloudFlareToken}}
