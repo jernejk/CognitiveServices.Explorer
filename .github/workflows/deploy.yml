@@ -11,14 +11,6 @@ on:
       - dev
 
 jobs:
-  test:
-    if: github.event.action == 'run_tests'
-    name: Run your tests
-    runs-on: ubuntu-latest
-    steps:
-    - name: Test
-      run: dotnet test ./src/CognitiveServices.Explorer/CognitiveServices.Explorer.sln --configuration Release
-
   build:
     runs-on: ubuntu-latest
 
@@ -31,7 +23,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.201
+        dotnet-version: 3.1.300
 
     # Use dev image in manifest.json and appsettings.json
     - name: Find and Replace
