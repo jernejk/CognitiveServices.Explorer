@@ -2,7 +2,7 @@
 
 [![GitHub Stars](https://img.shields.io/github/stars/jernejk/CognitiveServices.Explorer.svg)](https://github.com/SamProf/MatBlazor/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/jernejk/CognitiveServices.Explorer.svg)](https://github.com/SamProf/MatBlazor/issues)
-[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://https://cognitivestudio.dev/)
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://cognitivestudio.dev/)
 [![Apache-2.0](https://img.shields.io/github/license/jernejk/CognitiveServices.Explorer.svg)](LICENSE)
 [![Actions Panel](https://img.shields.io/badge/actionspanel-enabled-brightgreen)](https://www.actionspanel.app/app/jernejk/CognitiveServices.Explorer)
 
