@@ -19,8 +19,9 @@
         <MatTextField @bind-Value="@viewModel.Text" Label="Text" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         <MatTextField @bind-Value="@viewModel.Language" Label="Language" Icon="account_circle" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
         <MatSelect id="face-api-selected-group-id" Label="Detection model" @bind-Value="viewModel.TextApiVersion">
-            <MatOption Value="@TextRequestGenerator.StableVersion">Stable (v2.1)</MatOption>
-            <MatOption Value="@TextRequestGenerator.PreviewVersion">Preview (v3.0-preview.1)</MatOption>
+            <MatOption Value="@TextRequestGenerator.LegacyVersion">Legacy (v@(TextRequestGenerator.LegacyVersion))</MatOption>
+            <MatOption Value="@TextRequestGenerator.StableVersion">Stable (v@(TextRequestGenerator.StableVersion))</MatOption>
+            <MatOption Value="@TextRequestGenerator.PreviewVersion">Preview (v@(TextRequestGenerator.PreviewVersion))</MatOption>
         </MatSelect>
 
         <MatButton Label="Sentiment" @onclick="viewModel.SentimentAnalysis" Raised="true"></MatButton>
@@ -28,9 +29,13 @@
         <MatButton Label="Entities" @onclick="viewModel.EntitiesAnalysis" Raised="true"></MatButton>
         <MatButton Label="Detect language" @onclick="viewModel.DetectLanguage" Raised="true"></MatButton>
 
-        if (viewModel.IsPreviewApi)
+        if (viewModel.IsStableApi || viewModel.IsPreviewApi)
         {
             <MatButton Label="Entity Linking" @onclick="viewModel.EntityLinking" Raised="true"></MatButton>
+        }
+
+        if (viewModel.IsPreviewApi)
+        {
             <MatButton Label="Entity Recognition PII" @onclick="viewModel.EntityRecognitionPii" Raised="true"></MatButton>
         }
 

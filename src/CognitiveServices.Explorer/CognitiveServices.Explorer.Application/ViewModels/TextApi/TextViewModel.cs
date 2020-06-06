@@ -8,8 +8,6 @@ using Flurl.Http;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
@@ -41,7 +39,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
         }
 
         public List<HttpRequest> Requests { get; } = new List<HttpRequest>();
-        public string Text { get; set; } = "Cognitive Services is awesome! Blazor is an interesting technology but it's still a bit rough.";
+        public string Text { get; set; } = "Cognitive Services and Blazor are awesome technologies! Blazor needs a bit more polishing. Despite that, I love it! 😁";
         public string Language { get; set; } = TextRequestGenerator.DefaultLanguage;
 
         public string? SentimentJson { get; set; } = string.Empty;
@@ -54,6 +52,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
         public CognitiveServiceConfig? TextApiConfig { get; private set; } = null;
         public bool IsTextApiAvailable { get; set; }
         public string TextApiVersion { get; set; } = TextRequestGenerator.StableVersion;
+        public bool IsStableApi => TextApiVersion == TextRequestGenerator.StableVersion;
         public bool IsPreviewApi => TextApiVersion == TextRequestGenerator.PreviewVersion;
 
         public virtual async Task OnInitializedAsync()
