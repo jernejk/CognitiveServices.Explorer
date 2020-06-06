@@ -21,6 +21,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
         private HttpRequest _detectLanguage;
         private HttpRequest _entityLinking;
         private HttpRequest _entityRecognitionPii;
+        private string _selectedTextApiVersion = TextRequestGenerator.StableVersion;
 
         public TextViewModel(IMediator mediator)
         {
@@ -51,7 +52,25 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
         public string? Error { get; set; } = string.Empty;
         public CognitiveServiceConfig? TextApiConfig { get; private set; } = null;
         public bool IsTextApiAvailable { get; set; }
-        public string TextApiVersion { get; set; } = TextRequestGenerator.StableVersion;
+        public string TextApiVersion
+        {
+            get { return _selectedTextApiVersion; }
+            set
+            {
+                if (_selectedTextApiVersion != value)
+                {
+                    _selectedTextApiVersion = value;
+
+                    // Reset previews results when switching between version as the outputs might not be compatible.
+                    SentimentJson = string.Empty;
+                    KeyPhraseJson = string.Empty;
+                    EntitiesJson = string.Empty;
+                    DetectLanguageJson = string.Empty;
+                    EntityLinkingJson = string.Empty;
+                    EntityRecognitionPiiJson = string.Empty;
+                }
+            }
+        }
         public bool IsStableApi => TextApiVersion == TextRequestGenerator.StableVersion;
         public bool IsPreviewApi => TextApiVersion == TextRequestGenerator.PreviewVersion;
 
