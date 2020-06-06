@@ -180,9 +180,9 @@
                 {
                     // We are getting a more accurate representation of how positive, negative and neutral the text is.
                     _textAnalysis += $"  Sentiment is {sentimentResult.sentiment} with scores:\n";
-                    _textAnalysis += $"   - Positive:  {Math.Round(sentimentResult.documentScores.positive * 100, 2)}%\n";
-                    _textAnalysis += $"   - Neutral:   {Math.Round(sentimentResult.documentScores.neutral * 100, 2)}%\n";
-                    _textAnalysis += $"   - Negative:  {Math.Round(sentimentResult.documentScores.negative * 100, 2)}%\n";
+                    _textAnalysis += $"   - Positive:  {Math.Round(sentimentResult.confidenceScores.positive * 100, 2)}%\n";
+                    _textAnalysis += $"   - Neutral:   {Math.Round(sentimentResult.confidenceScores.neutral * 100, 2)}%\n";
+                    _textAnalysis += $"   - Negative:  {Math.Round(sentimentResult.confidenceScores.negative * 100, 2)}%\n";
                 }
                 else
                 {
@@ -245,7 +245,7 @@
     private async Task<AnalysedDocument?> AnalyzeDocument(TextApiRequest sentimentDocument, string textAnalysisType)
     {
         // A preview version 3 only exists for sentiment analysis.
-        string version = _usePreviewVersion && textAnalysisType == "sentiment" ? "3.0-preview" : "2.1";
+        string version = _usePreviewVersion && textAnalysisType == "sentiment" ? "3.0" : "2.1";
 
         TextApiResponse textApiResponse;
         using (var client = new HttpClient())

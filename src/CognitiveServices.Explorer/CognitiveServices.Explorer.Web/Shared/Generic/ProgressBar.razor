@@ -1,0 +1,10 @@
+﻿<div style="background: gray; border: 1px; border-color: black; display:inline-block; min-width: 200px;">
+    <div style="background: @BarColor; width: @($"{Percent}%"); padding-left: 10px; color: @BarTextColor;"> @BarText </div>
+</div>
+
+@code {
+    [Parameter] public double Percent { get; set; } = 0;
+    [Parameter] public string BarText { get; set; } = "";
+    [Parameter] public string BarColor { get; set; } = "green";
+    [Parameter] public string BarTextColor { get; set; } = "white";
+}

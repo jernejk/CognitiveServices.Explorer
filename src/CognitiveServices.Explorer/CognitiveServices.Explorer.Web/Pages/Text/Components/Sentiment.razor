@@ -1,0 +1,99 @@
+﻿@using CognitiveServices.Explorer.Application.Text
+@using CognitiveServices.Explorer.Web.Shared.Generic
+@using CognitiveServices.Explorer.Domain.Text
+@using Newtonsoft.Json
+
+@if (_response != null)
+{
+    <div class="mb-3">
+        <h4>Sentiment analysis</h4>
+            @foreach (var document in _response.documents)
+            {
+            <div style="width: 100%">
+                <span style="font-weight: bold">Document ID:</span> @document.id<br />
+                @if (!string.IsNullOrWhiteSpace(_response.modelVersion))
+                {
+                    <span style="font-weight: bold">Model version:</span> @_response.modelVersion<br />
+                }
+
+                @if (TextApiVersion == TextRequestGenerator.LegacyVersion)
+                {
+                    <span style="font-weight: bold">Sentiment:</span>
+                    <ProgressBar Percent="Math.Round(document.score * 100, 2)" BarText="@($"{Math.Round(document.score * 100, 2)}%")" />
+                }
+                else
+                {
+                    <div style="display: inline-block; position: relative; width: 50%; min-width: 200px;">
+                        <div class="progress-bar positive" style="width: @($"{Math.Round(document.confidenceScores.positive * 100, 2)}%");"> &nbsp; </div>
+                        <div class="progress-bar neutral" style="width: @($"{Math.Round(document.confidenceScores.neutral * 100, 2)}%");"> &nbsp; </div>
+                        <div class="progress-bar negative" style="width: @($"{Math.Round(document.confidenceScores.negative * 100, 2)}%");"> &nbsp; </div>
+                    </div><br />
+
+                    <p>
+                        <span style="font-weight: bold">Sentiment: </span>@document.sentiment<br />
+                        <span style="font-weight: bold">Positive: </span>@($"{Math.Round(document.confidenceScores.positive * 100, 2)}%")<br />
+                        <span style="font-weight: bold">Neutral: </span>@($"{Math.Round(document.confidenceScores.neutral * 100, 2)}%")<br />
+                        <span style="font-weight: bold">Negative: </span>@($"{Math.Round(document.confidenceScores.negative * 100, 2)}%")
+                    </p>
+
+                    <MatAccordion>
+                        <MatExpansionPanel>
+                            <MatExpansionPanelSummary>
+                                <MatExpansionPanelHeader>Details</MatExpansionPanelHeader>
+                            </MatExpansionPanelSummary>
+                            <MatExpansionPanelDetails>
+                                <div>
+                                    @foreach (var sentence in document.sentences)
+                                    {
+                                        <div class="mb-3">
+                                            <span style="font-weight: bold">Sentence: </span>@sentence.text<br />
+                                            <span style="font-weight: bold">Position: </span>@($"{sentence.offset} - {sentence.offset + sentence.length}")<br />
+                                            <div style="display: inline-block; position: relative; width: 50%; min-width: 200px;">
+                                                <div class="progress-bar positive" style="width: @($"{Math.Round(sentence.confidenceScores.positive * 100, 2)}%");"> &nbsp; </div>
+                                                <div class="progress-bar neutral" style="width: @($"{Math.Round(sentence.confidenceScores.neutral * 100, 2)}%");"> &nbsp; </div>
+                                                <div class="progress-bar negative" style="width: @($"{Math.Round(sentence.confidenceScores.negative * 100, 2)}%");"> &nbsp; </div>
+                                            </div><br />
+
+                                            <span style="font-weight: bold">Sentement: </span>@sentence.sentiment<br />
+                                            <span style="font-weight: bold">Positive: </span>@($"{Math.Round(sentence.confidenceScores.positive * 100, 2)}%")<br />
+                                            <span style="font-weight: bold">Neutral: </span>@($"{Math.Round(sentence.confidenceScores.neutral * 100, 2)}%")<br />
+                                            <span style="font-weight: bold">Negative: </span>@($"{Math.Round(sentence.confidenceScores.negative * 100, 2)}%")<br />
+                                        </div>
+                                    }
+                                </div>
+                            </MatExpansionPanelDetails>
+                        </MatExpansionPanel>
+                    </MatAccordion>
+                }
+            </div>
+            }
+    </div>
+}
+
+@code {
+    private string? _responseJson = null;
+    private TextApiResponse? _response = null;
+
+    [Parameter]
+    public string? ResponseJson
+    {
+        get { return _responseJson; }
+        set
+        {
+            if (_responseJson != value)
+            {
+                _responseJson = value;
+                if (_responseJson == null)
+                {
+                    _response = null;
+                }
+                else
+                {
+                    _response = JsonConvert.DeserializeObject<TextApiResponse>(_responseJson);
+                }
+            }
+        }
+    }
+
+    [Parameter] public string TextApiVersion { get; set; } = TextRequestGenerator.StableVersion;
+}
