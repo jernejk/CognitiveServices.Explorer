@@ -62,19 +62,13 @@ You can check out [live demo](https://cognitivestudio.dev/)
   * Sentiment
   * Key phrase
   * Entities
+  * Detect language
 
-<!--
-#### Features planned in the coming weeks
+### Form Recognizer
 
-* Update face (user data only)
-* Detect faces
-  * Emotions, gender, age, etc.
-  * ~~From web cam~~
-  * ~~From file upload~~
-  * ~~From URL~~
-* Find similar faces
-* Verify face
--->
+* Send image or URL to Custom Form Recognizer
+* URL with instruction how to get started
+
 
 ## Other Cognitive Services in planning (coming months)
 
