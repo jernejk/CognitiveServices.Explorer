@@ -64,10 +64,7 @@ namespace CognitiveServices.Explorer.Application.Text
                 _ => "Unknown version"
             };
 
-            string url = version == LegacyVersion ?
-                "v2.1/entities" :
-                $"v{version}/entities/recognition/general";
-            return MakeSingleRequest(url, text, language, docUrl);
+            return MakeSingleRequest($"v{version}/keyPhrases", text, language, docUrl);
         }
 
         public static HttpRequest EntityLinking(string text, string language = DefaultLanguage, string version = StableVersion)

@@ -3,14 +3,19 @@
 @using CognitiveServices.Explorer.Domain.Text
 @using Newtonsoft.Json
 
-@if (_sentimentResponse != null)
+@if (_response != null)
 {
     <div class="mb-3">
         <h4>Sentiment analysis</h4>
-            @foreach (var document in _sentimentResponse.documents)
+            @foreach (var document in _response.documents)
             {
             <div style="width: 100%">
                 <span style="font-weight: bold">Document ID:</span> @document.id<br />
+                @if (!string.IsNullOrWhiteSpace(_response.modelVersion))
+                {
+                    <span style="font-weight: bold">Model version:</span> @_response.modelVersion<br />
+                }
+
                 @if (TextApiVersion == TextRequestGenerator.LegacyVersion)
                 {
                     <span style="font-weight: bold">Sentiment:</span>
@@ -67,7 +72,7 @@
 
 @code {
     private string? _responseJson = null;
-    private TextApiResponse? _sentimentResponse = null;
+    private TextApiResponse? _response = null;
 
     [Parameter]
     public string? ResponseJson
@@ -80,11 +85,11 @@
                 _responseJson = value;
                 if (_responseJson == null)
                 {
-                    _sentimentResponse = null;
+                    _response = null;
                 }
                 else
                 {
-                    _sentimentResponse = JsonConvert.DeserializeObject<TextApiResponse>(_responseJson);
+                    _response = JsonConvert.DeserializeObject<TextApiResponse>(_responseJson);
                 }
             }
         }

@@ -84,12 +84,7 @@
         </div>
         
         <Sentiment ResponseJson="@viewModel.SentimentJson" TextApiVersion="@viewModel.TextApiVersion" />
-
-        if (!string.IsNullOrWhiteSpace(viewModel.KeyPhraseJson))
-        {
-            <h4>Key Phrases analysis</h4>
-            <code>@viewModel.KeyPhraseJson</code>
-        }
+        <KeyPhrases ResponseJson="@viewModel.KeyPhraseJson" TextApiVersion="@viewModel.TextApiVersion" />
 
         if (!string.IsNullOrWhiteSpace(viewModel.EntitiesJson))
         {
@@ -97,11 +92,7 @@
             <code>@viewModel.EntitiesJson</code>
         }
 
-        if (!string.IsNullOrWhiteSpace(viewModel.DetectLanguageJson))
-        {
-            <h4>Detected language</h4>
-            <code>@viewModel.DetectLanguageJson</code>
-        }
+        <DetectLanguage ResponseJson="@viewModel.DetectLanguageJson" TextApiVersion="@viewModel.TextApiVersion" />
 
         if (!string.IsNullOrWhiteSpace(viewModel.EntityLinkingJson))
         {
