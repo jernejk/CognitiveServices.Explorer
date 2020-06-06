@@ -57,9 +57,20 @@
 
     public class Entity
     {
+        // v2.1
         public string name { get; set; }
-        public string type { get; set; }
+        public string wikipediaLanguage { get; set; }
+        public string wikipediaId { get; set; }
         public string wikipediaUrl { get; set; }
+        public string bingId { get; set; }
+        public string type { get; set; }
+
+        // v3.0+
+        public string text { get; set; }
+        public string category { get; set; }
+        public int offset { get; set; }
+        public int length { get; set; }
+        public double confidenceScore { get; set; }
     }
 
     public class ConfidenceScores

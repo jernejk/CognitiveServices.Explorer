@@ -68,9 +68,9 @@
             </MatSelect>
 
             <MatButton Label="Sentiment" @onclick="viewModel.SentimentAnalysis" Raised="true"></MatButton>
+            <MatButton Label="Detect language" @onclick="viewModel.DetectLanguage" Raised="true"></MatButton>
             <MatButton Label="Key phrases" @onclick="viewModel.KeyPhrasesAnalysis" Raised="true"></MatButton>
             <MatButton Label="Entities" @onclick="viewModel.EntitiesAnalysis" Raised="true"></MatButton>
-            <MatButton Label="Detect language" @onclick="viewModel.DetectLanguage" Raised="true"></MatButton>
 
             @if (viewModel.IsStableApi || viewModel.IsPreviewApi)
             {
@@ -82,17 +82,11 @@
                 <MatButton Label="Entity Recognition PII" @onclick="viewModel.EntityRecognitionPii" Raised="true"></MatButton>
             }
         </div>
-        
+
         <Sentiment ResponseJson="@viewModel.SentimentJson" TextApiVersion="@viewModel.TextApiVersion" />
-        <KeyPhrases ResponseJson="@viewModel.KeyPhraseJson" TextApiVersion="@viewModel.TextApiVersion" />
-
-        if (!string.IsNullOrWhiteSpace(viewModel.EntitiesJson))
-        {
-            <h4>Entities analysis</h4>
-            <code>@viewModel.EntitiesJson</code>
-        }
-
         <DetectLanguage ResponseJson="@viewModel.DetectLanguageJson" TextApiVersion="@viewModel.TextApiVersion" />
+        <KeyPhrases ResponseJson="@viewModel.KeyPhraseJson" TextApiVersion="@viewModel.TextApiVersion" />
+        <NamedEntities ResponseJson="@viewModel.EntitiesJson" TextApiVersion="@viewModel.TextApiVersion" />
 
         if (!string.IsNullOrWhiteSpace(viewModel.EntityLinkingJson))
         {
