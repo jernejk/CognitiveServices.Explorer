@@ -117,7 +117,10 @@
             client.DefaultRequestHeaders.Add("ContentType", "audio/wav; codecs=audio/pcm; samplerate=16000");
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _currentProfile.SpeechApiConfig.Token);
 
-            var uri = new Uri($"{_currentProfile.SpeechApiConfig.BaseUrl}/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed");
+            var tokenIssuerBaseUri = new Uri(_currentProfile.SpeechApiConfig.BaseUrl);
+            var region = tokenIssuerBaseUri.Host.Substring(0, tokenIssuerBaseUri.Host.IndexOf('.'));
+
+            var uri = new Uri($"https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed");
 
             try
             {
