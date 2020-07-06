@@ -28,7 +28,7 @@
     <!-- 3rd party Blazor packages -->
     <PackageReference Include="Tewr.Blazor.FileReader" Version="1.5.0.20109" />
     <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="11.0.0.1" />
-    <PackageReference Include="MatBlazor" Version="2.3.0" />
+    <PackageReference Include="MatBlazor" Version="2.6.2" />
   </ItemGroup>
   
   <ItemGroup>
