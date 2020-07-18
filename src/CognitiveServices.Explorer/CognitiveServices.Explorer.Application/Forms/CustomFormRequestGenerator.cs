@@ -12,10 +12,10 @@ namespace CognitiveServices.Explorer.Application.Forms
             {
                 HttpMethod = HttpMethods.Get,
                 ContentType = "application/json",
-                RelativePath = "formrecognizer/v2.0-preview/custom/models",
+                RelativePath = "formrecognizer/v2.0/custom/models",
                 Cost = ServiceCost.FormApiTransaction(1),
                 Queries = new Dictionary<string, string> { { "op", showSummary.ToString() } },
-                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2-preview/operations/GetCustomModels"
+                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2/operations/GetCustomModels"
             };
         }
 
@@ -27,10 +27,10 @@ namespace CognitiveServices.Explorer.Application.Forms
                 HttpMethod = HttpMethods.Post,
                 BinaryContent = data,
                 ContentType = contentType,
-                RelativePath = $"formrecognizer/v2.0-preview/custom/models/{modelId}/analyze",
+                RelativePath = $"formrecognizer/v2.0/custom/models/{modelId}/analyze",
                 Queries = new Dictionary<string, string> { { "includeTextDetails", includeTextDetails.ToString() } },
                 Cost = ServiceCost.FormApiTransaction(1),
-                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2-preview/operations/AnalyzeWithCustomForm"
+                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2/operations/AnalyzeWithCustomForm"
             };
         }
 
@@ -41,10 +41,10 @@ namespace CognitiveServices.Explorer.Application.Forms
                 HttpMethod = HttpMethods.Post,
                 Body = JsonSerializer.Serialize(new { source = imageUrl }),
                 ContentType = "application/json",
-                RelativePath = $"formrecognizer/v2.0-preview/custom/models/{modelId}/analyze",
+                RelativePath = $"formrecognizer/v2.0/custom/models/{modelId}/analyze",
                 Queries = new Dictionary<string, string> { { "includeTextDetails", includeTextDetails.ToString() } },
                 Cost = ServiceCost.FormApiTransaction(1),
-                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2-preview/operations/AnalyzeWithCustomForm"
+                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2/operations/AnalyzeWithCustomForm"
             };
         }
 
@@ -55,7 +55,7 @@ namespace CognitiveServices.Explorer.Application.Forms
                 HttpMethod = HttpMethods.Get,
                 Cost = ServiceCost.FormApiTransaction(0),
                 AbsoluteUrl = operationLocation,
-                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2-preview/operations/GetAnalyzeFormResult"
+                CognitiveServiceDoc = "https://westus2.dev.cognitive.microsoft.com/docs/services/form-recognizer-api-v2/operations/GetAnalyzeFormResult"
             };
         }
     }
