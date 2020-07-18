@@ -9,6 +9,7 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
     public partial class Analyze
     {
         protected override async Task OnInitializedAsync() => await viewModel.OnInitializedAsync();
+        public bool IsAnalyzing { get; set; }
 
         public ElementReference InputTypeFileElement { get; set; }
         public string? ImageUrl { get; set; }
@@ -58,6 +59,9 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
                     return;
                 }
 
+                IsAnalyzing = true;
+                StateHasChanged();
+
                 await viewModel.Analyze(ImageUrl);
             }
             else if (OpenedTab == "imageUpload")
@@ -69,8 +73,13 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
                     return;
                 }
 
+                IsAnalyzing = true;
+                StateHasChanged();
+
                 await viewModel.Analyze(imageData);
             }
+
+            IsAnalyzing = false;
         }
 
         private async Task<byte[]?> ReadFile()

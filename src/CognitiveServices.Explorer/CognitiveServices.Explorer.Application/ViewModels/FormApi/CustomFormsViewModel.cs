@@ -47,6 +47,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
 
         public string? Error { get; set; }
         public FormDto? FormResult { get; set; }
+        public string FormResultText { get; set; }
 
         public virtual async Task OnInitializedAsync()
         {
@@ -93,6 +94,8 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
 
         private async Task Analyze()
         {
+            FormResultText = string.Empty;
+
             _getFormResults = CustomFormRequestGenerator.GetResultFromForm(string.Empty);
 
             UpdateRequestList();
@@ -152,6 +155,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
                         }
                         else
                         {
+                            Console.WriteLine("Trying again in 10 seconds. Status: " + formResult?.status);
                             await Task.Delay(10000);
                         }
                     }
@@ -159,18 +163,22 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
                     {
                         Error = ex.Message;
                         Console.WriteLine("Unable to analyze the form with exceptions. Error: " + Error);
+                        FormResultText = "Unable to analyze the form with exceptions. Error: " + Error;
                     }
                 }
 
                 if (formResult?.analyzeResult != null)
                 {
                     Console.WriteLine("Yay!");
+                    FormResultText = "Form results:\n";
 
                     foreach (var forms in formResult.analyzeResult.documentResults)
                     {
                         foreach (var item in forms.fields)
                         {
-                            Console.WriteLine($"{item.Key}: {item.Value?.text} ({item.Value?.confidence + 100}%)");
+                            string textLine = $"{item.Key}: {item.Value?.text} ({item.Value?.confidence + 100}%)";
+                            FormResultText += textLine + "\n";
+                            Console.WriteLine(textLine);
                         }
                     }
                 }

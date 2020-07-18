@@ -40,6 +40,14 @@
 
             @if (!string.IsNullOrWhiteSpace(viewModel.ModelId))
             {
+                var model = viewModel.Models.modelList.FirstOrDefault(x => x.modelId == viewModel.ModelId);
+                <p class="my-4">
+                    Model ID: @viewModel.ModelId<br/>
+                    Status: @model?.status<br/>
+                    Created at: @model?.createdDateTime<br/>
+                    Updated at: @model?.lastUpdatedDateTime
+                </p>
+
                 <MatAccordion>
                     <MatExpansionPanel @bind-Expanded="ImageUrlTabOpened">
                         <MatExpansionPanelSummary>
@@ -58,6 +66,8 @@
                         </MatExpansionPanelDetails>
                     </MatExpansionPanel>
                 </MatAccordion>
+            
+                <br />
 
                 @if (OpenedTab == "imageUpload")
                 {
@@ -80,13 +90,24 @@
                     </div>
                 }
 
-                <button class="btn btn-primary" @onclick="AnalyzeForm">Analyze</button>
+                <button class="btn btn-primary mt-1" @onclick="AnalyzeForm">Analyze</button>
+
+                @if (IsAnalyzing)
+                {
+                    <div class="mt-2">Analyzing (may take a minute if on free tier)...</div>
+                }
+                else if (!string.IsNullOrWhiteSpace(viewModel.FormResultText))
+                {
+                <div class="mt-2">
+                    <pre>@viewModel.FormResultText</pre>
+                </div>
+                }
             }
         </div>
     }
 </div>
 
-<h3>Additional demos</h3>
+<h3 class="mt-2">Additional demos</h3>
 
 <ul>
     <li><a href="https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/" target="_blank">Microsoft Cognitive Form Recognizer API intro demo</a></li>
