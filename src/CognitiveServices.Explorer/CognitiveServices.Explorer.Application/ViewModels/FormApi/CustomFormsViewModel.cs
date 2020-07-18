@@ -176,7 +176,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
                     {
                         foreach (var item in forms.fields)
                         {
-                            string textLine = $"{item.Key}: {item.Value?.text} ({item.Value?.confidence + 100}%)";
+                            string textLine = $"{item.Key}: {item.Value?.text} ({Math.Round(item.Value?.confidence ?? 0, 2) * 100d}%)";
                             FormResultText += textLine + "\n";
                             Console.WriteLine(textLine);
                         }
