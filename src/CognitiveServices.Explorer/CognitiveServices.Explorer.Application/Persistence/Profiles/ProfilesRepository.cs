@@ -27,14 +27,14 @@ namespace CognitiveServices.Explorer.Application.Persistence.Profiles
             return container.Profiles;
         }
 
-        public Task SaveProfiles(List<Profile> profiles)
+        public async Task SaveProfiles(List<Profile> profiles)
         {
             var container = new ProfileStorageContainer
             {
                 Profiles = profiles
             };
 
-            return _localStorageService.SetItemAsync(ProfileStorageKey, container);
+            await _localStorageService.SetItemAsync(ProfileStorageKey, container);
         }
 
         private async Task<ProfileStorageContainer> MigrateIfNecessary(ProfileStorageContainer? container)
