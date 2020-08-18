@@ -88,7 +88,6 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
             {
                 foreach (var file in await fileReaderService.CreateReference(InputTypeFileElement).EnumerateFilesAsync())
                 {
-                    int offset = 0;
                     var buffer = new byte[4096];
 
                     // Read into memory and act
@@ -99,9 +98,7 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
                         {
                             // Do (async) stuff with stream...
                             await stream.ReadAsync(buffer, 0, buffer.Length);
-                            memoryStream.Write(buffer, offset, buffer.Length);
-
-                            offset += buffer.Length;
+                            memoryStream.Write(buffer, 0, buffer.Length);
                         }
 
                         return memoryStream.ToArray();

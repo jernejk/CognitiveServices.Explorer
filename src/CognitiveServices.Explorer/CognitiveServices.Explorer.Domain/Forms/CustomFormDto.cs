@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace CognitiveServices.Explorer.Domain.Forms
 {
-
     public class FormDto
     {
         public string status { get; set; }
@@ -32,23 +31,23 @@ namespace CognitiveServices.Explorer.Domain.Forms
     {
         public int page { get; set; }
         public string language { get; set; }
-        public int angle { get; set; }
-        public int width { get; set; }
-        public int height { get; set; }
+        public double angle { get; set; }
+        public double width { get; set; }
+        public double height { get; set; }
         public string unit { get; set; }
         public Line[] lines { get; set; }
     }
 
     public class Line
     {
-        public int[] boundingBox { get; set; }
+        public double[] boundingBox { get; set; }
         public string text { get; set; }
         public Word[] words { get; set; }
     }
 
     public class Word
     {
-        public int[] boundingBox { get; set; }
+        public double[] boundingBox { get; set; }
         public string text { get; set; }
         public float confidence { get; set; }
     }
@@ -72,7 +71,7 @@ namespace CognitiveServices.Explorer.Domain.Forms
         public int columnIndex { get; set; }
         public int columnSpan { get; set; }
         public string text { get; set; }
-        public int[] boundingBox { get; set; }
+        public double[] boundingBox { get; set; }
         public string[] elements { get; set; }
     }
 
