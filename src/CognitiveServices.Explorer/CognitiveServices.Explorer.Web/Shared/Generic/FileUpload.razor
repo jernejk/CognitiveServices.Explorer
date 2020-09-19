@@ -1,0 +1,53 @@
+﻿@using System.IO
+
+<div>
+    @*
+        TODO: Find a way to inject "accept" attribute to <file> DOM element.
+        Attribute only injects the attiribute to top level DOM, which is a <div>.
+
+        Desired support:
+        * image/*
+        * image/jpeg,image/png,image/tiff,application/pdf
+    *@
+    <MatFileUpload OnChange="@FilesReady" Label="@Label" Attributes="@(new Dictionary<string, object> { { "accept", Accept } })"></MatFileUpload>
+    <p>
+        @(!string.IsNullOrWhiteSpace(SelectedFileName) ? "Selected file: " + SelectedFileName : "No file selected")
+    </p>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Drop a single image here or Browse";
+    [Parameter] public Action<FileUploadViewModel?>? FileSelected { get; set; }
+    [Parameter] public string Accept { get; set; } = "*/*";
+
+    public string? SelectedFileName { get; set; }
+
+    private async Task FilesReady(IMatFileUploadEntry[] files)
+    {
+        if (FileSelected == null)
+        {
+            return;
+        }
+
+        var file = files.FirstOrDefault();
+        if (file == null)
+        {
+            FileSelected.Invoke(null);
+            return;
+        }
+
+        SelectedFileName = file.Name;
+        using (MemoryStream ms = new MemoryStream())
+        {
+            await file.WriteToStreamAsync(ms);
+            ms.Position = 0;
+            FileSelected?.Invoke(new FileUploadViewModel
+            {
+                FileName = file.Name,
+                Type = file.Type,
+                Size = file.Size,
+                Data = ms.ToArray(),
+            });
+        }
+    }
+}

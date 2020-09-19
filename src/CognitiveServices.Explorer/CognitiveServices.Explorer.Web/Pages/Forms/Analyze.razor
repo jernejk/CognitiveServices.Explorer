@@ -3,7 +3,6 @@
 @using CognitiveServices.Explorer.Web.Shared.Profiles
 
 @inject CustomFormsViewModel viewModel;
-@inject Blazor.FileReader.IFileReaderService fileReaderService;
 
 <ProfileSelector OnUpdated="UpdatedProfile" />
 
@@ -33,9 +32,9 @@
         <div>
             <MatSelect id="face-api-selected-group-id" Label="Select trained model" @bind-Value="viewModel.ModelId">
                 @foreach (var model in viewModel.Models.modelList.OrderByDescending(m => m.lastUpdatedDateTime))
-                    {
+                {
                     <MatOption Value="@model.modelId">Last updated at @model.lastUpdatedDateTime (@model.status)</MatOption>
-                    }
+                }
             </MatSelect>
 
             @if (!string.IsNullOrWhiteSpace(viewModel.ModelId))
@@ -62,7 +61,7 @@
                             <MatExpansionPanelHeader>File Upload</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
                         <MatExpansionPanelDetails>
-                            <input type="file" @ref=InputTypeFileElement accept="image/jpeg,image/png,image/tiff,application/pdf" />
+                            <FileUpload FileSelected="x => UploadedFile = x" Accept="image/jpeg,image/png,image/tiff,application/pdf" />
                         </MatExpansionPanelDetails>
                     </MatExpansionPanel>
                 </MatAccordion>

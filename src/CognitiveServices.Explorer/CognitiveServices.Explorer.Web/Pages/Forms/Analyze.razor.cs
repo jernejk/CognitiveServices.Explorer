@@ -1,7 +1,4 @@
-﻿using Blazor.FileReader;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.IO;
+﻿using CognitiveServices.Explorer.Web.Models;
 using System.Threading.Tasks;
 
 namespace CognitiveServices.Explorer.Web.Pages.Forms
@@ -11,9 +8,9 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
         protected override async Task OnInitializedAsync() => await viewModel.OnInitializedAsync();
         public bool IsAnalyzing { get; set; }
 
-        public ElementReference InputTypeFileElement { get; set; }
         public string? ImageUrl { get; set; }
         public string OpenedTab { get; set; } = string.Empty;
+        public FileUploadViewModel? UploadedFile { get; set; }
 
         public bool ImageUrlTabOpened
         {
@@ -23,7 +20,7 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
                 if (value)
                 {
                     OpenedTab = "imageUrl";
-                    this.StateHasChanged();
+                    StateHasChanged();
                 }
             }
         }
@@ -36,7 +33,7 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
                 if (value)
                 {
                     OpenedTab = "imageUpload";
-                    this.StateHasChanged();
+                    StateHasChanged();
                 }
             }
         }
@@ -66,8 +63,7 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
             }
             else if (OpenedTab == "imageUpload")
             {
-                var imageData = await ReadFile();
-                if (imageData == null)
+                if (UploadedFile?.Data == null)
                 {
                     viewModel.Error = "Unable to load the image.";
                     return;
@@ -76,41 +72,10 @@ namespace CognitiveServices.Explorer.Web.Pages.Forms
                 IsAnalyzing = true;
                 StateHasChanged();
 
-                await viewModel.Analyze(imageData);
+                await viewModel.Analyze(UploadedFile.Data);
             }
 
             IsAnalyzing = false;
-        }
-
-        private async Task<byte[]?> ReadFile()
-        {
-            try
-            {
-                foreach (var file in await fileReaderService.CreateReference(InputTypeFileElement).EnumerateFilesAsync())
-                {
-                    var buffer = new byte[4096];
-
-                    // Read into memory and act
-                    using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
-                    {
-                        // Read into buffer and act (uses less memory)
-                        using (Stream stream = await file.OpenReadAsync())
-                        {
-                            // Do (async) stuff with stream...
-                            await stream.ReadAsync(buffer, 0, buffer.Length);
-                            memoryStream.Write(buffer, 0, buffer.Length);
-                        }
-
-                        return memoryStream.ToArray();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            return null;
         }
     }
 }
