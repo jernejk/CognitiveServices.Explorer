@@ -76,7 +76,7 @@ jobs:
         #extra_args: # optional
           
     - name: HTTP Request Action
-      uses: fjogeleit/http-request-action@1.3.0
+      uses: fjogeleit/http-request-action@master
       with:
         # Request URL
         url: https://api.cloudflare.com/client/v4/zones/${{secrets.CloudFlareZoneId}}/purge_cache
