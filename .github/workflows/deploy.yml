@@ -23,7 +23,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1.300
+        dotnet-version: 5.0.100-rc.1.20452.10
 
     # Use dev image in manifest.json and appsettings.json
     - name: Find and Replace

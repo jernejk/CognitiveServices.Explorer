@@ -17,7 +17,7 @@ namespace CognitiveServices.Explorer.Web.Shared.Profiles
         private string? _selectedProfile;
         private bool _dialogIsOpen;
 
-        [Inject] public IMediator Mediator { get; set; }
+        [Inject] public IMediator Mediator { get; set; } = null!;
 
         [Parameter] public Func<Task>? OnUpdated { get; set; }
         [Parameter] public bool AllowManagingProfiles { get; set; } = true;

@@ -1,4 +1,3 @@
-using Blazor.FileReader;
 using Blazored.LocalStorage;
 using CognitiveServices.Explorer.Application.Commands;
 using CognitiveServices.Explorer.Application.Persistence.Profiles;
@@ -15,7 +14,6 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace CognitiveServices.Explorer.Web
 {
@@ -63,7 +61,6 @@ namespace CognitiveServices.Explorer.Web
 
             // MatBlazor
             services.AddScoped<AppState>();
-            services.AddLoadingBar();
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;
@@ -75,9 +72,7 @@ namespace CognitiveServices.Explorer.Web
             });
 
             services.AddHttpClient();
-            services.AddSingleton(new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) }); ;
-
-            services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
+            services.AddSingleton(new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
         }
     }
 }

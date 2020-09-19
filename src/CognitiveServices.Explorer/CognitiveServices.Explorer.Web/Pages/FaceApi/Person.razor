@@ -2,10 +2,7 @@
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
-@using CognitiveServices.Explorer.Web.Shared.Profiles
-@using System.IO;
 @inject PersonViewModel viewModel
-@inject Blazor.FileReader.IFileReaderService fileReaderService;
 
 <ProfileSelector OnUpdated="viewModel.LoadLatestConfig" />
 
@@ -74,7 +71,7 @@
                 <div class="form-group">
                     <MatTextField @bind-Value="@_faceImageUrl" Label="Image URL" Icon="image" IconTrailing="true" FullWidth="true" Required="false"></MatTextField>
                     <p><b>OR</b></p>
-                    <input type="file" @ref=_inputTypeFileElement accept="image/*" />
+                    <FileUpload FileSelected="f => imageData = f?.Data" Accept="image/*" />
                 </div>
                 <div class="form-group">
                     <MatSelect id="face-api-selected-group-id" Label="Detection model" @bind-Value="_selectedDetectionModel">
@@ -116,7 +113,7 @@
     private FaceDto _face = new FaceDto();
     private string? _faceImageUrl;
     private string _selectedDetectionModel = FaceApiConstants.DetectModelV01;
-    ElementReference _inputTypeFileElement;
+    private byte[]? imageData = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -139,7 +136,6 @@
     {
         if (_isCreating)
         {
-            var imageData = await ReadFile();
             if (imageData != null)
             {
                 await viewModel.AddFace(_face, imageData, _selectedDetectionModel);
@@ -191,39 +187,5 @@
 
         _face = new FaceDto();
         _deleteDialogOpen = false;
-    }
-
-    public async Task<byte[]?> ReadFile()
-    {
-        try
-        {
-            foreach (var file in await fileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync())
-            {
-                int offset = 0;
-                var buffer = new byte[4096];
-
-                // Read into memory and act
-                using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
-                {
-                    // Read into buffer and act (uses less memory)
-                    using (Stream stream = await file.OpenReadAsync())
-                    {
-                        // Do (async) stuff with stream...
-                        await stream.ReadAsync(buffer, 0, buffer.Length);
-                        memoryStream.Write(buffer, offset, buffer.Length);
-
-                        offset += buffer.Length;
-                    }
-
-                    return memoryStream.ToArray();
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-
-        return null;
     }
 }

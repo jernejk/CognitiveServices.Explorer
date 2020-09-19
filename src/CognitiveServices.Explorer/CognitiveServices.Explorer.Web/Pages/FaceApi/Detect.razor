@@ -2,12 +2,9 @@
 @using CognitiveServices.Explorer.Application.ViewModels.FaceApi
 @using CognitiveServices.Explorer.Domain.Face
 @using CognitiveServices.Explorer.Web.Pages.FaceApi.Components
-@using CognitiveServices.Explorer.Web.Shared.Profiles
-@using System.IO;
 @inject DetectViewModel viewModel
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
-@inject Blazor.FileReader.IFileReaderService fileReaderService;
 
 <ProfileSelector OnUpdated="UpdatedProfile" />
 
@@ -34,7 +31,7 @@
                         <MatExpansionPanelHeader>File Upload</MatExpansionPanelHeader>
                     </MatExpansionPanelSummary>
                     <MatExpansionPanelDetails>
-                        <input type="file" @ref=_inputTypeFileElement accept="image/*" />
+                        <FileUpload FileSelected="f => imageData = f?.Data" Accept="image/*" />
                     </MatExpansionPanelDetails>
                 </MatExpansionPanel>
                 <MatExpansionPanel @bind-Expanded="WebCamTabOpened">
@@ -108,9 +105,9 @@
                 <EditForm Model="@viewModel.SelectedPersonGroupId">
                     <MatSelect id="face-api-selected-group-id" Label="Group" @bind-Value="viewModel.SelectedPersonGroupId">
                         @foreach (var group in viewModel.PersonGroups)
-                        {
+                                {
                             <MatOption Value="@group.PersonGroupId">@group.Name</MatOption>
-                        }
+                                }
                     </MatSelect>
                 </EditForm>
 
@@ -190,7 +187,7 @@
     string? _faceImageUrl;
     string groupId = string.Empty;
     bool isRunning = false;
-    ElementReference _inputTypeFileElement;
+    byte[]? imageData;
 
     private string openedTab = "";
 
@@ -318,7 +315,6 @@
         }
         else if (openedTab == "imageUpload")
         {
-            var imageData = await ReadFile();
             if (imageData == null)
             {
                 viewModel.Error = "Unable to load the image.";
@@ -340,39 +336,5 @@
     {
         await viewModel.ProfileChanged();
         base.StateHasChanged();
-    }
-
-    public async Task<byte[]?> ReadFile()
-    {
-        try
-        {
-            foreach (var file in await fileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync())
-            {
-                int offset = 0;
-                var buffer = new byte[4096];
-
-                // Read into memory and act
-                using (MemoryStream memoryStream = await file.CreateMemoryStreamAsync(4096))
-                {
-                    // Read into buffer and act (uses less memory)
-                    using (Stream stream = await file.OpenReadAsync())
-                    {
-                        // Do (async) stuff with stream...
-                        await stream.ReadAsync(buffer, 0, buffer.Length);
-                        memoryStream.Write(buffer, offset, buffer.Length);
-
-                        offset += buffer.Length;
-                    }
-
-                    return memoryStream.ToArray();
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-
-        return null;
     }
 }
