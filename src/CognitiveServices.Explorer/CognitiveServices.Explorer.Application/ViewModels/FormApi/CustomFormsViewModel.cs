@@ -27,7 +27,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
         {
             _mediator = mediator;
             _getModels = CustomFormRequestGenerator.GetModels();
-            _startFormAnalyze = CustomFormRequestGenerator.StartAnalyzeForm(string.Empty, new byte[0], "image/jpeg");
+            _startFormAnalyze = CustomFormRequestGenerator.StartAnalyzeForm(string.Empty, Array.Empty<byte>(), "image/jpeg");
             _getFormResults = CustomFormRequestGenerator.GetResultFromForm(string.Empty);
 
             Requests.Add(_getModels);
@@ -47,7 +47,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
 
         public string? Error { get; set; }
         public FormDto? FormResult { get; set; }
-        public string FormResultText { get; set; }
+        public string? FormResultText { get; set; }
 
         public virtual async Task OnInitializedAsync()
         {
@@ -101,10 +101,10 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
             UpdateRequestList();
 
             // TODO: Quick hack because we need body as well as headers in response unlike other Cognitive Services responses.
-            var byteArrayContent = new ByteArrayContent(_startFormAnalyze.BinaryContent);
+            var byteArrayContent = new ByteArrayContent(_startFormAnalyze!.BinaryContent);
             byteArrayContent.Headers.ContentType = new MediaTypeHeaderValue(_startFormAnalyze.ContentType);
 
-            var responseAnalyze = await new Url(FormApiConfig.BaseUrl)
+            var responseAnalyze = await new Url(FormApiConfig!.BaseUrl)
                 .AppendPathSegment(_startFormAnalyze.RelativePath)
                 .WithHeader(_startFormAnalyze.TokenHeaderName, FormApiConfig.Token)
                 .PostAsync(byteArrayContent);
@@ -112,15 +112,15 @@ namespace CognitiveServices.Explorer.Application.ViewModels.FormApi
             if (responseAnalyze.StatusCode == 202)
             {
                 Console.WriteLine($"Headers: {responseAnalyze.Headers.Count}:");
-                foreach (var header in responseAnalyze.Headers)
+                foreach (var (Name, Value) in responseAnalyze.Headers)
                 {
-                    Console.WriteLine($"\t{header.Key}: {header.Value}");
+                    Console.WriteLine($"\t{Name}: {Value}");
                 }
 
                 // Operation Location is based on specs cased with uppercases as in the where clause and in browser you'll see this casing.
                 // However, either browser or Blazor lowercase it. Just to be sure, we are getting the header in case-insensitive way.
-                string operationLocation = responseAnalyze.Headers
-                    .Where(h => h.Key.Equals("Operation-Location", StringComparison.CurrentCultureIgnoreCase))
+                string? operationLocation = responseAnalyze.Headers
+                    .Where(h => h.Name.Equals("Operation-Location", StringComparison.OrdinalIgnoreCase))
                     .Select(h => h.Value)
                     .FirstOrDefault();
 
