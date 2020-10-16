@@ -1,5 +1,4 @@
 ﻿using CognitiveServices.Explorer.Application.Commands;
-using CognitiveServices.Explorer.Application.Curl;
 using CognitiveServices.Explorer.Application.Profiles.Queries;
 using CognitiveServices.Explorer.Application.Text;
 using CognitiveServices.Explorer.Domain.Face;
@@ -33,10 +32,7 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
             _entityLinking = TextRequestGenerator.EntityLinking(Text, Language);
             _entityRecognitionPii = TextRequestGenerator.EntityRecognitionPii(Text, Language);
 
-            Requests.Add(_sentimentAnalysis);
-            Requests.Add(_keyPhrases);
-            Requests.Add(_entities);
-            Requests.Add(_detectLanguage);
+            UpdateRequests();
         }
 
         public List<HttpRequest> Requests { get; } = new List<HttpRequest>();
@@ -90,38 +86,70 @@ namespace CognitiveServices.Explorer.Application.ViewModels.TextApi
 
         public async Task SentimentAnalysis()
         {
-            _sentimentAnalysis = TextRequestGenerator.Sentiment(Text, Language, TextApiVersion);
+            UpdateRequests();
+
             SentimentJson = await MakeRequest<string>(_sentimentAnalysis).ConfigureAwait(false);
         }
 
         public async Task KeyPhrasesAnalysis()
         {
-            _keyPhrases = TextRequestGenerator.KeyPhrases(Text, Language, TextApiVersion);
+            UpdateRequests();
+
             KeyPhraseJson = await MakeRequest<string>(_keyPhrases).ConfigureAwait(false);
         }
 
         public async Task EntitiesAnalysis()
         {
-            _entities = TextRequestGenerator.Entities(Text, Language, TextApiVersion);
+            UpdateRequests();
+
             EntitiesJson = await MakeRequest<string>(_entities).ConfigureAwait(false);
         }
 
         public async Task DetectLanguage()
         {
-            _detectLanguage = TextRequestGenerator.DetectLanguage(Text, "", TextApiVersion);
+            UpdateRequests();
+
             DetectLanguageJson = await MakeRequest<string>(_detectLanguage).ConfigureAwait(false);
         }
 
         public async Task EntityLinking()
         {
-            _entityLinking = TextRequestGenerator.EntityLinking(Text, "");
+            UpdateRequests();
+
             EntityLinkingJson = await MakeRequest<string>(_entityLinking).ConfigureAwait(false);
         }
 
         public async Task EntityRecognitionPii()
         {
-            _entityRecognitionPii = TextRequestGenerator.EntityRecognitionPii(Text, "");
+            UpdateRequests();
+
             EntityRecognitionPiiJson = await MakeRequest<string>(_entityRecognitionPii).ConfigureAwait(false);
+        }
+
+        public void UpdateRequests()
+        {
+            _sentimentAnalysis = TextRequestGenerator.Sentiment(Text, Language, TextApiVersion);
+            _keyPhrases = TextRequestGenerator.KeyPhrases(Text, Language, TextApiVersion);
+            _entities = TextRequestGenerator.Entities(Text, Language, TextApiVersion);
+            _detectLanguage = TextRequestGenerator.DetectLanguage(Text, Language, TextApiVersion);
+            _entityLinking = TextRequestGenerator.EntityLinking(Text, Language, TextApiVersion);
+            _entityRecognitionPii = TextRequestGenerator.EntityRecognitionPii(Text, Language);
+
+            Requests.Clear();
+            Requests.Add(_sentimentAnalysis);
+            Requests.Add(_keyPhrases);
+            Requests.Add(_entities);
+            Requests.Add(_detectLanguage);
+
+            if (_selectedTextApiVersion == TextRequestGenerator.StableVersion)
+            {
+                Requests.Add(_entityLinking);
+            }
+            else if (_selectedTextApiVersion == TextRequestGenerator.PreviewVersion)
+            {
+                Requests.Add(_entityLinking);
+                Requests.Add(_entityRecognitionPii);
+            }
         }
 
         protected async Task<string?> MakeRequest<T>(HttpRequest? request)
