@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Flurl.Http" Version="3.0.0-pre5" />
-    <PackageReference Include="MediatR" Version="8.1.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0-rc.2.20475.5" />
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
